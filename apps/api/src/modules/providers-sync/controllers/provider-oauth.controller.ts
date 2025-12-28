@@ -825,6 +825,9 @@ export class ProviderOAuthController {
     const mode = request.query['hub.mode'];
     const token = request.query['hub.verify_token'];
     const challenge = request.query['hub.challenge'];
+    this.logger.debug(
+      `Strava webhook verification: mode=${mode}, token=${token}, challenge=${challenge}`,
+    );
 
     const verifyToken = this.configService.get('STRAVA_WEBHOOK_TOKEN');
     if (mode === 'subscribe' && token === verifyToken) {
