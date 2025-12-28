@@ -86,6 +86,7 @@ decode_secret "STRAVA_WEBHOOK_TOKEN"
 decode_secret "HASH_PEPPER"
 decode_secret "STRIPE_PUBLISHABLE_KEY"
 decode_secret "STRIPE_PRICE_IDS"
+decode_secret "BETTER_STACK_DSN"
 if [ -n "$STRIPE_PRICE_IDS" ]; then
   if ! echo "$STRIPE_PRICE_IDS" | grep -qE '^\{".*"\}$'; then
     STRIPE_PRICE_IDS=$(echo "$STRIPE_PRICE_IDS" | sed 's/^{//;s/}$//' | sed -E 's/([A-Z_]+):([^,}]+)/"\1":"\2"/g' | sed 's/^/{/;s/$/}/')
