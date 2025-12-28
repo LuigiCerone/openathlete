@@ -513,23 +513,23 @@ export class StravaProviderService
    * Handle Strava webhook
    */
   async handleWebhook(payload: {
-    objectId: number;
-    ownerId: number;
-    aspectType: 'create' | 'delete';
+    object_id: number;
+    owner_id: number;
+    aspect_type: 'create' | 'delete';
   }): Promise<void> {
     this.logger.log(
-      `Handling Strava webhook: objectId=${payload.objectId}, ownerId=${payload.ownerId}, aspectType=${payload.aspectType}`,
+      `Handling Strava webhook: objectId=${payload.object_id}, ownerId=${payload.owner_id}, aspectType=${payload.aspect_type}`,
     );
     if (
-      payload.aspectType === 'create' &&
-      payload.objectId &&
-      payload.ownerId
+      payload.aspect_type === 'create' &&
+      payload.object_id &&
+      payload.owner_id
     ) {
       // Find account by external_user_id (Strava athlete ID)
       const account = await this.prisma.providerAccount.findFirst({
         where: {
           provider: ConnectorProvider.STRAVA,
-          externalUserId: payload.ownerId.toString(),
+          externalUserId: payload.owner_id.toString(),
           status: 'active',
         },
         include: {
@@ -543,14 +543,14 @@ export class StravaProviderService
 
       if (!account || !account.athlete || !account.athlete.user) {
         this.logger.warn(
-          `No active Strava account found for owner_id ${payload.ownerId}`,
+          `No active Strava account found for owner_id ${payload.owner_id}`,
         );
         return;
       }
 
       if (!account.importActivitiesEnabled) {
         this.logger.debug(
-          `Import disabled for Strava account ${account.providerAccountId}, skipping webhook activity ${payload.objectId}`,
+          `Import disabled for Strava account ${account.providerAccountId}, skipping webhook activity ${payload.object_id}`,
         );
         return;
       }
@@ -558,13 +558,13 @@ export class StravaProviderService
       // Check if activity already imported
       const existingActivity = await this.prisma.eventActivity.findFirst({
         where: {
-          externalId: payload.objectId.toString(),
+          externalId: payload.object_id.toString(),
         },
       });
 
       if (existingActivity) {
         this.logger.debug(
-          `Activity ${payload.objectId} already imported, skipping`,
+          `Activity ${payload.object_id} already imported, skipping`,
         );
         return;
       }
@@ -575,7 +575,7 @@ export class StravaProviderService
           account,
           async (accessToken) => {
             const response = await axios.get<StravaSummaryActivity>(
-              `https://www.strava.com/api/v3/activities/${payload.objectId}`,
+              `https://www.strava.com/api/v3/activities/${payload.object_id}`,
               {
                 headers: {
                   Authorization: `Bearer ${accessToken}`,
@@ -608,7 +608,7 @@ export class StravaProviderService
       );
 
       this.logger.log(
-        `Queued activity ${payload.objectId} from webhook for import`,
+        `Queued activity ${payload.object_id} from webhook for import`,
       );
     }
   }

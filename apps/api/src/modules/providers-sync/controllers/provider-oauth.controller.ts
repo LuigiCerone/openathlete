@@ -878,9 +878,9 @@ export class ProviderOAuthController {
   async stravaWebhookPost(
     @Body()
     body: {
-      objectId: number;
-      ownerId: number;
-      aspectType: 'create' | 'delete';
+      object_id: number;
+      owner_id: number;
+      aspect_type: 'create' | 'delete';
     },
   ) {
     await this.stravaProviderService.handleWebhook(body);
