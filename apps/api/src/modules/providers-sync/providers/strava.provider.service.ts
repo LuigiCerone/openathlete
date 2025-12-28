@@ -517,6 +517,9 @@ export class StravaProviderService
     ownerId: number;
     aspectType: 'create' | 'delete';
   }): Promise<void> {
+    this.logger.log(
+      `Handling Strava webhook: objectId=${payload.objectId}, ownerId=${payload.ownerId}, aspectType=${payload.aspectType}`,
+    );
     if (
       payload.aspectType === 'create' &&
       payload.objectId &&
