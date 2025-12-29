@@ -1,0 +1,151 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database with pgvector extension
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: openathlete-postgres
+    environment:
+      POSTGRES_USER: openathlete
+      POSTGRES_PASSWORD: openathlete_dev_password
+      POSTGRES_DB: openathlete
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U openathlete"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - openathlete-network
+
+  # Redis
+  redis:
+    image: redis:7-alpine
+    container_name: openathlete-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    networks:
+      - openathlete-network
+
+  # API Service
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile.local
+    container_name: openathlete-api
+    ports:
+      - "3000:3000"
+    environment:
+      # Core configuration
+      ENV: ${ENV:-development}
+      NODE_ENV: ${NODE_ENV:-production}
+      PORT: ${PORT:-3000}
+      
+      # Database
+      DATABASE_URL: postgresql://openathlete:openathlete_dev_password@postgres:5432/openathlete
+      
+      # Redis
+      REDIS_URL: ${REDIS_URL:-redis://redis:6379/0}
+      
+      # Security
+      HASH_PEPPER: ${HASH_PEPPER:-dev-pepper-change-in-production-min-32-chars}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY:-dev-jwt-secret-key-change-in-production-min-32-chars-long}
+      
+      # Application URLs
+      APP_URL: ${APP_URL:-http://localhost:3000}
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost:5173}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:5173,http://localhost:80}
+      
+      # Strava OAuth (required)
+      STRAVA_CLIENT_ID: ${STRAVA_CLIENT_ID}
+      STRAVA_CLIENT_SECRET: ${STRAVA_CLIENT_SECRET}
+      STRAVA_REDIRECT_URI: ${STRAVA_REDIRECT_URI:-http://localhost:3000/api/auth/strava/callback}
+      STRAVA_WEBHOOK_TOKEN: ${STRAVA_WEBHOOK_TOKEN}
+      
+      # Polar OAuth (required)
+      POLAR_CLIENT_ID: ${POLAR_CLIENT_ID}
+      POLAR_CLIENT_SECRET: ${POLAR_CLIENT_SECRET}
+      POLAR_REDIRECT_URI: ${POLAR_REDIRECT_URI:-http://localhost:3000/api/auth/polar/callback}
+      POLAR_WEBHOOK_URL: ${POLAR_WEBHOOK_URL:-http://localhost:3000/api/webhooks/polar}
+      POLAR_WEBHOOK_SECRET_KEY: ${POLAR_WEBHOOK_SECRET_KEY}
+      
+      # Email service (Brevo)
+      BREVO_API_KEY: ${BREVO_API_KEY}
+      BREVO_FROM_EMAIL: ${BREVO_FROM_EMAIL}
+      
+      # AI Services
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      GOOGLE_GENERATIVE_AI_API_KEY: ${GOOGLE_GENERATIVE_AI_API_KEY}
+      
+      # Optional OAuth providers
+      GARMIN_CLIENT_ID: ${GARMIN_CLIENT_ID:-}
+      GARMIN_CLIENT_SECRET: ${GARMIN_CLIENT_SECRET:-}
+      GARMIN_REDIRECT_URI: ${GARMIN_REDIRECT_URI:-}
+      SUUNTO_CLIENT_ID: ${SUUNTO_CLIENT_ID:-}
+      SUUNTO_CLIENT_SECRET: ${SUUNTO_CLIENT_SECRET:-}
+      SUUNTO_REDIRECT_URI: ${SUUNTO_REDIRECT_URI:-}
+      SUUNTO_SUBSCRIPTION_KEY: ${SUUNTO_SUBSCRIPTION_KEY:-}
+      COROS_CLIENT_ID: ${COROS_CLIENT_ID:-}
+      COROS_CLIENT_SECRET: ${COROS_CLIENT_SECRET:-}
+      COROS_REDIRECT_URI: ${COROS_REDIRECT_URI:-}
+      
+      # Stripe (optional)
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY:-}
+      STRIPE_PUBLISHABLE_KEY: ${STRIPE_PUBLISHABLE_KEY:-}
+      STRIPE_PRICE_IDS: ${STRIPE_PRICE_IDS:-}
+      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET:-}
+      
+      # Firebase (optional)
+      FIREBASE_FUNCTIONS_URL: ${FIREBASE_FUNCTIONS_URL:-}
+      
+      # Feature flags
+      ENABLE_ACTIVITY_IMPORT: ${ENABLE_ACTIVITY_IMPORT:-false}
+      ENABLE_ACTIVITY_PROCESSING: ${ENABLE_ACTIVITY_PROCESSING:-false}
+      ENABLE_TRAINING_LOAD_ESTIMATION: ${ENABLE_TRAINING_LOAD_ESTIMATION:-false}
+      
+      # Monitoring (optional)
+      BETTER_STACK_DSN: ${BETTER_STACK_DSN:-}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - openathlete-network
+    restart: unless-stopped
+
+  # Web Frontend
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+      args:
+        # Use relative URL so Nginx proxy works correctly
+        VITE_API_BASE_URL: ""
+    container_name: openathlete-web
+    ports:
+      - "80:80"
+    depends_on:
+      - api
+    networks:
+      - openathlete-network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  openathlete-network:
+    driver: bridge
+

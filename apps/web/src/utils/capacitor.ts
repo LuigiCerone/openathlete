@@ -28,7 +28,9 @@ export function isAndroid(): boolean {
 export function getApiBaseUrl(): string {
   const envUrl = import.meta.env.VITE_API_BASE_URL;
 
-  if (envUrl) {
+  // If VITE_API_BASE_URL is set (including empty string), use it
+  // Empty string means use relative URLs (useful for Docker/Nginx proxy)
+  if (envUrl !== undefined) {
     return envUrl;
   }
 
