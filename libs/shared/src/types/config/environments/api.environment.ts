@@ -149,21 +149,21 @@ export const ApiEnvSchema = z
       .describe('Suunto subscription key for API access (optional)'),
 
     // Coros OAuth (optional)
-    COROS_CLIENT_ID: z
-      .string()
-      .optional()
-      .describe('Coros OAuth client ID (optional)'),
+    // COROS_CLIENT_ID: z
+    //   .string()
+    //   .optional()
+    //   .describe('Coros OAuth client ID (optional)'),
 
-    COROS_CLIENT_SECRET: z
-      .string()
-      .optional()
-      .describe('Coros OAuth client secret (optional)'),
+    // COROS_CLIENT_SECRET: z
+    //   .string()
+    //   .optional()
+    //   .describe('Coros OAuth client secret (optional)'),
 
-    COROS_REDIRECT_URI: z
-      .string()
-      .url('COROS_REDIRECT_URI must be a valid URL')
-      .optional()
-      .describe('Coros OAuth redirect URI (optional)'),
+    // COROS_REDIRECT_URI: z
+    //   .string()
+    //   .url('COROS_REDIRECT_URI must be a valid URL')
+    //   .optional()
+    //   .describe('Coros OAuth redirect URI (optional)'),
 
     // Polar OAuth
     POLAR_CLIENT_ID: z

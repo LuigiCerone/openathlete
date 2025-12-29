@@ -10,7 +10,7 @@ services:
       POSTGRES_PASSWORD: openathlete_dev_password
       POSTGRES_DB: openathlete
     ports:
-      - "5432:5432"
+      - "${POSTGRES_PORT:-5433}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -54,8 +54,8 @@ services:
       # Database
       DATABASE_URL: postgresql://openathlete:openathlete_dev_password@postgres:5432/openathlete
       
-      # Redis
-      REDIS_URL: ${REDIS_URL:-redis://redis:6379/0}
+      # Redis - use Docker service name for internal communication
+      REDIS_URL: redis://redis:6379/0
       
       # Security
       HASH_PEPPER: ${HASH_PEPPER:-dev-pepper-change-in-production-min-32-chars}
@@ -64,7 +64,7 @@ services:
       # Application URLs
       APP_URL: ${APP_URL:-http://localhost:3000}
       FRONTEND_URL: ${FRONTEND_URL:-http://localhost:5173}
-      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:5173,http://localhost:80}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost,http://localhost:80,http://localhost:5173}
       
       # Strava OAuth (required)
       STRAVA_CLIENT_ID: ${STRAVA_CLIENT_ID}
@@ -130,8 +130,8 @@ services:
       context: .
       dockerfile: apps/web/Dockerfile
       args:
-        # Use relative URL so Nginx proxy works correctly
-        VITE_API_BASE_URL: ""
+        # Point to API on port 3000 (accessible from browser)
+        VITE_API_BASE_URL: "http://localhost:3000"
     container_name: openathlete-web
     ports:
       - "80:80"

@@ -15,9 +15,12 @@ export class CorosProviderService extends BaseProviderService {
     return {
       authorizationUrl: 'https://open.coros.com/oauth2/authorize',
       tokenUrl: 'https://open.coros.com/oauth2/token',
-      clientId: this.configService.get('COROS_CLIENT_ID') || '',
-      clientSecret: this.configService.get('COROS_CLIENT_SECRET') || '',
-      redirectUri: this.configService.get('COROS_REDIRECT_URI') || '',
+      // clientId: this.configService.get('COROS_CLIENT_ID') || '',
+      // clientSecret: this.configService.get('COROS_CLIENT_SECRET') || '',
+      // redirectUri: this.configService.get('COROS_REDIRECT_URI') || '',
+      clientId: '',
+      clientSecret: '',
+      redirectUri: '',
       scopes: ['workout'], // Coros scopes for workout export
     };
   }
