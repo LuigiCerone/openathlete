@@ -1,13 +1,26 @@
-model Equipment {
+// ============================================================================
+// Equipment Models
+// ============================================================================
+// Equipment tracking for athletes (shoes, bikes, etc.) with distance tracking.
+// ============================================================================
 
+/// Equipment item.
+/// Represents a piece of equipment (shoe, bike, etc.) used by an athlete.
+/// Tracks total distance used and can be associated with activities.
+model Equipment {
   // primary key
   equipmentId Int @id @default(autoincrement()) @map("equipment_id")
 
   // fields
+  /// Equipment name (e.g., "Nike Pegasus 40", "Road Bike")
   name          String
+  /// Equipment type: SHOE or BIKE
   type          EquipmentType
-  totalDistance Float         @default(0) @map("total_distance") // in meters
+  /// Total distance used in meters
+  totalDistance Float         @default(0) @map("total_distance")
+  /// Whether this is the default equipment for its type
   isDefault     Boolean       @default(false) @map("is_default")
+  /// Sports this equipment is used for
   sports        SportType[]
 
   // relationships

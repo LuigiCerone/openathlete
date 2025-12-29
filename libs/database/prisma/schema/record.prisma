@@ -1,14 +1,32 @@
+// ============================================================================
+// Record Models
+// ============================================================================
+// Personal records (PRs) for athletes. Tracks best performances at specific
+// distances for various metrics (speed, heart rate, power, elevation, cadence).
+// Records are automatically extracted from activities.
+// ============================================================================
+
+/// Personal record.
+/// Represents a best performance at a specific distance for a metric type.
+/// Records are automatically calculated from activities and track the best
+/// value achieved within a distance range (e.g., best 5K time, max heart rate at 10K).
 model Record {
   // primary key
   recordId Int @id @default(autoincrement()) @map("record_id")
 
   // fields
-  distance      Float // in meters
+  /// Distance in meters at which this record was achieved
+  distance      Float
+  /// Date when the record was achieved
   date          DateTime
-  startDuration Int?       @map("start_duration") // in seconds
-  endDuration   Int?       @map("end_duration") // in seconds
+  /// Start duration in seconds (for time-based records, when the segment started)
+  startDuration Int?       @map("start_duration")
+  /// End duration in seconds (for time-based records, when the segment ended)
+  endDuration   Int?       @map("end_duration")
+  /// Record type: SPEED, HEARTRATE, POWER, ELEVATION_GAIN, ELEVATION_LOSS, or CADENCE
   type          RecordType
-  value         Float // unit depends on type
+  /// Record value (units depend on type: m/s for speed, bpm for heart rate, etc.)
+  value         Float
 
   // relationships
   eventActivity   EventActivity? @relation(fields: [eventActivityId], references: [eventActivityId])

@@ -1,11 +1,23 @@
-model EventTemplateFolder {
+// ============================================================================
+// Event Template Folder Models
+// ============================================================================
+// Hierarchical folder system for organizing event templates. Allows users
+// to organize their reusable workout templates in folders and subfolders.
+// ============================================================================
 
+/// Event template folder.
+/// Represents a folder for organizing event templates. Folders can be nested
+/// (parent-child relationship) and have a name, color, and description.
+model EventTemplateFolder {
   // primary key
   eventTemplateFolderId Int @id @default(autoincrement()) @map("event_template_folder_id")
 
   // fields
+  /// Folder name
   name        String
+  /// Hex color code for visualization (default: "#6366f1")
   color       String? @default("#6366f1")
+  /// Folder description
   description String  @default("")
 
   // relationships

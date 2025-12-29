@@ -1,16 +1,37 @@
+// ============================================================================
+// Core User & Authentication Models
+// ============================================================================
+// Core authentication and user management models for the OpenAthlete platform.
+// Handles user accounts, roles, authentication tokens, and external provider
+// integrations (Strava, Garmin, etc.).
+// ============================================================================
+
+/// User account in the system.
+/// Represents a person who can have multiple roles (ATHLETE, COACH) and can
+/// be associated with an athlete profile, coach relationships, and subscriptions.
+/// Users authenticate via email/password and can connect external provider accounts.
 model User {
   // primary key
   userId Int @id @default(autoincrement()) @map("user_id")
 
   // fields
+  /// User's email address (unique identifier for authentication)
   email               String       @unique
+  /// Hashed password for authentication
   password            String
+  /// User roles: ATHLETE (can have athlete profile), COACH (can coach athletes)
   roles               UserRole[]
+  /// User's first name
   firstName           String       @map("first_name")
+  /// User's last name
   lastName            String       @map("last_name")
+  /// User's gender (optional)
   gender              Gender?
+  /// Whether the user has completed the onboarding flow
   onboardingCompleted Boolean      @default(false) @map("onboarding_completed")
+  /// User's preferred language (FR or EN)
   language            UserLanguage @default(FR)
+  /// Push notification token for mobile devices
   pushToken           String?      @map("push_token")
 
   // relationships
@@ -35,22 +56,38 @@ model User {
   @@map("user")
 }
 
+/// External provider account connection (Strava, Garmin, Suunto, etc.).
+/// Stores OAuth tokens and configuration for syncing activities and metrics
+/// from external platforms. Each athlete can have multiple provider accounts
+/// (one per provider type).
 model ProviderAccount {
   // primary key
   providerAccountId Int @id @default(autoincrement()) @map("provider_account_id")
 
   // fields
+  /// External provider type (STRAVA, GARMIN, SUUNTO, COROS, POLAR, etc.)
   provider                ConnectorProvider
+  /// OAuth access token for API requests
   accessToken             String                @map("access_token")
+  /// OAuth refresh token for obtaining new access tokens
   refreshToken            String?               @map("refresh_token")
+  /// When the access token expires (if applicable)
   expiresAt               DateTime?             @map("expires_at")
+  /// OAuth scopes granted by the user
   scopes                  String?
+  /// Account status: active (connected) or revoked (disconnected)
   status                  ProviderAccountStatus @default(active)
+  /// External user ID from the provider (for webhook matching)
   externalUserId          String?               @map("external_user_id")
+  /// Whether to automatically import activities from this provider
   importActivitiesEnabled Boolean               @default(true) @map("import_activities_enabled")
+  /// Whether to export planned workouts to this provider
   exportWorkoutsEnabled   Boolean               @default(true) @map("export_workouts_enabled")
+  /// Whether to import health metrics (HRV, sleep, etc.) from this provider
   importMetricsEnabled    Boolean               @default(false) @map("import_metrics_enabled")
+  /// Timestamp when a full historical import was requested
   fullImportRequestedAt   DateTime?             @map("full_import_requested_at")
+  /// Timestamp when a full historical import was completed
   fullImportCompletedAt   DateTime?             @map("full_import_completed_at")
 
   // relationships
@@ -66,23 +103,39 @@ model ProviderAccount {
   @@map("provider_account")
 }
 
+/// Tracks workout exports to external providers.
+/// When a workout is planned, it can be exported to connected providers (e.g., Garmin).
+/// This table tracks the export status, retry attempts, and any errors.
 model ProviderWorkoutExport {
   // primary key
   providerWorkoutExportId Int @id @default(autoincrement()) @map("provider_workout_export_id")
 
   // fields
+  /// Athlete who owns the workout being exported
   athleteId    Int                         @map("athlete_id")
+  /// Provider to which the workout is exported
   provider     ConnectorProvider
+  /// Workout being exported
   workoutId    Int                         @map("workout_id")
-  plannedDate  DateTime                    @map("planned_date") // store as date-only; convention: midnight UTC
+  /// Planned date for the workout (stored as date-only; convention: midnight UTC)
+  plannedDate  DateTime                    @map("planned_date")
+  /// External ID assigned by the provider (if export succeeded)
   externalId   String?                     @map("external_id")
+  /// Export status: pending, success, failed, or skipped
   status       ProviderWorkoutExportStatus @default(pending)
+  /// Last synchronization timestamp
   lastSyncAt   DateTime?                   @map("last_sync_at")
+  /// Number of export attempts (for retry logic)
   attemptCount Int                         @default(0) @map("attempt_count")
+  /// Hash of workout content (to detect changes and avoid duplicate exports)
   contentHash  String                      @map("content_hash")
+  /// Error code if export failed
   errorCode    String?                     @map("error_code")
+  /// Human-readable error message if export failed
   errorMessage String?                     @map("error_message")
+  /// Raw payload sent to provider (for debugging)
   rawPayload   Json?                       @map("raw_payload")
+  /// Provider-specific schedule/plan ID (if applicable)
   scheduleId   String?                     @map("schedule_id")
 
   // relationships
@@ -98,12 +151,17 @@ model ProviderWorkoutExport {
   @@map("provider_workout_export")
 }
 
+/// Authentication and invitation tokens.
+/// Used for password resets, athlete invitations, and coach invitations.
+/// Tokens are single-use and expire after a set period.
 model Token {
   // primary key
   tokenId Int @id @default(autoincrement()) @map("token_id")
 
   // fields
+  /// Unique token string (hashed)
   token String    @unique
+  /// Token type: PASSWORD_RESET, ATHLETE_INVITATION, or COACH_INVITATION
   type  TokenType
 
   // relationships

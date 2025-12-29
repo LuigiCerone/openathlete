@@ -1,27 +1,57 @@
+// ============================================================================
+// Activity Segment Models
+// ============================================================================
+// Segments within activities (laps, workout steps, manual splits, etc.).
+// Segments allow detailed analysis of specific portions of an activity.
+// ============================================================================
+
+/// Activity segment.
+/// Represents a segment within an activity (lap, workout step, manual split, etc.).
+/// Segments contain metrics for that portion of the activity and can be linked
+/// to workout steps if the segment corresponds to a planned workout step.
 model ActivitySegment {
   // primary key
   activitySegmentId Int @id @default(autoincrement()) @map("activity_segment_id")
 
   // fields
+  /// Segment type: LAP, WORKOUT_STEP, MANUAL, or AUTO_SPLIT
   segmentType            ActivitySegmentType @map("segment_type")
-  name                   String? // optional label (e.g., "Lap 1", "Warmup", "Interval 1")
-  orderIndex             Int                 @map("order_index") // position in the activity sequence (0-based)
-  startTimeSeconds       Int                 @map("start_time_seconds") // inclusive start time
-  endTimeSeconds         Int                 @map("end_time_seconds") // exclusive end time (or inclusive for last segment)
-  distance               Float? // in meters
-  elevationGain          Float?              @map("elevation_gain") // in meters
-  movingTime             Int?                @map("moving_time") // in seconds
-  averageSpeed           Float?              @map("average_speed") // in m/s
-  maxSpeed               Float?              @map("max_speed") // in m/s
-  averageCadence         Float?              @map("average_cadence") // in rpm/spm
-  averageWatts           Float?              @map("average_watts") // in watts
-  maxWatts               Float?              @map("max_watts") // in watts
-  weightedAverageWatts   Float?              @map("weighted_average_watts") // in watts
-  averageHeartrate       Float?              @map("average_heartrate") // in bpm
-  maxHeartrate           Float?              @map("max_heartrate") // in bpm
-  kilojoules             Float? // in kJ
-  averageGapSpeed        Float?              @map("average_gap_speed") // in m/s
-  averageNormalizedSpeed Float?              @map("average_normalized_speed") // in m/s
+  /// Optional label (e.g., "Lap 1", "Warmup", "Interval 1")
+  name                   String?
+  /// Position in the activity sequence (0-based)
+  orderIndex             Int                 @map("order_index")
+  /// Inclusive start time in seconds from activity start
+  startTimeSeconds       Int                 @map("start_time_seconds")
+  /// Exclusive end time in seconds from activity start (inclusive for last segment)
+  endTimeSeconds         Int                 @map("end_time_seconds")
+  /// Segment distance in meters
+  distance               Float?
+  /// Segment elevation gain in meters
+  elevationGain          Float?              @map("elevation_gain")
+  /// Segment moving time in seconds
+  movingTime             Int?                @map("moving_time")
+  /// Average speed in meters per second
+  averageSpeed           Float?              @map("average_speed")
+  /// Maximum speed in meters per second
+  maxSpeed               Float?              @map("max_speed")
+  /// Average cadence in revolutions/steps per minute
+  averageCadence         Float?              @map("average_cadence")
+  /// Average power in watts
+  averageWatts           Float?              @map("average_watts")
+  /// Maximum power in watts
+  maxWatts               Float?              @map("max_watts")
+  /// Weighted average power in watts
+  weightedAverageWatts   Float?              @map("weighted_average_watts")
+  /// Average heart rate in beats per minute
+  averageHeartrate       Float?              @map("average_heartrate")
+  /// Maximum heart rate in beats per minute
+  maxHeartrate           Float?              @map("max_heartrate")
+  /// Energy expenditure in kilojoules
+  kilojoules             Float?
+  /// Average Grade Adjusted Pace (GAP) speed in m/s
+  averageGapSpeed        Float?              @map("average_gap_speed")
+  /// Average normalized speed in m/s
+  averageNormalizedSpeed Float?              @map("average_normalized_speed")
 
   // relationships
   eventActivity   EventActivity @relation(fields: [eventActivityId], references: [eventActivityId], onDelete: Cascade)

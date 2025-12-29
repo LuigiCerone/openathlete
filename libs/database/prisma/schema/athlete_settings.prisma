@@ -1,12 +1,23 @@
+// ============================================================================
+// Athlete Settings Models
+// ============================================================================
+// Athlete-specific settings and preferences for validation and feedback flows.
+// ============================================================================
+
+/// Athlete settings.
+/// Stores athlete-specific preferences and validation requirements.
+/// Controls whether RPE, comments, and feedback questions are required.
 model AthleteSettings {
   // primary key
   athleteSettingsId Int @id @default(autoincrement()) @map("athlete_settings_id")
 
   // fields
-  // Validation requirements for sessions
-  requireRpe               Boolean @default(false) @map("require_rpe") // Require RPE to be set for session validation
-  requireComment           Boolean @default(false) @map("require_comment") // Require comment/description to be set for session validation
-  requireFeedbackQuestions Boolean @default(true) @map("require_feedback_questions") // Enable feedback questions after activity import
+  /// Require RPE (Rate of Perceived Exertion) to be set for session validation
+  requireRpe               Boolean @default(false) @map("require_rpe")
+  /// Require comment/description to be set for session validation
+  requireComment           Boolean @default(false) @map("require_comment")
+  /// Enable feedback questions after activity import
+  requireFeedbackQuestions Boolean @default(true) @map("require_feedback_questions")
 
   // relationships
   athlete   Athlete @relation(fields: [athleteId], references: [athleteId])

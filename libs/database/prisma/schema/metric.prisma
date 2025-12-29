@@ -1,12 +1,26 @@
-model AthleteMetric {
+// ============================================================================
+// Metric Models
+// ============================================================================
+// Health and performance metrics tracked over time (weight, HRV, VO2max, etc.).
+// Metrics can be imported from external providers or manually entered.
+// ============================================================================
 
+/// Athlete metric entry.
+/// Stores a single metric value for a specific date. Metrics include health
+/// metrics (weight, HRV, sleep), performance metrics (VO2max, FTP), and daily
+/// activity metrics (steps, calories). One entry per athlete per metric type per date.
+model AthleteMetric {
   // primary key
   athleteMetricId Int @id @default(autoincrement()) @map("athlete_metric_id")
 
   // fields
+  /// Metric type (WEIGHT, HRV_LAST_NIGHT_AVG, VO2MAX, DAILY_STEPS, etc.)
   type  MetricType
+  /// Date for this metric entry
   date  DateTime   @db.Date
+  /// Metric value (units depend on metric type)
   value Float
+  /// Optional notes
   notes String?
 
   // relationships

@@ -1,10 +1,25 @@
+// ============================================================================
+// Feedback & Injury Models
+// ============================================================================
+// Post-activity feedback system and injury tracking. Feedback questions are
+// asked after activities, and responses can be used to extract injury information
+// and generate embeddings for AI-powered insights.
+// ============================================================================
+
+/// Activity feedback question.
+/// Represents a question asked to the athlete after an activity. Questions
+/// can be multiple choice (QCM) or open-ended. Answers are stored in answerText
+/// and qcmOptions contains the question structure.
 model ActivityFeedbackQuestion {
   // primary key
   activityFeedbackQuestionId Int @id @default(autoincrement()) @map("activity_feedback_question_id")
 
   // fields
+  /// Question text
   questionText String  @map("question_text")
+  /// Multiple choice options (JSON structure, null for open-ended questions)
   qcmOptions   Json?   @map("qcm_options")
+  /// Answer text provided by the athlete
   answerText   String? @map("answer_text")
 
   // relationships
@@ -19,14 +34,22 @@ model ActivityFeedbackQuestion {
   @@map("activity_feedback_question")
 }
 
+/// Athlete injury record.
+/// Tracks injuries reported by athletes, either manually or extracted from
+/// activity feedback. Injuries can be linked to a source activity and have
+/// a status (WORSENING, IMPROVING, STABLE, RESOLVED).
 model AthleteInjury {
   // primary key
   athleteInjuryId Int @id @default(autoincrement()) @map("athlete_injury_id")
 
   // fields
+  /// Injury location/body part
   location  String
+  /// Pain score (0.0-10.0 scale)
   painScore Float        @map("pain_score")
+  /// Injury context/description
   context   String
+  /// Injury status: WORSENING, IMPROVING, STABLE, or RESOLVED
   status    InjuryStatus
 
   // relationships
@@ -44,13 +67,19 @@ model AthleteInjury {
   @@map("athlete_injury")
 }
 
+/// Activity feedback embedding.
+/// Vector embedding of activity feedback responses for semantic search and
+/// AI-powered insights. Uses pgvector with 1536 dimensions (text-embedding-3-small).
+/// One embedding per activity, generated from concatenated feedback answers.
 model ActivityFeedbackEmbedding {
   // primary key
   activityFeedbackEmbeddingId Int @id @default(autoincrement()) @map("activity_feedback_embedding_id")
 
   // fields
-  textContent String                      @map("text_content") // concatenated answers + comment for reference
-  embedding   Unsupported("vector(1536)") // pgvector embedding (1536 dimensions for text-embedding-3-small)
+  /// Concatenated feedback answers and comments (for reference)
+  textContent String                      @map("text_content")
+  /// Vector embedding (1536 dimensions for text-embedding-3-small, stored as pgvector)
+  embedding   Unsupported("vector(1536)")
 
   // relationships
   activity        EventActivity @relation(fields: [eventActivityId], references: [eventActivityId])

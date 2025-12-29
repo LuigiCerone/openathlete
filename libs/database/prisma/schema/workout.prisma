@@ -1,3 +1,14 @@
+// ============================================================================
+// Workout Models
+// ============================================================================
+// Structured workout definitions with steps, targets, and repeat blocks.
+// Workouts define detailed training sessions with warmup, intervals, cooldown,
+// and can be exported to external providers (Garmin, etc.).
+// ============================================================================
+
+/// Structured workout definition.
+/// Represents a detailed workout plan with steps, targets, and duration.
+/// Linked to an EventTraining and can be exported to external providers.
 model Workout {
   // primary key
   workoutId Int @id @default(autoincrement()) @map("workout_id")
@@ -15,18 +26,29 @@ model Workout {
   @@map("workout")
 }
 
+/// Workout step.
+/// Represents a single step in a workout (e.g., warmup, interval, cooldown).
+/// Steps can have duration (time, distance, calories, etc.) and targets
+/// (pace, heart rate, power, etc.). Steps can be nested in repeat blocks.
 model WorkoutStep {
   // primary key
   workoutStepId Int @id @default(autoincrement()) @map("workout_step_id")
 
   // fields
-  orderIndex     Int                 @map("order_index") // position in the workout sequence
+  /// Position in the workout sequence (0-based)
+  orderIndex     Int                 @map("order_index")
+  /// Step type: WARMUP, COOLDOWN, INTERVAL_ACTIVE, INTERVAL_REST, STEADY, REPEAT, or FREE
   stepType       WorkoutStepType     @map("step_type")
-  name           String? // optional label (e.g., "Warmup", "Tempo intervals")
-  notes          String?             @default("") // additional instructions/comments
+  /// Optional label (e.g., "Warmup", "Tempo intervals")
+  name           String?
+  /// Additional instructions/comments
+  notes          String?             @default("")
+  /// Duration type: TIME, DISTANCE, CALORIES, HR_BELOW, HR_ABOVE, LAP_BUTTON, OPEN, or REPS
   durationType   WorkoutDurationType @map("duration_type")
-  durationValue  Float?              @map("duration_value") // value depends on duration_type
-  durationTarget Float?              @map("duration_target") // optional target for LAP_BUTTON type
+  /// Duration value (depends on duration_type: seconds, meters, calories, etc.)
+  durationValue  Float?              @map("duration_value")
+  /// Optional target for LAP_BUTTON type
+  durationTarget Float?              @map("duration_target")
 
   // relationships
   workout          Workout?            @relation(fields: [workoutId], references: [workoutId], onDelete: Cascade)
@@ -45,12 +67,16 @@ model WorkoutStep {
   @@map("workout_step")
 }
 
+/// Workout repeat block.
+/// Defines a group of steps to be repeated multiple times. The repeat block
+/// contains child steps that are executed in sequence, then repeated.
 model WorkoutRepeat {
   // primary key
   workoutRepeatId Int @id @default(autoincrement()) @map("workout_repeat_id")
 
   // fields
-  repetitions Int // number of times to repeat
+  /// Number of times to repeat the child steps
+  repetitions Int
 
   // relationships
   step       WorkoutStep   @relation("RepeatBlock", fields: [stepId], references: [workoutStepId], onDelete: Cascade)
@@ -64,15 +90,23 @@ model WorkoutRepeat {
   @@map("workout_repeat")
 }
 
+/// Workout step target.
+/// Defines performance targets for a workout step (pace, heart rate, power, etc.).
+/// A step can have multiple targets (e.g., both pace and heart rate zones).
 model WorkoutStepTarget {
   // primary key
   workoutStepTargetId Int @id @default(autoincrement()) @map("workout_step_target_id")
 
   // fields
+  /// Target type: OPEN, PACE, HEARTRATE, POWER, CADENCE, RPE, WEIGHT, or ZONE
   targetType  WorkoutTargetType @map("target_type")
-  targetMin   Float?            @map("target_min") // minimum value for range targets
-  targetMax   Float?            @map("target_max") // maximum value for range targets
-  targetValue Float?            @map("target_value") // single value target (for ZONE, this is the zone number 1-5)
+  /// Minimum value for range targets
+  targetMin   Float?            @map("target_min")
+  /// Maximum value for range targets
+  targetMax   Float?            @map("target_max")
+  /// Single value target (for ZONE type, this is the zone number 1-5)
+  targetValue Float?            @map("target_value")
+  /// Metric type for context (optional)
   metricType  MetricType?       @map("metric_type")
 
   // relationships

@@ -1,3 +1,14 @@
+// ============================================================================
+// Athlete & Training Models
+// ============================================================================
+// Models related to athletes, their training zones, coach relationships,
+// and invitation systems for connecting athletes with coaches.
+// ============================================================================
+
+/// Athlete profile.
+/// Represents an athlete in the system. Each athlete is linked to a User account.
+/// Athletes can have training zones, records, equipment, training plans, and
+/// be coached by one or more coaches.
 model Athlete {
   // primary key
   athleteId Int @id @default(autoincrement()) @map("athlete_id")
@@ -29,6 +40,9 @@ model Athlete {
   @@map("athlete")
 }
 
+/// Coach-Athlete relationship.
+/// Links a coach (User with COACH role) to an athlete they are coaching.
+/// This enables coaches to view and manage their athletes' training data.
 model CoachAthlete {
   // primary key
   coachAthleteId Int @id @default(autoincrement()) @map("coach_athlete_id")
@@ -48,13 +62,20 @@ model CoachAthlete {
   @@map("coach_athlete")
 }
 
+/// Training zone value range.
+/// Defines the min/max values for a training zone for specific sports.
+/// A single TrainingZone can have multiple values (one per sport or shared).
+/// Used to categorize training intensity (e.g., Zone 1: 50-60% HRmax for running).
 model TrainingZoneValue {
   // primary key
   trainingZoneValueId Int @id @default(autoincrement()) @map("training_zone_value_id")
 
   // fields
+  /// Minimum value for this zone (inclusive)
   min    Float
+  /// Maximum value for this zone (inclusive)
   max    Float
+  /// Sports this zone value applies to (empty array = all sports)
   sports SportType[]
 
   // relationships
@@ -68,15 +89,24 @@ model TrainingZoneValue {
   @@map("training_zone_value")
 }
 
+/// Training zone definition.
+/// Represents a training intensity zone (e.g., Zone 1: Recovery, Zone 5: VO2max).
+/// Zones can be defined for different metrics: HEARTRATE, POWER, or PACE.
+/// Each zone has a name, description, color for visualization, and index for ordering.
 model TrainingZone {
   // primary key
   trainingZoneId Int @id @default(autoincrement()) @map("training_zone_id")
 
   // fields
+  /// Zone name (e.g., "Recovery", "Endurance", "Threshold")
   name        String
+  /// Human-readable description of the zone
   description String
+  /// Zone index for ordering (0-based, typically 0-4 for 5 zones)
   index       Int
+  /// Zone type: HEARTRATE, POWER, or PACE
   type        TrainingZoneType
+  /// Hex color code for visualization (e.g., "#FF5733")
   color       String
 
   // relationships
@@ -91,14 +121,22 @@ model TrainingZone {
   @@map("training_zone")
 }
 
+/// Athlete invitation.
+/// Used to invite someone to become an athlete. If the user doesn't exist,
+/// they receive an invitation token to create an account. If they exist,
+/// the invitation status tracks whether they've accepted.
+/// null status = auto-accept on account creation, PENDING = user exists and needs to accept.
 model AthleteInvitation {
   // primary key
   athleteInvitationId Int @id @default(autoincrement()) @map("athlete_invitation_id")
 
   // fields
+  /// Email address of the invited athlete
   email  String
+  /// Invitation token (null if user exists, set if user doesn't exist for account creation)
   token  String?           @unique
-  status InvitationStatus? // null = auto-accept on account creation, PENDING = user exists and needs to accept
+  /// Invitation status: null = auto-accept on account creation, PENDING = user exists and needs to accept, ACCEPTED, REJECTED
+  status InvitationStatus?
 
   // relationships
   user   User @relation(fields: [userId], references: [userId])
@@ -114,13 +152,19 @@ model AthleteInvitation {
   @@map("athlete_invitation")
 }
 
+/// Coach invitation.
+/// Used by athletes to invite coaches to their account. The invitation can be
+/// sent to an existing user (coachUserId set) or to a new user (token set for account creation).
 model CoachInvitation {
   // primary key
   coachInvitationId Int @id @default(autoincrement()) @map("coach_invitation_id")
 
   // fields
+  /// Email address of the invited coach
   email  String
-  token  String?          @unique // null if user exists, set if user doesn't exist (for account creation)
+  /// Invitation token (null if user exists, set if user doesn't exist for account creation)
+  token  String?          @unique
+  /// Invitation status: PENDING (default), ACCEPTED, or REJECTED
   status InvitationStatus @default(PENDING)
 
   // relationships

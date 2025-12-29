@@ -1,9 +1,26 @@
+// ============================================================================
+// AI Agent Models
+// ============================================================================
+// AI chatbot system for athlete-coach interactions. Separate from the
+// messaging system (MessageThread/Message) which is for human-to-human communication.
+//
+// Architecture:
+// - agent_thread: Conversation thread with the AI
+// - agent_message: Individual messages in a thread (user, assistant, system, tool)
+// - agent_message_block: Rich content blocks within messages (text, charts, tables, etc.)
+// ============================================================================
+
+/// AI agent conversation thread.
+/// Represents a conversation thread between a user and the AI assistant.
+/// Threads can have a title and metadata for context.
 model AgentThread {
   // primary key
   threadId Int @id @default(autoincrement()) @map("thread_id")
 
   // fields
+  /// Thread title (optional, can be auto-generated)
   title    String?
+  /// Additional metadata (JSON)
   metadata Json?
 
   // relationships
@@ -18,13 +35,20 @@ model AgentThread {
   @@map("agent_thread")
 }
 
+/// AI agent message.
+/// Represents a single message in an agent thread. Messages have a role
+/// (USER, ASSISTANT, SYSTEM, TOOL) and can contain multiple blocks of content.
+/// Messages can be linked in a parent-child relationship for conversation flow.
 model AgentMessage {
   // primary key
   messageId Int @id @default(autoincrement()) @map("message_id")
 
   // fields
+  /// Message role: USER, ASSISTANT, SYSTEM, or TOOL
   role     AgentMessageRole
+  /// Additional metadata (JSON)
   metadata Json?
+  /// Message processing status: pending, processing, completed, or error
   status   AgentMessageStatus @default(pending)
 
   // relationships
@@ -42,23 +66,38 @@ model AgentMessage {
   @@map("agent_message")
 }
 
+/// AI agent message block.
+/// Represents a rich content block within an agent message. Blocks can be
+/// text, charts, tables, maps, tool calls, code, images, etc. This enables
+/// the AI to present complex, structured responses to users.
 model AgentMessageBlock {
   // primary key
   blockId Int @id @default(autoincrement()) @map("block_id")
 
   // fields
+  /// Block type: TEXT, THINKING, TOOL_CALL, TOOL_RESULT, CODE, CHART_*, TABLE, MAP, etc.
   type     AgentBlockType
+  /// Display order within the message
   order    Int
+  /// Block content (text, JSON data, etc.)
   content  String
+  /// Additional metadata (JSON)
   metadata Json?
+  /// Block processing status: pending, processing, completed, error, or cancelled
   status   AgentBlockStatus @default(completed)
+  /// Error message if status is error
   error    String?
 
+  /// Tool name (for TOOL_CALL or TOOL_RESULT blocks)
   toolName   String? @map("tool_name")
+  /// Tool input parameters (JSON)
   toolInput  Json?   @map("tool_input")
+  /// Tool output result (JSON)
   toolOutput Json?   @map("tool_output")
 
+  /// Chart type (for chart blocks)
   chartType String? @map("chart_type")
+  /// Chart data (JSON)
   chartData Json?   @map("chart_data")
 
   // relationships

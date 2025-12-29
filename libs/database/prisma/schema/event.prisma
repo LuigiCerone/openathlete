@@ -1,12 +1,32 @@
-model Event {
+// ============================================================================
+// Event Models
+// ============================================================================
+// Core event system representing all time-based entries in an athlete's calendar:
+// - TRAINING: Planned or completed training sessions
+// - COMPETITION: Races or competitions
+// - NOTE: General notes or reminders
+// - ACTIVITY: Imported activities from external providers (Strava, Garmin, etc.)
+//
+// Events can be linked to training plans (via TrainingWeek) and can have
+// structured workouts, weather data, normalization factors, and feedback.
+// ============================================================================
 
+/// Base event model.
+/// Represents any time-based entry in an athlete's calendar. The event type
+/// determines which specialized model (EventTraining, EventCompetition, etc.)
+/// contains additional type-specific data.
+model Event {
   // primary key
   eventId Int @id @default(autoincrement()) @map("event_id")
 
   // fields
+  /// Event start date and time
   startDate DateTime  @map("start_date")
+  /// Event end date and time
   endDate   DateTime  @map("end_date")
+  /// Event name/title
   name      String
+  /// Event type: TRAINING, COMPETITION, NOTE, or ACTIVITY
   type      EventType
 
   // relationships
@@ -28,19 +48,29 @@ model Event {
   @@map("event")
 }
 
+/// Training session event.
+/// Represents a planned or completed training session. Can have a structured
+/// workout definition, goals (distance, duration, RPE), and can be linked
+/// to a completed activity if the training was performed.
 model EventTraining {
-
   // primary key
   eventTrainingId Int @id @default(autoincrement()) @map("event_training_id")
 
   // fields
+  /// Sport type for this training session
   sport             SportType
+  /// Training description/notes
   description       String    @default("")
-  goalDistance      Float?    @map("goal_distance") // in meters
-  goalElevationGain Float?    @map("goal_elevation_gain") // in meters
-  goalDuration      Int?      @map("goal_duration") // in seconds
-  goalRpe           Float?    @map("goal_rpe") // in RPE (0-1)
-  estimatedLoad     Float?    @map("estimated_load") // estimated TRIMP load for this training session
+  /// Goal distance in meters (optional)
+  goalDistance      Float?    @map("goal_distance")
+  /// Goal elevation gain in meters (optional)
+  goalElevationGain Float?    @map("goal_elevation_gain")
+  /// Goal duration in seconds (optional)
+  goalDuration      Int?      @map("goal_duration")
+  /// Goal Rate of Perceived Exertion (0.0-1.0 scale, optional)
+  goalRpe           Float?    @map("goal_rpe")
+  /// Estimated training load (TRIMP) for this session (optional)
+  estimatedLoad     Float?    @map("estimated_load")
 
   // relationships
   event             Event          @relation(fields: [eventId], references: [eventId])
@@ -54,18 +84,26 @@ model EventTraining {
   @@map("event_training")
 }
 
+/// Competition/race event.
+/// Represents a race or competition. Similar to EventTraining but specifically
+/// for competitive events. Can be linked to a completed activity if the race was run.
 model EventCompetition {
-
   // primary key
   eventCompetitionId Int @id @default(autoincrement()) @map("event_competition_id")
 
   // fields
+  /// Sport type for this competition
   sport             SportType
+  /// Competition description/notes
   description       String    @default("")
-  goalDistance      Float?    @map("goal_distance") // in meters
-  goalElevationGain Float?    @map("goal_elevation_gain") // in meters
-  goalDuration      Int?      @map("goal_duration") // in seconds
-  goalRpe           Float?    @map("goal_rpe") // in RPE (0-1)
+  /// Goal/race distance in meters (optional)
+  goalDistance      Float?    @map("goal_distance")
+  /// Goal elevation gain in meters (optional)
+  goalElevationGain Float?    @map("goal_elevation_gain")
+  /// Goal/race duration in seconds (optional)
+  goalDuration      Int?      @map("goal_duration")
+  /// Goal Rate of Perceived Exertion (0.0-1.0 scale, optional)
+  goalRpe           Float?    @map("goal_rpe")
 
   // relationships
   event             Event          @relation(fields: [eventId], references: [eventId])
@@ -76,12 +114,15 @@ model EventCompetition {
   @@map("event_competition")
 }
 
+/// Note event.
+/// Represents a general note or reminder in the athlete's calendar.
+/// Used for non-training entries like rest days, appointments, etc.
 model EventNote {
-
   // primary key
   eventNoteId Int @id @default(autoincrement()) @map("event_note_id")
 
   // fields
+  /// Note content/description
   description String @default("")
 
   // relationships
@@ -91,33 +132,58 @@ model EventNote {
   @@map("event_note")
 }
 
+/// Activity event (imported from external providers).
+/// Represents a completed activity imported from external providers (Strava, Garmin, etc.).
+/// Contains detailed metrics (distance, pace, heart rate, power, etc.), weather data,
+/// normalization factors, and can be linked to a planned training session.
+/// Activities can have segments, feedback questions, and extracted injury information.
 model EventActivity {
-
   // primary key
   eventActivityId Int @id @default(autoincrement()) @map("event_activity_id")
 
   // fields
+  /// Provider from which this activity was imported (null if manually created)
   provider               ConnectorProvider?
-  distance               Float // in meters
-  elevationGain          Float              @map("elevation_gain") // in meters
-  movingTime             Int                @map("moving_time") // in seconds
-  averageSpeed           Float              @map("average_speed") // in m/s
-  maxSpeed               Float              @map("max_speed") // in m/s
-  averageCadence         Float?             @map("average_cadence") // in rpm
-  averageWatts           Float?             @map("average_watts") // in watts
-  maxWatts               Float?             @map("max_watts") // in watts
-  weightedAverageWatts   Float?             @map("weighted_average_watts") // in watts
-  averageHeartrate       Float?             @map("average_heartrate") // in bpm
-  maxHeartrate           Float?             @map("max_heartrate") // in bpm
-  kilojoules             Float? // in kJ
-  rpe                    Float? // in RPE (0-1)
+  /// Total distance in meters
+  distance               Float
+  /// Total elevation gain in meters
+  elevationGain          Float              @map("elevation_gain")
+  /// Moving time in seconds (excluding pauses)
+  movingTime             Int                @map("moving_time")
+  /// Average speed in meters per second
+  averageSpeed           Float              @map("average_speed")
+  /// Maximum speed in meters per second
+  maxSpeed               Float              @map("max_speed")
+  /// Average cadence in revolutions/steps per minute
+  averageCadence         Float?             @map("average_cadence")
+  /// Average power in watts
+  averageWatts           Float?             @map("average_watts")
+  /// Maximum power in watts
+  maxWatts               Float?             @map("max_watts")
+  /// Weighted average power in watts (normalized power)
+  weightedAverageWatts   Float?             @map("weighted_average_watts")
+  /// Average heart rate in beats per minute
+  averageHeartrate       Float?             @map("average_heartrate")
+  /// Maximum heart rate in beats per minute
+  maxHeartrate           Float?             @map("max_heartrate")
+  /// Total energy expenditure in kilojoules
+  kilojoules             Float?
+  /// Rate of Perceived Exertion (0.0-1.0 scale)
+  rpe                    Float?
+  /// External ID from the provider (for deduplication and webhook matching)
   externalId             String             @map("external_id")
+  /// Sport type
   sport                  SportType
+  /// Time-series data stream (GPS, heart rate, power, etc.) stored as JSON
   stream                 Json?
+  /// Activity description/notes
   description            String             @default("")
-  averageGapSpeed        Float?             @map("average_gap_speed") // in m/s
-  averageNormalizedSpeed Float?             @map("average_normalized_speed") // in m/s
-  feedbackSkipped        Boolean            @default(false) @map("feedback_skipped") // true if user skipped the feedback flow
+  /// Average Grade Adjusted Pace (GAP) speed in m/s (normalized for elevation)
+  averageGapSpeed        Float?             @map("average_gap_speed")
+  /// Average normalized speed in m/s (normalized for all conditions: slope, temperature, etc.)
+  averageNormalizedSpeed Float?             @map("average_normalized_speed")
+  /// Whether the user skipped the post-activity feedback flow
+  feedbackSkipped        Boolean            @default(false) @map("feedback_skipped")
 
   // relationships
   event               Event                       @relation(fields: [eventId], references: [eventId])
@@ -140,15 +206,21 @@ model EventActivity {
   @@map("event_activity")
 }
 
+/// Weather data for an activity.
+/// Stores weather conditions sampled along the activity route. Weather data
+/// is collected at regular intervals (resolution_m) to account for changing
+/// conditions during long activities.
 model EventActivityWeather {
-
   // primary key
   eventActivityWeatherId Int @id @default(autoincrement()) @map("event_activity_weather_id")
 
   // fields
+  /// Resolution in meters (distance between weather samples, default 500m)
   resolutionM Int     @default(500) @map("resolution_m")
+  /// Weather data provider name (e.g., "openweathermap")
   provider    String?
-  samples     Json // JSON array of samples with per-distance weather
+  /// JSON array of weather samples with per-distance conditions (temperature, humidity, wind, etc.)
+  samples     Json
 
   // relationships
   eventActivity   EventActivity @relation(fields: [eventActivityId], references: [eventActivityId])
@@ -161,13 +233,17 @@ model EventActivityWeather {
   @@map("event_activity_weather")
 }
 
+/// Activity normalization data.
+/// Stores normalized speed calculations and factors that affected performance
+/// (slope, temperature, altitude, wind, etc.). Used to compare performances
+/// across different conditions.
 model EventActivityNormalization {
-
   // primary key
   eventActivityNormalizationId Int @id @default(autoincrement()) @map("event_activity_normalization_id")
 
   // fields
-  averageNormalizedSpeed Float? @map("average_normalized_speed") // in m/s, duplicate for quick access; also stored on event_activity
+  /// Average normalized speed in m/s (duplicate for quick access; also stored on event_activity)
+  averageNormalizedSpeed Float? @map("average_normalized_speed")
 
   // relationships
   eventActivity   EventActivity                      @relation(fields: [eventActivityId], references: [eventActivityId])
@@ -181,17 +257,21 @@ model EventActivityNormalization {
   @@map("event_activity_normalization")
 }
 
+/// Normalization factor contribution.
+/// Represents how a specific factor (slope, temperature, etc.) affected
+/// performance compared to baseline conditions. Positive timeSeconds means
+/// the factor slowed the athlete down, negative means it helped.
 model EventActivityNormalizationFactor {
-
   // primary key
   eventActivityNormalizationFactorId Int @id @default(autoincrement()) @map("event_activity_normalization_factor_id")
 
   // fields
+  /// Normalization factor type (SLOPE, TEMPERATURE, ALTITUDE, WIND, HUMIDITY, RADIATION)
   factor      NormalizationFactor
-  // Signed contribution to time vs flat/no-condition baseline over activity
-  // Store both absolute seconds and fraction for flexible analytics
-  timeSeconds Float               @map("time_seconds") // >0 cost, <0 benefit
-  percent     Float // fraction of baseline moving time [0,1]
+  /// Signed contribution to time vs flat/no-condition baseline in seconds (>0 = cost, <0 = benefit)
+  timeSeconds Float               @map("time_seconds")
+  /// Fraction of baseline moving time affected by this factor [0,1]
+  percent     Float
 
   // relationships
   normalization                EventActivityNormalization @relation(fields: [eventActivityNormalizationId], references: [eventActivityNormalizationId])
@@ -204,8 +284,10 @@ model EventActivityNormalizationFactor {
   @@map("event_activity_normalization_factor")
 }
 
+/// Event template.
+/// Reusable event definitions that users can save and reuse. Templates can
+/// be organized in folders and used to quickly create new events.
 model EventTemplate {
-
   // primary key
   eventTemplateId Int @id @default(autoincrement()) @map("event_template_id")
 
@@ -227,18 +309,27 @@ model EventTemplate {
   @@map("event_template")
 }
 
+/// Training cycle.
+/// Represents a periodized training cycle (e.g., "Base Phase", "Build Phase").
+/// Cycles can be standalone or part of a TrainingPlan. They contain TrainingWeeks
+/// and can have a phase type (BASE, SPECIFIC, TAPER, RECOVERY, COMPETITION).
 model Cycle {
-
   // primary key
   cycleId Int @id @default(autoincrement()) @map("cycle_id")
 
   // fields
+  /// Cycle name (e.g., "Base Phase", "Build Phase")
   name        String
+  /// Cycle description
   description String      @default("")
+  /// Cycle start date
   startDate   DateTime    @map("start_date")
+  /// Cycle end date
   endDate     DateTime    @map("end_date")
-  color       String? // hex color code (e.g., "#FF5733")
-  phase       CyclePhase? // training phase type (BASE, SPECIFIC, TAPER, etc.)
+  /// Hex color code for visualization (e.g., "#FF5733")
+  color       String?
+  /// Training phase type: BASE, SPECIFIC, TAPER, RECOVERY, or COMPETITION
+  phase       CyclePhase?
 
   // relationships
   athlete        Athlete?       @relation(fields: [athleteId], references: [athleteId])
