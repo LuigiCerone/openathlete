@@ -6,7 +6,6 @@ import {
   ModifyEventResponseDto,
 } from '@openathlete/shared';
 
-import { agentKeys } from './agent.keys';
 import { AIFeaturesAPI } from './ai-features.api';
 
 export function useGenerateEventMutation() {
@@ -16,7 +15,6 @@ export function useGenerateEventMutation() {
     { prompt: string; date: Date }
   >({
     mutationFn: ({ prompt, date }) => AIFeaturesAPI.generateEvent(prompt, date),
-    mutationKey: agentKeys.generateEvent(),
   });
 }
 
@@ -28,6 +26,5 @@ export function useModifyEventMutation() {
   >({
     mutationFn: ({ prompt, eventData }) =>
       AIFeaturesAPI.modifyEvent(prompt, eventData),
-    mutationKey: agentKeys.modifyEvent(),
   });
 }

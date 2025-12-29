@@ -1,11 +1,4 @@
 import {
-  MessageChunk,
-  useAgentWebSocket,
-  useCreateThreadMutation,
-  useDeleteThreadMutation,
-  useGetUserThreadsQuery,
-} from '@/api/agent';
-import {
   useCreateThreadMutation as useCreateMessageThreadMutation,
   useDeleteThreadMutation as useDeleteMessageThreadMutation,
   useGetUserThreadsQuery as useGetMessageThreadsQuery,
@@ -13,23 +6,14 @@ import {
 } from '@/api/messages';
 import { useGetMeQuery } from '@/api/user';
 import { ChatInput } from '@/components/chatbot/chat-input';
-import { ChatMessages } from '@/components/chatbot/chat-messages';
 import { MessageMessages } from '@/components/messages/message-messages';
 import { NewMessageThreadDialog } from '@/components/messages/new-message-thread-dialog';
 import { MobileHeader } from '@/components/mobile/mobile-header';
 import { Button } from '@/components/ui/button';
 import { PageLoader } from '@/components/ui/loader';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
 import { UnreadBadge } from '@/components/ui/unread-badge';
-import { useChatbot } from '@/contexts/chatbot';
 import { useSetPageActions } from '@/hooks/use-page-actions';
 import { m } from '@/paraglide/messages';
 import { isCapacitor } from '@/utils/capacitor';
@@ -39,85 +23,36 @@ import { motion } from 'framer-motion';
 import { MessageCircle, Plus, Trash2 } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
-import {
-  AgentThread,
-  MessageThread,
-  ToolExecutionState,
-} from '@openathlete/shared';
+import { AgentThread, MessageThread } from '@openathlete/shared';
 
-type MessageMode = 'chatbot' | 'messages';
 type ThreadFilter = 'all' | 'unread';
 
 export function MessagesPage() {
-  const [mode, setMode] = useState<MessageMode>('messages');
   const [filter, setFilter] = useState<ThreadFilter>('all');
   const [newThreadDialogOpen, setNewThreadDialogOpen] = useState(false);
-  const { activeThreadId, setActiveThreadId } = useChatbot();
   const [activeMessageThreadId, setActiveMessageThreadId] = useState<
     number | null
   >(null);
   const [mobileView, setMobileView] = useState<'list' | 'conversation'>('list');
   const isMobile = isCapacitor();
-  const [streamingBlocks, setStreamingBlocks] = useState<
-    Map<number, MessageChunk>
-  >(new Map());
-  const [activeToolExecutions, setActiveToolExecutions] = useState<
-    ToolExecutionState[]
-  >([]);
   const mainRef = useRef<HTMLElement | null>(null);
-  const { data: agentThreads, isLoading: isLoadingAgentThreads } =
-    useGetUserThreadsQuery();
-  const createAgentThreadMutation = useCreateThreadMutation();
-  const deleteAgentThreadMutation = useDeleteThreadMutation();
   const { data: messageThreads, isLoading: isLoadingMessageThreads } =
     useGetMessageThreadsQuery();
   const createMessageThreadMutation = useCreateMessageThreadMutation();
   const deleteMessageThreadMutation = useDeleteMessageThreadMutation();
   const { data: currentUser } = useGetMeQuery();
 
-  const { isStreaming: isAgentStreaming, sendMessage: sendAgentMessage } =
-    useAgentWebSocket({
-      threadId: mode === 'chatbot' ? activeThreadId || undefined : undefined,
-      onMessageChunk: (chunk) => {
-        setStreamingBlocks((prev) => {
-          const newMap = new Map(prev);
-          newMap.set(chunk.blockId, chunk);
-          return newMap;
-        });
-      },
-      onMessageComplete: () => {
-        setStreamingBlocks(new Map());
-      },
-      onMessageError: (error) => {
-        console.error('WebSocket error:', error);
-        setStreamingBlocks(new Map());
-      },
-      onToolCallStart: (tool) => {
-        setActiveToolExecutions((prev) => [...prev, tool]);
-      },
-      onToolCallComplete: (tool) => {
-        setActiveToolExecutions((prev) =>
-          prev.filter((t) => t.toolCallId !== tool.toolCallId),
-        );
-      },
-      onToolCallError: () => {},
-    });
-
-  // WebSocket for messages - always connected to receive thread updates
-  const { sendMessage: sendMessageMessage, isConnected: isMessagesConnected } =
-    useMessagesWebSocket({
-      messageThreadId:
-        mode === 'messages' ? activeMessageThreadId || undefined : undefined,
-      onNewMessage: () => {
-        // Messages will be invalidated via React Query
-      },
-      onError: (error) => {
-        console.error('[MessagesPage] WebSocket error:', error);
-      },
-    });
+  const { sendMessage: sendMessageMessage } = useMessagesWebSocket({
+    messageThreadId: activeMessageThreadId || undefined,
+    onNewMessage: () => {
+      // Messages will be invalidated via React Query
+    },
+    onError: (error) => {
+      console.error('[MessagesPage] WebSocket error:', error);
+    },
+  });
 
   useMessagesWebSocket({
-    // No messageThreadId - just listening for global updates
     onNewMessage: () => {
       // Thread list will be invalidated via React Query
     },
@@ -126,35 +61,26 @@ export function MessagesPage() {
     },
   });
 
-  const isLoading =
-    mode === 'chatbot' ? isLoadingAgentThreads : isLoadingMessageThreads;
-  const allThreads = mode === 'chatbot' ? agentThreads : messageThreads;
+  const isLoading = isLoadingMessageThreads;
+  const allThreads = messageThreads;
 
-  // Filter threads based on filter state
   const threads = useMemo(() => {
     if (!allThreads) return undefined;
-    if (mode === 'chatbot' || filter === 'all' || !currentUser) {
+    if (filter === 'all' || !currentUser) {
       return allThreads;
     }
     // For messages mode, filter by unread count
-    if (mode === 'messages') {
-      const messageThreadsArray = messageThreads || [];
-      return messageThreadsArray.filter((thread: MessageThread) => {
-        const unreadCount = calculateUnreadCount(thread, currentUser.userId);
-        return unreadCount > 0;
-      });
-    }
-    return allThreads;
-  }, [allThreads, mode, filter, currentUser, messageThreads]);
+    const messageThreadsArray = messageThreads || [];
+    return messageThreadsArray.filter((thread: MessageThread) => {
+      const unreadCount = calculateUnreadCount(thread, currentUser.userId);
+      return unreadCount > 0;
+    });
+  }, [allThreads, filter, currentUser, messageThreads]);
 
-  const activeId = mode === 'chatbot' ? activeThreadId : activeMessageThreadId;
-  const setActiveId =
-    mode === 'chatbot' ? setActiveThreadId : setActiveMessageThreadId;
-  const deleteThreadMutation =
-    mode === 'chatbot'
-      ? deleteAgentThreadMutation
-      : deleteMessageThreadMutation;
-  const isStreaming = mode === 'chatbot' ? isAgentStreaming : false;
+  const activeId = activeMessageThreadId;
+  const setActiveId = setActiveMessageThreadId;
+  const deleteThreadMutation = deleteMessageThreadMutation;
+  const isStreaming = false;
 
   // Auto-create first thread if none exist
   useEffect(() => {
@@ -162,43 +88,26 @@ export function MessagesPage() {
       threads &&
       threads.length === 0 &&
       !isLoading &&
-      !(mode === 'chatbot'
-        ? createAgentThreadMutation.isPending
-        : createMessageThreadMutation.isPending)
+      !createMessageThreadMutation.isPending
     ) {
-      if (mode === 'chatbot') {
-        createAgentThreadMutation.mutate(
-          {},
-          {
-            onSuccess: (newThread) => {
-              setActiveThreadId(newThread.threadId);
-            },
+      createMessageThreadMutation.mutate(
+        { title: 'New Thread', participantUserIds: [] },
+        {
+          onSuccess: (newThread) => {
+            setActiveMessageThreadId(newThread.messageThreadId);
           },
-        );
-      } else {
-        createMessageThreadMutation.mutate(
-          { title: 'New Thread', participantUserIds: [] },
-          {
-            onSuccess: (newThread) => {
-              setActiveMessageThreadId(newThread.messageThreadId);
-            },
-          },
-        );
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [threads, isLoading, mode]);
-
-  useEffect(() => {
-    if (!isMobile && threads && threads.length > 0 && !activeId) {
-      setActiveId(
-        mode === 'chatbot'
-          ? (threads[0] as AgentThread).threadId
-          : (threads[0] as MessageThread).messageThreadId,
+        },
       );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [threads, activeId, mode, isMobile]);
+  }, [threads, isLoading]);
+
+  useEffect(() => {
+    if (!isMobile && threads && threads.length > 0 && !activeId) {
+      setActiveId((threads[0] as MessageThread).messageThreadId);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [threads, activeId, isMobile]);
 
   useEffect(() => {
     if (!isMobile || mobileView !== 'conversation') return;
@@ -236,30 +145,13 @@ export function MessagesPage() {
   }, [setActiveId]);
 
   const handleNewConversation = useCallback(() => {
-    if (mode === 'chatbot') {
-      createAgentThreadMutation.mutate(
-        { title: m.chatbot_new_conversation() },
-        {
-          onSuccess: (thread) => {
-            setActiveThreadId(thread.threadId);
-            if (isMobile) {
-              setMobileView('conversation');
-            }
-          },
-        },
-      );
-    } else {
-      setNewThreadDialogOpen(true);
-    }
-  }, [createAgentThreadMutation, setActiveThreadId, mode, isMobile]);
+    setNewThreadDialogOpen(true);
+  }, [setNewThreadDialogOpen]);
 
-  const pageTitle = mode === 'chatbot' ? m.chatbot_assistant() : m.messages();
+  const pageTitle = m.messages();
   const conversationTitle = activeId
-    ? (mode === 'chatbot'
-        ? agentThreads?.find((t) => t.threadId === activeThreadId)?.title
-        : messageThreads?.find(
-            (t) => t.messageThreadId === activeMessageThreadId,
-          )?.title) || `Thread ${activeId}`
+    ? messageThreads?.find((t) => t.messageThreadId === activeMessageThreadId)
+        ?.title || `Thread ${activeId}`
     : pageTitle;
 
   const createAction = useMemo(
@@ -307,27 +199,9 @@ export function MessagesPage() {
 
   const handleSendMessage = useCallback(
     (content: string) => {
-      if (mode === 'chatbot' && activeThreadId) {
-        sendAgentMessage(content);
-      } else if (mode === 'messages' && activeMessageThreadId) {
-        sendMessageMessage(content);
-      } else {
-        console.error('[MessagesPage] Cannot send message:', {
-          mode,
-          activeThreadId,
-          activeMessageThreadId,
-          isMessagesConnected,
-        });
-      }
+      sendMessageMessage(content);
     },
-    [
-      mode,
-      activeThreadId,
-      activeMessageThreadId,
-      sendAgentMessage,
-      sendMessageMessage,
-      isMessagesConnected,
-    ],
+    [sendMessageMessage],
   );
 
   if (isLoading) {
@@ -340,70 +214,42 @@ export function MessagesPage() {
         <div className="flex h-full bg-background flex-col">
           <div className="flex-shrink-0 px-4 py-2 border-b border-border bg-background">
             <div className="flex items-center justify-between gap-2 mb-2">
-              <Select
-                value={mode}
-                onValueChange={(v) => setMode(v as MessageMode)}
-              >
-                <SelectTrigger className="w-[140px] h-8 text-sm">
-                  <SelectValue>
-                    {mode === 'chatbot' ? m.chatbot_assistant() : m.messages()}
-                  </SelectValue>
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="messages">{m.messages()}</SelectItem>
-                  <SelectItem value="chatbot">
-                    {m.chatbot_assistant()}
-                  </SelectItem>
-                </SelectContent>
-              </Select>
               <p className="text-xs text-muted-foreground">
                 {threads?.length || 0}{' '}
-                {(threads?.length || 0) > 1
-                  ? mode === 'chatbot'
-                    ? m.chatbot_conversations()
-                    : 'conversations'
-                  : mode === 'chatbot'
-                    ? m.chatbot_conversation()
-                    : 'conversation'}
+                {(threads?.length || 0) > 1 ? 'conversations' : 'conversation'}
               </p>
             </div>
-            {mode === 'messages' && (
-              <div className="flex items-center gap-2">
-                <Button
-                  variant={filter === 'all' ? 'default' : 'ghost'}
-                  size="sm"
-                  onClick={() => setFilter('all')}
-                  className="h-7 text-xs"
-                >
-                  Tous
-                </Button>
-                <Button
-                  variant={filter === 'unread' ? 'default' : 'ghost'}
-                  size="sm"
-                  onClick={() => setFilter('unread')}
-                  className="h-7 text-xs"
-                >
-                  Non lus
-                </Button>
-              </div>
-            )}
+            <div className="flex items-center gap-2">
+              <Button
+                variant={filter === 'all' ? 'default' : 'ghost'}
+                size="sm"
+                onClick={() => setFilter('all')}
+                className="h-7 text-xs"
+              >
+                Tous
+              </Button>
+              <Button
+                variant={filter === 'unread' ? 'default' : 'ghost'}
+                size="sm"
+                onClick={() => setFilter('unread')}
+                className="h-7 text-xs"
+              >
+                Non lus
+              </Button>
+            </div>
           </div>
           <ScrollArea className="flex-1 min-h-0">
             <div className="p-2 space-y-1">
               {threads?.map((thread: AgentThread | MessageThread) => {
-                const threadId =
-                  mode === 'chatbot'
-                    ? (thread as AgentThread).threadId
-                    : (thread as MessageThread).messageThreadId;
+                const threadId = (thread as MessageThread).messageThreadId;
                 const threadTitle = thread.title;
                 const threadCreatedAt = thread.createdAt;
-                const unreadCount =
-                  mode === 'messages' && currentUser
-                    ? calculateUnreadCount(
-                        thread as MessageThread,
-                        currentUser.userId,
-                      )
-                    : 0;
+                const unreadCount = currentUser
+                  ? calculateUnreadCount(
+                      thread as MessageThread,
+                      currentUser.userId,
+                    )
+                  : 0;
                 return (
                   <motion.button
                     key={threadId}
@@ -492,15 +338,7 @@ export function MessagesPage() {
                 paddingTop: 'calc(120px + 50px + env(safe-area-inset-top))',
               }}
             >
-              {mode === 'chatbot' ? (
-                <ChatMessages
-                  threadId={activeId}
-                  streamingBlocks={streamingBlocks}
-                  activeTools={activeToolExecutions}
-                />
-              ) : (
-                <MessageMessages messageThreadId={activeId} />
-              )}
+              <MessageMessages messageThreadId={activeId} />
             </div>
 
             <Separator className="flex-shrink-0" />
@@ -521,11 +359,7 @@ export function MessagesPage() {
           <div className="flex-1 flex items-center justify-center text-muted-foreground">
             <div className="text-center">
               <MessageCircle className="h-16 w-16 mx-auto mb-4 opacity-20" />
-              <p>
-                {mode === 'chatbot'
-                  ? m.chatbot_select_or_create()
-                  : 'Select or create a conversation'}
-              </p>
+              <p>Select or create a conversation</p>
             </div>
           </div>
         )}
@@ -547,81 +381,51 @@ export function MessagesPage() {
       <div className="hidden md:flex md:flex-col w-80 border-r border-border min-h-0">
         <div className="flex-shrink-0 p-4 border-b border-border">
           <div className="flex items-center justify-between mb-4">
-            <Select
-              value={mode}
-              onValueChange={(v) => setMode(v as MessageMode)}
-            >
-              <SelectTrigger className="w-[140px]">
-                <SelectValue>
-                  {mode === 'chatbot' ? m.chatbot_assistant() : m.messages()}
-                </SelectValue>
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="messages">{m.messages()}</SelectItem>
-                <SelectItem value="chatbot">{m.chatbot_assistant()}</SelectItem>
-              </SelectContent>
-            </Select>
             <Button
               onClick={handleNewConversation}
               size="icon"
               variant="default"
-              disabled={
-                mode === 'chatbot'
-                  ? createAgentThreadMutation.isPending
-                  : createMessageThreadMutation.isPending
-              }
+              disabled={createMessageThreadMutation.isPending}
             >
               <Plus className="h-5 w-5" />
             </Button>
           </div>
-          {mode === 'messages' && (
-            <div className="flex items-center gap-2 mb-2">
-              <Button
-                variant={filter === 'all' ? 'default' : 'ghost'}
-                size="sm"
-                onClick={() => setFilter('all')}
-                className="h-7"
-              >
-                Tous
-              </Button>
-              <Button
-                variant={filter === 'unread' ? 'default' : 'ghost'}
-                size="sm"
-                onClick={() => setFilter('unread')}
-                className="h-7"
-              >
-                Non lus
-              </Button>
-            </div>
-          )}
+          <div className="flex items-center gap-2 mb-2">
+            <Button
+              variant={filter === 'all' ? 'default' : 'ghost'}
+              size="sm"
+              onClick={() => setFilter('all')}
+              className="h-7"
+            >
+              Tous
+            </Button>
+            <Button
+              variant={filter === 'unread' ? 'default' : 'ghost'}
+              size="sm"
+              onClick={() => setFilter('unread')}
+              className="h-7"
+            >
+              Non lus
+            </Button>
+          </div>
           <p className="text-sm text-muted-foreground">
             {threads?.length || 0}{' '}
-            {(threads?.length || 0) > 1
-              ? mode === 'chatbot'
-                ? m.chatbot_conversations()
-                : 'conversations'
-              : mode === 'chatbot'
-                ? m.chatbot_conversation()
-                : 'conversation'}
+            {(threads?.length || 0) > 1 ? 'conversations' : 'conversation'}
           </p>
         </div>
 
         <ScrollArea className="flex-1 min-h-0">
           <div className="p-2 space-y-1">
             {threads?.map((thread: AgentThread | MessageThread) => {
-              const threadId =
-                mode === 'chatbot'
-                  ? (thread as AgentThread).threadId
-                  : (thread as MessageThread).messageThreadId;
+              const threadId = (thread as MessageThread).messageThreadId;
               const threadTitle = thread.title;
               const threadCreatedAt = thread.createdAt;
-              const unreadCount =
-                mode === 'messages' && currentUser
-                  ? calculateUnreadCount(
-                      thread as MessageThread,
-                      currentUser.userId,
-                    )
-                  : 0;
+              const unreadCount = currentUser
+                ? calculateUnreadCount(
+                    thread as MessageThread,
+                    currentUser.userId,
+                  )
+                : 0;
               return (
                 <motion.button
                   key={threadId}
@@ -676,25 +480,14 @@ export function MessagesPage() {
           <>
             <div className="flex-shrink-0 border-b border-border p-4">
               <h2 className="text-lg font-semibold">
-                {(mode === 'chatbot'
-                  ? agentThreads?.find((t) => t.threadId === activeThreadId)
-                      ?.title
-                  : messageThreads?.find(
-                      (t) => t.messageThreadId === activeMessageThreadId,
-                    )?.title) || `Thread ${activeId}`}
+                {messageThreads?.find(
+                  (t) => t.messageThreadId === activeMessageThreadId,
+                )?.title || `Thread ${activeId}`}
               </h2>
             </div>
 
             <div className="flex-1 min-h-0 overflow-hidden flex flex-col">
-              {mode === 'chatbot' ? (
-                <ChatMessages
-                  threadId={activeId}
-                  streamingBlocks={streamingBlocks}
-                  activeTools={activeToolExecutions}
-                />
-              ) : (
-                <MessageMessages messageThreadId={activeId} />
-              )}
+              <MessageMessages messageThreadId={activeId} />
             </div>
 
             <Separator className="flex-shrink-0" />
@@ -710,11 +503,7 @@ export function MessagesPage() {
           <div className="flex-1 flex items-center justify-center text-muted-foreground">
             <div className="text-center">
               <MessageCircle className="h-16 w-16 mx-auto mb-4 opacity-20" />
-              <p>
-                {mode === 'chatbot'
-                  ? m.chatbot_select_or_create()
-                  : 'Select or create a conversation'}
-              </p>
+              <p>Select or create a conversation</p>
             </div>
           </div>
         )}

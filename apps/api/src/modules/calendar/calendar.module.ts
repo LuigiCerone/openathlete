@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 
-import { WsJwtAuthGuard } from '../agent/guards/ws-jwt-auth.guard';
 import { AuthModule } from '../auth';
+import { WsJwtAuthGuard } from '../messages/guards/ws-jwt-auth.guard';
 import { PrismaService } from '../prisma/services/prisma.service';
 import { WebSocketModule } from '../websocket/websocket.module';
 import { CalendarGateway } from './gateways/calendar.gateway';

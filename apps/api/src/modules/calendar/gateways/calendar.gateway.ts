@@ -13,8 +13,8 @@ import {
 
 import { corsOriginValidator } from 'src/common/utils/cors.util';
 import { AuthUser } from 'src/modules/auth/decorators/user.decorator';
+import { WsJwtAuthGuard } from 'src/modules/messages/guards/ws-jwt-auth.guard';
 
-import { WsJwtAuthGuard } from '../../agent/guards/ws-jwt-auth.guard';
 import { WebSocketRedisService } from '../../websocket/websocket-redis.service';
 
 @WebSocketGateway({
