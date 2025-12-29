@@ -152,12 +152,17 @@ export function AuthProvider({ children }: Props) {
     }
   }, []);
 
-  const logout = useCallback(() => {
+  const logout = useCallback((navigate?: (path: string) => void) => {
     clear();
     dispatch({
       type: Types.LOGOUT,
     });
-    window.location.href = getPath(['auth', 'login']);
+    const loginPath = getPath(['auth', 'login']);
+    if (navigate) {
+      navigate(loginPath);
+    } else {
+      window.location.href = loginPath;
+    }
   }, []);
 
   useEffect(() => {

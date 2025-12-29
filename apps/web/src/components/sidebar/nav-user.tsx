@@ -173,7 +173,11 @@ export function NavUser() {
               </DropdownMenuSub>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => logout()}>
+            <DropdownMenuItem
+              onClick={() => {
+                logout((path) => navigate(path, { replace: true }));
+              }}
+            >
               <LogOut />
               {m.log_out()}
             </DropdownMenuItem>

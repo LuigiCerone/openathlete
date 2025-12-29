@@ -889,15 +889,33 @@ export class EventService {
       throw new BadRequestException('activityId must refer to an activity');
     }
 
+    const eventActivity = await this.prisma.eventActivity.findUnique({
+      where: { eventId: activityId },
+    });
+
+    if (!eventActivity) {
+      throw new BadRequestException(
+        'The activity event does not have a corresponding EventActivity record',
+      );
+    }
+
     if (event.type === 'COMPETITION') {
       await this.prisma.eventCompetition.update({
         where: { eventId: eventId },
-        data: { relatedActivity: { connect: { eventActivityId: activityId } } },
+        data: {
+          relatedActivity: {
+            connect: { eventActivityId: eventActivity.eventActivityId },
+          },
+        },
       });
     } else if (event.type === 'TRAINING') {
       await this.prisma.eventTraining.update({
         where: { eventId: eventId },
-        data: { relatedActivity: { connect: { eventActivityId: activityId } } },
+        data: {
+          relatedActivity: {
+            connect: { eventActivityId: eventActivity.eventActivityId },
+          },
+        },
       });
     }
   }
