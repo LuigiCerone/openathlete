@@ -39,8 +39,6 @@
 
 ## About the Project
 
-<img width="100%" alt="OpenAthlete showcase" src="/doc/imgs/openathlete-showcase.png">
-
 # Training infrastructure for absolutely everyone
 
 The open-source, AI-powered endurance training platform. You are in charge of your own data, training plans, and performance optimization.
