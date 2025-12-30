@@ -1,0 +1,13 @@
+{
+  "pages": [
+    "index",
+    "getting-started/installation",
+    "getting-started/first-steps",
+    "getting-started/self-hosting",
+    "api/index",
+    "architecture/overview",
+    "contributing/index",
+    "contributing/development-setup",
+    "contributing/code-of-conduct"
+  ]
+}

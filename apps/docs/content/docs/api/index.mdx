@@ -1,0 +1,96 @@
+---
+title: API Reference
+description: Complete API documentation for OpenAthlete
+---
+
+OpenAthlete provides a RESTful API for programmatic access to your data.
+
+## Interactive API Documentation
+
+The complete and interactive API documentation is available via Swagger UI:
+
+<Card
+  title="Open API Documentation"
+  href="https://api.openathlete.org/docs"
+  description="Explore all endpoints, try requests, and view schemas"
+/>
+
+## Base URL
+
+```
+https://api.openathlete.org
+```
+
+For self-hosted instances, use your own API URL.
+
+## Authentication
+
+All API requests require authentication using JWT tokens.
+
+### Getting an Access Token
+
+1. Make a POST request to `/auth/login`:
+
+```bash
+curl -X POST https://api.openathlete.org/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "user@example.com",
+    "password": "your-password"
+  }'
+```
+
+2. The response includes an `access_token`:
+
+```json
+{
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+```
+
+3. Include the token in subsequent requests:
+
+```bash
+curl -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
+  https://api.openathlete.org/user/me
+```
+
+## Rate Limiting
+
+API requests are rate-limited to ensure fair usage:
+
+- **100 requests per minute** per user
+- **1000 requests per hour** per user
+
+Rate limit headers are included in responses:
+
+- `X-RateLimit-Limit` - Request limit
+- `X-RateLimit-Remaining` - Remaining requests
+- `X-RateLimit-Reset` - Reset time
+
+## Error Handling
+
+Errors are returned in a consistent format:
+
+```json
+{
+  "statusCode": 400,
+  "message": "Validation failed",
+  "error": "Bad Request"
+}
+```
+
+### Status Codes
+
+- `200` - Success
+- `201` - Created
+- `400` - Bad Request
+- `401` - Unauthorized
+- `403` - Forbidden
+- `404` - Not Found
+- `500` - Internal Server Error
+
+## OpenAPI Specification
+
+A complete OpenAPI specification is available at [https://api.openathlete.org/docs](https://api.openathlete.org/docs) for the production API, or at `/api/docs` when running the API server locally.

@@ -1,0 +1,113 @@
+---
+title: Architecture Overview
+description: Understand how OpenAthlete is built
+---
+
+OpenAthlete is built as a modern, scalable monorepo using TypeScript, React, and NestJS.
+
+## Monorepo Structure
+
+```
+openathlete/
+├── apps/
+│   ├── api/         # NestJS backend
+│   ├── web/         # React frontend
+│   └── docs/        # Documentation
+├── libs/
+│   ├── shared/      # Shared types and utilities
+│   ├── database/    # Prisma schema and migrations
+│   └── config/      # Shared configuration
+```
+
+## Technology Stack
+
+### Frontend
+
+- **React 19** - UI framework
+- **TypeScript** - Type safety
+- **Vite** - Build tool
+- **Tailwind CSS** - Styling
+- **ShadCN UI** - Component library
+- **React Query** - Server state management
+- **Paraglide** - Internationalization
+
+### Backend
+
+- **NestJS** - Node.js framework
+- **TypeScript** - Type safety
+- **Prisma** - ORM and database toolkit
+- **PostgreSQL** - Database
+- **JWT** - Authentication
+- **CASL** - Authorization
+
+## Architecture Patterns
+
+### Monorepo
+
+We use **pnpm workspaces** to manage the monorepo:
+- Shared code in `libs/`
+- Applications in `apps/`
+- Consistent dependency management
+
+### Shared Types
+
+All types are defined in `libs/shared`:
+- DTOs (Data Transfer Objects)
+- Zod schemas for validation
+- Type-safe API contracts
+
+### Database
+
+Prisma manages our database:
+- Schema in `libs/database/prisma/schema/`
+- Migrations for version control
+- Type-safe database client
+
+## Data Flow
+
+```
+User Action → React Component → API Call → NestJS Controller
+→ Service → Database → Response → React Query → UI Update
+```
+
+## Authentication & Authorization
+
+- **JWT tokens** for authentication
+- **CASL** for fine-grained authorization
+- **Guards** protect routes and resources
+
+## API Design
+
+- RESTful endpoints
+- Consistent error handling
+- Validation with Zod schemas
+- Type-safe request/response
+
+## Frontend Architecture
+
+- **Component-based** - Reusable React components
+- **Feature-based** - Organized by features
+- **Hooks** - Custom hooks for logic reuse
+- **React Query** - Server state caching
+
+## Development Workflow
+
+1. Make changes in feature branch
+2. Type check: `pnpm tsc:check`
+3. Lint and format
+4. Test locally
+5. Create pull request
+
+## Deployment
+
+- **Frontend**: Static files (Vite build)
+- **Backend**: Node.js server (NestJS)
+- **Database**: PostgreSQL
+- **Containerization**: Docker support
+
+## Next Steps
+
+- [Database Schema](/docs/architecture/database) - Understand the data model
+- [API Design](/docs/architecture/api-design) - Learn about API patterns
+- [Frontend Patterns](/docs/architecture/frontend-patterns) - Component structure
+
