@@ -60,6 +60,17 @@ That's where OpenAthlete comes in. Self-hosted or cloud-hosted. Privacy-first by
 - 🔒 **Privacy-First** - Your data stays yours. Self-hostable with full control
 - 🌐 **Open Source** - Transparent, extensible, and community-driven
 
+### Comparison
+
+| Feature | 🟢 OpenAthlete | 🔵 TrainingPeaks | 🟠 Strava |
+| :--- | :---: | :---: | :---: |
+| **Business Model** | Open Source / SaaS | Proprietary | Proprietary |
+| **Self-Hostable** | ✅ Yes | ❌ No | ❌ No |
+| **AI Planning** | ✅ Adaptive & Custom | ⚠️ Basic | ❌ No |
+| **Privacy** | ✅ You own the data | ❌ They own the data | ❌ They sell the data |
+| **Extension** | ✅ Plugin System | ❌ Closed | ❌ Closed |
+| **Cost** | **Free** (Self-hosted) | $19.99/mo | $11.99/mo |
+
 ## Recognition
 
 OpenAthlete is built by athletes, for athletes. We're proud to be part of the open-source community and grateful for all contributors who help make this platform better.
@@ -309,7 +320,7 @@ For detailed deployment instructions, see our [self-hosting documentation](https
 3. Run database migrations:
 
    ```bash
-pnpm database run db:deploy
+   pnpm database run db:deploy
    ```
 
 4. Start the server:
