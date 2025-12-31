@@ -27,10 +27,10 @@ export function FAQ({ locale = 'en' }: FAQProps) {
       question: m.landing_faq_item_4_q(),
       answer: m.landing_faq_item_4_a(),
     },
-    // {
-    //   question: m.landing_faq_item_5_q(),
-    //   answer: m.landing_faq_item_5_a(),
-    // },
+    {
+      question: m.landing_faq_item_5_q(),
+      answer: m.landing_faq_item_5_a(),
+    },
   ];
 
   const faqUrl = `${SITE_URL}${locale === 'en' ? '' : `/${locale}`}#faq`;
