@@ -8,7 +8,7 @@ import { PrismaService } from 'src/modules/prisma/services/prisma.service';
 
 @Injectable()
 export class EquipmentService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) {}
 
   async createEquipment(
     user: AuthUser,

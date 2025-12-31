@@ -29,7 +29,7 @@ import { CoachService } from '../services/coach.service';
 @Controller('coach')
 export class CoachController {
   constructor(
-    private coachService: CoachService,
+    private readonly coachService: CoachService,
     private coachInvitationService: CoachInvitationService,
   ) {}
 

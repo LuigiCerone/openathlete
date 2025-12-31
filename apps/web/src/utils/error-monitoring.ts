@@ -22,7 +22,7 @@ export function initErrorMonitoring() {
     ],
     tracesSampleRate: 0.25,
     replaysSessionSampleRate: 0.1,
-    replaysOnErrorSampleRate: 1.0,
+    replaysOnErrorSampleRate: 1,
   });
 
   isInitialized = true;

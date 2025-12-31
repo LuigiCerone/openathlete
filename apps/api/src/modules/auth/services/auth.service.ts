@@ -19,7 +19,7 @@ export class AuthService {
   private readonly logger = new Logger(AuthService.name);
 
   constructor(
-    private prisma: PrismaService,
+    private readonly prisma: PrismaService,
     private userService: UserService,
     private readonly configService: ConfigService<ApiEnvSchemaType, true>,
   ) {}

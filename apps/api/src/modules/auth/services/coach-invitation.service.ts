@@ -1,4 +1,4 @@
-import { randomUUID } from 'crypto';
+import { randomUUID } from 'node:crypto';
 
 import {
   BadRequestException,
@@ -22,7 +22,7 @@ import { FeatureAccessService } from 'src/modules/subscription';
 @Injectable()
 export class CoachInvitationService {
   constructor(
-    private prisma: PrismaService,
+    private readonly prisma: PrismaService,
     private configService: ConfigService<ApiEnvSchemaType, true>,
     private eventEmitter: EventEmitter2,
     @Inject(forwardRef(() => FeatureAccessService))

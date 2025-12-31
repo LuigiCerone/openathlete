@@ -21,7 +21,7 @@ export class EventTemplateService {
   private readonly logger = new Logger(EventTemplateService.name);
 
   constructor(
-    private prisma: PrismaService,
+    private readonly prisma: PrismaService,
     private eventService: EventService,
     @Optional()
     @Inject(forwardRef(() => TrainingLoadEstimationService))

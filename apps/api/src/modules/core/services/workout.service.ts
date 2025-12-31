@@ -23,7 +23,7 @@ import { EventService } from './event.service';
 @Injectable()
 export class WorkoutService {
   constructor(
-    private prisma: PrismaService,
+    private readonly prisma: PrismaService,
     private abilities: CaslAbilityFactory,
     private moduleRef: ModuleRef,
   ) {}

@@ -46,7 +46,7 @@ type MessageWithIncludes = Prisma.MessageGetPayload<{
 @Injectable()
 export class MessageService {
   constructor(
-    private prisma: PrismaService,
+    private readonly prisma: PrismaService,
     private threadService: MessageThreadService,
   ) {}
 

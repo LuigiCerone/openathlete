@@ -15,7 +15,7 @@ import { PrismaService } from 'src/modules/prisma/services/prisma.service';
 @Injectable()
 export class AthleteSettingsService {
   constructor(
-    private prisma: PrismaService,
+    private readonly prisma: PrismaService,
     private readonly abilities: CaslAbilityFactory,
   ) {}
 

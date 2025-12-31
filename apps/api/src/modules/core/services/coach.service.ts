@@ -12,7 +12,7 @@ import { PrismaService } from 'src/modules/prisma/services/prisma.service';
 
 @Injectable()
 export class CoachService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) {}
 
   private defaultPeriod(): { start: Date; end: Date } {
     const end = new Date();

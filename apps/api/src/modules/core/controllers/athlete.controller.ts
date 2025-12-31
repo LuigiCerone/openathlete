@@ -41,7 +41,7 @@ import { AthleteService } from '../services/athlete.service';
 @Controller('athlete')
 export class AthleteController {
   constructor(
-    private athleteService: AthleteService,
+    private readonly athleteService: AthleteService,
     private athleteSettingsService: AthleteSettingsService,
     private athleteInvitationService: AthleteInvitationService,
   ) {}

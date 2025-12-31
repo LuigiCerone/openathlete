@@ -25,7 +25,7 @@ export class NotificationService {
 
   constructor(
     private configService: ConfigService<ApiEnvSchemaType, true>,
-    private prisma: PrismaService,
+    private readonly prisma: PrismaService,
   ) {
     this.apiKey = configService.get('BREVO_API_KEY') ?? '';
     this.apiInstance = new brevo.TransactionalEmailsApi();

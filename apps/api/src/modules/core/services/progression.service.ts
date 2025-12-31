@@ -17,7 +17,7 @@ import { PrismaService } from 'src/modules/prisma/services/prisma.service';
 @Injectable()
 export class ProgressionService {
   constructor(
-    private prisma: PrismaService,
+    private readonly prisma: PrismaService,
     private readonly abilities: CaslAbilityFactory,
   ) {}
 

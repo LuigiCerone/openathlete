@@ -17,7 +17,7 @@ export class WsJwtAuthGuard implements CanActivate {
 
   constructor(
     private jwtService: JwtService,
-    private prisma: PrismaService,
+    private readonly prisma: PrismaService,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {

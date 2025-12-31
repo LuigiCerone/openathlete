@@ -24,7 +24,7 @@ const DEFAULT_SPEED_MS = 3.33;
  * Default metric values for average athletes when metrics are not available
  */
 const DEFAULT_METRIC_VALUES: Record<string, number> = {
-  [METRIC_TYPE.VMA]: 15.0, // km/h - average VMA (~4:00 min/km pace)
+  [METRIC_TYPE.VMA]: 15, // km/h - average VMA (~4:00 min/km pace)
   [METRIC_TYPE.FTP_RUNNING]: 275, // W - average running FTP
   [METRIC_TYPE.FTP_CYCLING]: 225, // W - average cycling FTP
   [METRIC_TYPE.CRITICAL_POWER_RUNNING]: 275, // W - same as FTP_RUNNING

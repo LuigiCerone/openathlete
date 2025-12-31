@@ -167,7 +167,7 @@ export class MetricController {
         value: {
           type: 'number',
           description: 'Updated metric value',
-          example: 71.0,
+          example: 71,
         },
         notes: {
           type: 'string',
@@ -188,7 +188,7 @@ export class MetricController {
         athleteId: { type: 'number', example: 1 },
         type: { type: 'string', example: 'WEIGHT' },
         date: { type: 'string', format: 'date', example: '2024-01-15' },
-        value: { type: 'number', example: 71.0 },
+        value: { type: 'number', example: 71 },
         notes: {
           type: 'string',
           nullable: true,

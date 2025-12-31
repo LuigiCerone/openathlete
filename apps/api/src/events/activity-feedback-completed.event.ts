@@ -5,7 +5,7 @@ type ActivityFeedbackCompletedPayload = {
 };
 
 export class ActivityFeedbackCompletedEvent {
-  static SLUG = 'activity.feedback.completed';
+  static readonly SLUG = 'activity.feedback.completed';
 
   constructor(public readonly payload: ActivityFeedbackCompletedPayload) {}
 }

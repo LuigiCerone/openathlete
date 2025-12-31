@@ -74,7 +74,7 @@ export class EventService {
   HASH_PEPPER: Buffer | undefined;
 
   constructor(
-    private prisma: PrismaService,
+    private readonly prisma: PrismaService,
     private configService: ConfigService<ApiEnvSchemaType, true>,
     private readonly abilities: CaslAbilityFactory,
     private eventEmitter: EventEmitter2,

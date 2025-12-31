@@ -7,7 +7,7 @@ import { PrismaService } from 'src/modules/prisma/services/prisma.service';
 
 @Injectable()
 export class EventTemplateFolderService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) {}
 
   async getMyFolders(user: AuthUser) {
     const folders = await this.prisma.eventTemplateFolder.findMany({

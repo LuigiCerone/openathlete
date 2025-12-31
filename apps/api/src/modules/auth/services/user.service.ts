@@ -44,7 +44,7 @@ export class UserService {
   HASH_PEPPER: Buffer | undefined;
 
   constructor(
-    private prisma: PrismaService,
+    private readonly prisma: PrismaService,
     private readonly configService: ConfigService<ApiEnvSchemaType, true>,
     private eventEmitter: EventEmitter2,
     private tokenService: TokenService,

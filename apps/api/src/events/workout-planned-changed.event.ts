@@ -7,7 +7,7 @@ type WorkoutPlannedChangedPayload = {
 };
 
 export class WorkoutPlannedChangedEvent {
-  static SLUG = 'workout.planned-changed';
+  static readonly SLUG = 'workout.planned-changed';
 
   constructor(public readonly payload: WorkoutPlannedChangedPayload) {}
 }

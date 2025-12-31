@@ -56,7 +56,7 @@ const THREAD_INCLUDES = {
 
 @Injectable()
 export class MessageThreadService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) {}
 
   async createThread(
     user: AuthUser,

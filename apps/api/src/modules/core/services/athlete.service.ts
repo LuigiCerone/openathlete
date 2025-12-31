@@ -34,7 +34,7 @@ const ATHLETE_INCLUDES = {
 @Injectable()
 export class AthleteService {
   constructor(
-    private prisma: PrismaService,
+    private readonly prisma: PrismaService,
     private readonly abilities: CaslAbilityFactory,
     private athleteInvitationService: AthleteInvitationService,
     private coachInvitationService: CoachInvitationService,

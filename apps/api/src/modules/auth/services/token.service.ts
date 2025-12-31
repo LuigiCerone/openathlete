@@ -1,4 +1,4 @@
-import { randomUUID } from 'crypto';
+import { randomUUID } from 'node:crypto';
 
 import { Injectable } from '@nestjs/common';
 
@@ -8,7 +8,7 @@ import { PrismaService } from 'src/modules/prisma/services/prisma.service';
 
 @Injectable()
 export class TokenService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) {}
 
   async _generateToken(): Promise<string> {
     return randomUUID();

@@ -229,7 +229,7 @@ export const DEFAULT_FTP_CYCLING = 225; // W
  * 15 km/h corresponds to approximately 4:00 min/km pace.
  * Typical range: 12-20 km/h depending on athlete fitness level.
  */
-export const DEFAULT_VMA_KMH = 15.0; // km/h
+export const DEFAULT_VMA_KMH = 15; // km/h
 
 /**
  * Conversion factor from km/h to m/s
@@ -287,8 +287,8 @@ export const PACE_TO_HR_CONVERSION = {
     LOW: 0.7, // <70% VMA
     MODERATE: 0.8, // 70-80% VMA
     HIGH: 0.9, // 80-90% VMA
-    VERY_HIGH: 1.0, // 90-100% VMA
-    MAXIMAL: 1.0, // >100% VMA
+    VERY_HIGH: 1, // 90-100% VMA
+    MAXIMAL: 1, // >100% VMA
   },
   // Corresponding %HRmax estimates
   HR_PERCENTAGES: {

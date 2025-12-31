@@ -5,7 +5,7 @@ type ActivityImportedPayload = {
 };
 
 export class ActivityImportedEvent {
-  static SLUG = 'activity.imported';
+  static readonly SLUG = 'activity.imported';
 
   constructor(public readonly payload: ActivityImportedPayload) {}
 }

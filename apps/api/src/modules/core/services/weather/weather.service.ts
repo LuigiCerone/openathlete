@@ -12,7 +12,6 @@ export class WeatherService {
   private readonly provider: WeatherProvider;
 
   constructor(openMeteo: OpenMeteoWeatherProvider) {
-    // TODO: later use ConfigService to select provider
     this.provider = openMeteo;
   }
 
