@@ -5,14 +5,7 @@ import { FeatureCard } from '@/components/landing/feature-card';
 import { Section } from '@/components/landing/section';
 import { Button } from '@/components/ui/button';
 import { m } from '@/paraglide/messages';
-import {
-  Code,
-  Eye,
-  Lock,
-  Server,
-  Shield,
-  Users,
-} from 'lucide-react';
+import { Code, Eye, Lock, Server, Shield, Users } from 'lucide-react';
 
 const icons = [Code, Shield, Server, Eye, Users, Lock];
 
@@ -98,4 +91,3 @@ export function OpenSource() {
     </Section>
   );
 }
-
