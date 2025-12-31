@@ -103,7 +103,7 @@ function parseRedisUrl(redisUrl: string): {
   if (slashIndex !== -1) {
     const dbStr = hostPortDbToParse.substring(slashIndex + 1);
     const dbNum = Number.parseInt(dbStr, 10);
-    if (!isNaN(dbNum)) {
+    if (!Number.isNaN(dbNum)) {
       db = dbNum;
     }
   }

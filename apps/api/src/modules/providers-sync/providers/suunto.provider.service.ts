@@ -1447,7 +1447,11 @@ export class SuuntoProviderService
     value: number | undefined | null,
     defaultValue = 0,
   ): void {
-    if (!date || date instanceof Date === false || isNaN(date.getTime())) {
+    if (
+      !date ||
+      date instanceof Date === false ||
+      Number.isNaN(date.getTime())
+    ) {
       return;
     }
 

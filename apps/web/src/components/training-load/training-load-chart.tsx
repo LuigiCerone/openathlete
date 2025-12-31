@@ -57,7 +57,7 @@ export function TrainingLoadChart({
     return history
       .filter((item) => {
         // Validate date
-        return item.date instanceof Date && !isNaN(item.date.getTime());
+        return item.date instanceof Date && !Number.isNaN(item.date.getTime());
       })
       .map((item) => ({
         date: item.date.getTime(),

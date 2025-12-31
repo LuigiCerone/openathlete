@@ -79,7 +79,7 @@ const loadOnboardingStep = (): number => {
     const stored = localStorage.getItem(ONBOARDING_STEP_KEY);
     if (stored) {
       const step = Number.parseInt(stored, 10);
-      if (!isNaN(step) && step >= 0) {
+      if (!Number.isNaN(step) && step >= 0) {
         return step;
       }
     }

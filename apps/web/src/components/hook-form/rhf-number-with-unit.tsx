@@ -59,7 +59,7 @@ function NumberWithUnitFieldAdapter({
       onChange?.(undefined);
     } else {
       const numberValue = parseFloat(number);
-      if (!isNaN(numberValue)) {
+      if (!Number.isNaN(numberValue)) {
         field.onChange(numberValue);
         onChange?.(numberValue);
       }

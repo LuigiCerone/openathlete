@@ -121,7 +121,7 @@ function VelocityPaceFieldAdapter({
         onChange?.(undefined);
       } else {
         const numValue = parseFloat(newValue);
-        if (!isNaN(numValue)) {
+        if (!Number.isNaN(numValue)) {
           let valueInMs: number;
           if (unit === 'km_per_h') {
             valueInMs = kmhToMs(numValue);
@@ -148,7 +148,7 @@ function VelocityPaceFieldAdapter({
         unit === 'km_per_h'
           ? kmhToMs(parseFloat(valueInput))
           : parseFloat(valueInput);
-      currentValueMs = isNaN(currentInput)
+      currentValueMs = Number.isNaN(currentInput)
         ? (field.value as number)
         : currentInput;
     }

@@ -47,7 +47,7 @@ export const RHFTextField = ({ name, type, label, ...other }: Props) => {
                   inserted = '';
                 } else {
                   const numValue = Number(value);
-                  inserted = isNaN(numValue) ? '' : numValue;
+                  inserted = Number.isNaN(numValue) ? '' : numValue;
                 }
               } else {
                 inserted = value;

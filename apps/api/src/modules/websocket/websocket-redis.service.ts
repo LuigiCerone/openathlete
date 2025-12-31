@@ -177,7 +177,7 @@ export class WebSocketRedisService implements OnModuleInit {
       return {
         host,
         port,
-        db: isNaN(db as number) ? undefined : db,
+        db: Number.isNaN(db as number) ? undefined : db,
       };
     }
 

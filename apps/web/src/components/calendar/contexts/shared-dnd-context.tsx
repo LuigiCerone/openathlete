@@ -52,7 +52,7 @@ export function SharedDndProvider({ children }: { children: React.ReactNode }) {
     const isSidebarDrop = overData?.type !== undefined;
 
     // Check if drop is on a calendar day (ISO date string) only if not a sidebar drop
-    const isCalendarDay = !isSidebarDrop && !isNaN(Date.parse(overId));
+    const isCalendarDay = !isSidebarDrop && !Number.isNaN(Date.parse(overId));
 
     if (isSidebarDrop && sidebarHandlerRef.current) {
       // Drop in sidebar - use sidebar handler (handles template/folder reorganization)

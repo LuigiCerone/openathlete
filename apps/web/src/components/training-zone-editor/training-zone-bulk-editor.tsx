@@ -146,7 +146,7 @@ export function TrainingZoneBulkEditor({
     if (field === 'max' && index < zones.length - 1) {
       const numValue =
         typeof value === 'number' ? value : parseFloat(value as string);
-      if (!isNaN(numValue)) {
+      if (!Number.isNaN(numValue)) {
         newZones[index + 1] = {
           ...newZones[index + 1],
           min: numValue + step,
@@ -158,7 +158,7 @@ export function TrainingZoneBulkEditor({
     if (field === 'min' && index > 0) {
       const numValue =
         typeof value === 'number' ? value : parseFloat(value as string);
-      if (!isNaN(numValue)) {
+      if (!Number.isNaN(numValue)) {
         newZones[index - 1] = {
           ...newZones[index - 1],
           max: numValue - step,

@@ -191,7 +191,7 @@ export class TrainingLoadEstimationProcessor extends WorkerHost {
       }
 
       // Validate result
-      if (typeof result.trimp !== 'number' || isNaN(result.trimp)) {
+      if (typeof result.trimp !== 'number' || Number.isNaN(result.trimp)) {
         throw new Error(`Invalid TRIMP value in result: ${result.trimp}`);
       }
 

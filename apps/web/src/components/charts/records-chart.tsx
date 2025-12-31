@@ -105,7 +105,7 @@ export function RecordsChart({ records, className }: P) {
   const formatDistance = useCallback((distance: number | string) => {
     const numDistance =
       typeof distance === 'number' ? distance : Number(distance);
-    if (!numDistance || isNaN(numDistance) || numDistance <= 0) {
+    if (!numDistance || Number.isNaN(numDistance) || numDistance <= 0) {
       return '0m';
     }
     if (numDistance < 1000) {
@@ -351,7 +351,7 @@ export function RecordsChart({ records, className }: P) {
                 if (
                   value === null ||
                   value === undefined ||
-                  isNaN(Number(value)) ||
+                  Number.isNaN(Number(value)) ||
                   Number(value) === 0
                 ) {
                   return null;
