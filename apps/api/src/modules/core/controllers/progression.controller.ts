@@ -246,7 +246,7 @@ export class ProgressionController {
   ) {
     const startDate = new Date(start);
     const endDate = new Date(end);
-    if (isNaN(startDate.getTime()) || Number.isNaN(endDate.getTime())) {
+    if (Number.isNaN(startDate.getTime()) || Number.isNaN(endDate.getTime())) {
       throw new BadRequestException('Invalid date format');
     }
 

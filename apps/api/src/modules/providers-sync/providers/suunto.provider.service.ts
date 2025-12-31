@@ -1397,7 +1397,7 @@ export class SuuntoProviderService
   private parseISO8601Date(dateString: string): Date | null {
     try {
       const date = new Date(dateString);
-      if (isNaN(date.getTime())) {
+      if (Number.isNaN(date.getTime())) {
         return null;
       }
       return date;

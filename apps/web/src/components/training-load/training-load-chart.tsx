@@ -140,7 +140,7 @@ export function TrainingLoadChart({
                       try {
                         const timestamp =
                           typeof value === 'number' ? value : Number(value);
-                        if (isNaN(timestamp)) return '';
+                        if (Number.isNaN(timestamp)) return '';
                         return format(new Date(timestamp), 'dd MMM', {
                           locale: fr,
                         });
@@ -161,7 +161,7 @@ export function TrainingLoadChart({
                           try {
                             const timestamp =
                               typeof value === 'number' ? value : Number(value);
-                            if (isNaN(timestamp)) return String(value);
+                            if (Number.isNaN(timestamp)) return String(value);
                             return format(new Date(timestamp), 'dd MMMM yyyy', {
                               locale: fr,
                             });

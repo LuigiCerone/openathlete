@@ -184,7 +184,7 @@ export function RepeatBlockInline({
 
   const handleRepetitionsChange = (value: string) => {
     const repetitions = Number.parseInt(value, 10);
-    if (isNaN(repetitions) || repetitions < 1) return;
+    if (Number.isNaN(repetitions) || repetitions < 1) return;
 
     // Ensure we update with normalized child steps
     onUpdate({

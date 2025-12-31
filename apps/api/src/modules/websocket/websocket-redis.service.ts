@@ -161,7 +161,7 @@ export class WebSocketRedisService implements OnModuleInit {
           : hostPortDb.substring(lastColonIndex + 1);
 
       const port = Number.parseInt(portStr, 10);
-      if (isNaN(port)) {
+      if (Number.isNaN(port)) {
         return {
           host: hostPortDb,
           port: 6379,

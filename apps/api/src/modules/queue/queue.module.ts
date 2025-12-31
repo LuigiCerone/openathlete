@@ -90,7 +90,7 @@ function parseRedisUrl(redisUrl: string): {
       : hostPortDbToParse.substring(lastColonIndex + 1);
 
   port = Number.parseInt(portStr, 10);
-  if (isNaN(port)) {
+  if (Number.isNaN(port)) {
     return {
       host: hostPortDbToParse,
       port: 6379,
