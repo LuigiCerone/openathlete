@@ -142,20 +142,19 @@ function sanitizeText(text: string): string {
   return (
     text
       // Replace various quote characters with safe alternatives
-      .replace(/[""„‟«»]/g, '') // Remove fancy double quotes
-      .replace(/[''‚‛]/g, '') // Remove fancy single quotes
-      .replace(/["'`]/g, '') // Remove standard quotes
+      .replaceAll('"', '') // Remove fancy double quotes
+      .replaceAll("'", '') // Remove fancy single quotes
+      .replaceAll("'", '') // Remove standard quotes
       // Replace special dashes with regular hyphen
-      .replace(/[–—―]/g, '-')
+      .replaceAll('–', '-')
       // Replace ellipsis with dots
-      .replace(/…/g, '...')
+      .replaceAll('…', '...')
       // Remove backslashes
-      .replace(/\\/g, '')
+      .replaceAll('\\', '')
       // Remove control characters (except newline for text fields)
-      // eslint-disable-next-line no-control-regex
-      .replace(/[\x00-\x09\x0B\x0C\x0E-\x1F\x7F]/g, '')
+      .replaceAll('[\x00-\x09\x0B\x0C\x0E-\x1F\x7F]', '')
       // Normalize multiple spaces to single space
-      .replace(/\s+/g, ' ')
+      .replaceAll(/\s+/g, ' ')
       // Trim whitespace
       .trim()
   );

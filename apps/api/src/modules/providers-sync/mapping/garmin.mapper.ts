@@ -180,8 +180,8 @@ export function mapWorkoutDtoToGarmin(
   const segment: GarminSegment = {
     segmentOrder: 1,
     sport: garminSport,
-    poolLength: isSwimming ? null : null,
-    poolLengthUnit: isSwimming ? null : null,
+    poolLength: null,
+    poolLengthUnit: null,
     steps: steps as GarminWorkoutStep[],
   };
 
@@ -189,8 +189,8 @@ export function mapWorkoutDtoToGarmin(
     workoutName,
     description: workoutDescription,
     sport: garminSport,
-    poolLength: isSwimming ? null : null,
-    poolLengthUnit: isSwimming ? null : null,
+    poolLength: null,
+    poolLengthUnit: null,
     workoutProvider: WORKOUT_PROVIDER,
     workoutSourceId: WORKOUT_SOURCE_ID,
     isSessionTransitionEnabled: false,

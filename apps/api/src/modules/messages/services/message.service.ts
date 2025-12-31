@@ -66,15 +66,7 @@ export class MessageService {
       );
     }
 
-    // If thread is linked to a training session, ensure it exists
-    // (should already exist, but double-check for safety)
-    if (thread.eventActivityId) {
-      // Verify thread access (this will also mark as read if needed)
-      await this.threadService.getThreadById(user, dto.messageThreadId);
-    } else {
-      // For non-training threads, just verify access
-      await this.threadService.getThreadById(user, dto.messageThreadId);
-    }
+    await this.threadService.getThreadById(user, dto.messageThreadId);
 
     const message = await this.prisma.message.create({
       data: {

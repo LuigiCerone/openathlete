@@ -289,7 +289,7 @@ export class SuuntoProviderService
       const payload = parts[1];
       const decoded = JSON.parse(
         Buffer.from(
-          payload.replace(/-/g, '+').replace(/_/g, '/'),
+          payload.replaceAll('-', '+').replaceAll('_', '/'),
           'base64',
         ).toString(),
       );
@@ -313,7 +313,7 @@ export class SuuntoProviderService
       const payload = parts[1];
       const decoded = JSON.parse(
         Buffer.from(
-          payload.replace(/-/g, '+').replace(/_/g, '/'),
+          payload.replaceAll('-', '+').replaceAll('_', '/'),
           'base64',
         ).toString(),
       );

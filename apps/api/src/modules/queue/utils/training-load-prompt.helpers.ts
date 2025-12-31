@@ -304,7 +304,7 @@ function describeTarget(
   const formattedRange = formatTarget(
     target,
     (metricType) => {
-      return METRIC_LABELS[metricType] || metricType.replace(/_/g, ' ');
+      return METRIC_LABELS[metricType] || metricType.replaceAll('_', ' ');
     },
     undefined,
     trainingZones,
@@ -361,7 +361,9 @@ function formatDistance(distanceMeters: number): string {
 }
 
 function formatMetricLabel(metricKey: string): string {
-  return METRIC_LABELS[metricKey] ?? metricKey.replace(/_/g, ' ').toLowerCase();
+  return (
+    METRIC_LABELS[metricKey] ?? metricKey.replaceAll('_', ' ').toLowerCase()
+  );
 }
 
 function formatMetricValue(metricKey: string, value: number): string {
@@ -401,7 +403,7 @@ function isValueRelevantForSport(
 }
 
 function formatStepType(stepType: string): string {
-  return stepType.replace(/_/g, ' ');
+  return stepType.replaceAll('_', ' ');
 }
 
 function round(value: number, precision = 0): number {

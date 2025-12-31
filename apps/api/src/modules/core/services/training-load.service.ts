@@ -303,7 +303,7 @@ export class TrainingLoadService {
     const normalizedPrevious = Math.max(1, baselineReference);
 
     let trendRatio = acuteLoad / normalizedPrevious;
-    if (!isFinite(trendRatio) || trendRatio <= 0) {
+    if (!Number.isFinite(trendRatio) || trendRatio <= 0) {
       trendRatio =
         acuteLoad > 0 ? 1 : RECOMMENDATION_ADJUSTMENTS.ZERO_WEEK_DECAY;
     }
