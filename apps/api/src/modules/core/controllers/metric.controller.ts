@@ -530,7 +530,7 @@ export class MetricController {
     @Query('athleteId') athleteId?: Athlete['athleteId'],
   ) {
     if (typeof athleteId === 'string') {
-      athleteId = parseInt(athleteId);
+      athleteId = Number.parseInt(athleteId);
     }
     return this.metricService.calculateMetric(
       user,

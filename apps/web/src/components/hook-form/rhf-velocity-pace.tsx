@@ -103,9 +103,9 @@ function VelocityPaceFieldAdapter({
   ) => {
     if (unit === 'min_per_km') {
       const mins =
-        newPaceMinutes === '' ? 0 : parseInt(newPaceMinutes, 10) || 0;
+        newPaceMinutes === '' ? 0 : Number.parseInt(newPaceMinutes, 10) || 0;
       const secs =
-        newPaceSeconds === '' ? 0 : parseInt(newPaceSeconds, 10) || 0;
+        newPaceSeconds === '' ? 0 : Number.parseInt(newPaceSeconds, 10) || 0;
       if (mins === 0 && secs === 0) {
         field.onChange(undefined);
         onChange?.(undefined);

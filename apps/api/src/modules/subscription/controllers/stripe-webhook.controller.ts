@@ -174,7 +174,7 @@ export class StripeWebhookController {
     }
 
     await this.subscriptionService.createSubscriptionFromCheckout(
-      parseInt(userId, 10),
+      Number.parseInt(userId, 10),
       customerId,
       subscriptionId,
       plan,

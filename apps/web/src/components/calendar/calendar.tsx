@@ -431,7 +431,9 @@ export function Calendar({
 
       // Check if it's a template (id starts with "template-")
       if (activeId.startsWith('template-')) {
-        const eventTemplateId = parseInt(activeId.replace('template-', ''));
+        const eventTemplateId = Number.parseInt(
+          activeId.replace('template-', ''),
+        );
         if (isNaN(eventTemplateId) || !athleteId) return;
 
         // Get the template from the drag data for optimistic update

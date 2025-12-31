@@ -251,7 +251,7 @@ export class PolarProviderService
           if (location) {
             const match = location.match(/\/users\/(\d+)/);
             if (match) {
-              const userId = parseInt(match[1], 10);
+              const userId = Number.parseInt(match[1], 10);
               this.logger.log(
                 `Polar user registered with AccessLink user-id: ${userId}`,
               );
@@ -294,7 +294,7 @@ export class PolarProviderService
         // Format: "User userid:63661436 with membertag ..."
         const userIdMatch = errorText.match(/userid:(\d+)/i);
         if (userIdMatch) {
-          const userId = parseInt(userIdMatch[1], 10);
+          const userId = Number.parseInt(userIdMatch[1], 10);
           this.logger.log(
             `Extracted Polar AccessLink user-id from 409 error: ${userId}`,
           );
@@ -394,7 +394,10 @@ export class PolarProviderService
 
         if (existingAccount?.externalUserId) {
           // Use existing external_user_id (which should be the AccessLink user-id)
-          accessLinkUserId = parseInt(existingAccount.externalUserId, 10);
+          accessLinkUserId = Number.parseInt(
+            existingAccount.externalUserId,
+            10,
+          );
           this.logger.log(
             `Found existing Polar account with AccessLink user-id: ${accessLinkUserId}`,
           );
@@ -410,7 +413,7 @@ export class PolarProviderService
             error.message || JSON.stringify(error.response?.data || {});
           const userIdMatch = errorMessage.match(/userid:(\d+)/i);
           if (userIdMatch) {
-            accessLinkUserId = parseInt(userIdMatch[1], 10);
+            accessLinkUserId = Number.parseInt(userIdMatch[1], 10);
             this.logger.log(
               `Extracted AccessLink user-id from error message: ${accessLinkUserId}`,
             );
@@ -824,7 +827,7 @@ export class PolarProviderService
       `Starting Polar activities import for account ${account.providerAccountId}`,
     );
 
-    const userId = parseInt(account.externalUserId || '0', 10);
+    const userId = Number.parseInt(account.externalUserId || '0', 10);
     if (!userId) {
       this.logger.error(`Invalid Polar user ID: ${account.externalUserId}`);
       throw new Error('Invalid Polar user ID');
@@ -1061,9 +1064,9 @@ export class PolarProviderService
     );
     let durationSeconds = 0;
     if (durationMatch) {
-      const hours = parseInt(durationMatch[1] || '0', 10);
-      const minutes = parseInt(durationMatch[2] || '0', 10);
-      const seconds = parseInt(durationMatch[3] || '0', 10);
+      const hours = Number.parseInt(durationMatch[1] || '0', 10);
+      const minutes = Number.parseInt(durationMatch[2] || '0', 10);
+      const seconds = Number.parseInt(durationMatch[3] || '0', 10);
       durationSeconds = hours * 3600 + minutes * 60 + seconds;
     }
     const endDate = new Date(startDate.getTime() + durationSeconds * 1000);
@@ -1172,9 +1175,9 @@ export class PolarProviderService
     );
     let durationSeconds = 0;
     if (durationMatch) {
-      const hours = parseInt(durationMatch[1] || '0', 10);
-      const minutes = parseInt(durationMatch[2] || '0', 10);
-      const seconds = parseInt(durationMatch[3] || '0', 10);
+      const hours = Number.parseInt(durationMatch[1] || '0', 10);
+      const minutes = Number.parseInt(durationMatch[2] || '0', 10);
+      const seconds = Number.parseInt(durationMatch[3] || '0', 10);
       durationSeconds = hours * 3600 + minutes * 60 + seconds;
     }
 
@@ -1377,7 +1380,7 @@ export class PolarProviderService
   private async importActivitySummaries(
     account: ProviderAccount,
   ): Promise<void> {
-    const userId = parseInt(account.externalUserId || '0', 10);
+    const userId = Number.parseInt(account.externalUserId || '0', 10);
     if (!userId) {
       return;
     }
@@ -1487,7 +1490,7 @@ export class PolarProviderService
    * Import sleep data
    */
   private async importSleep(account: ProviderAccount): Promise<void> {
-    const userId = parseInt(account.externalUserId || '0', 10);
+    const userId = Number.parseInt(account.externalUserId || '0', 10);
     if (!userId) {
       return;
     }

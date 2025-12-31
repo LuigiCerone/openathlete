@@ -115,7 +115,7 @@ export function ChatbotProvider({ children }: { children: React.ReactNode }) {
 
   const [chatWidth, setChatWidthState] = useState<number>(() => {
     const stored = localStorage.getItem(STORAGE_KEYS.CHAT_WIDTH);
-    return stored ? parseInt(stored, 10) : DEFAULT_CHAT_WIDTH;
+    return stored ? Number.parseInt(stored, 10) : DEFAULT_CHAT_WIDTH;
   });
 
   const [chatSide, setChatSideState] = useState<'left' | 'right'>(() => {
@@ -127,7 +127,7 @@ export function ChatbotProvider({ children }: { children: React.ReactNode }) {
   const [activeThreadId, setActiveThreadIdState] = useState<number | null>(
     () => {
       const stored = localStorage.getItem(STORAGE_KEYS.ACTIVE_THREAD_ID);
-      return stored ? parseInt(stored, 10) : null;
+      return stored ? Number.parseInt(stored, 10) : null;
     },
   );
 

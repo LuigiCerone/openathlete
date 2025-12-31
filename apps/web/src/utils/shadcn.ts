@@ -23,7 +23,7 @@ function getValidNumber(
   value: string,
   { max, min = 0, loop = false }: GetValidNumberConfig,
 ) {
-  let numericValue = parseInt(value, 10);
+  let numericValue = Number.parseInt(value, 10);
 
   if (!isNaN(numericValue)) {
     if (!loop) {
@@ -64,7 +64,7 @@ function getValidArrowNumber(
   value: string,
   { min, max, step }: GetValidArrowNumberConfig,
 ) {
-  let numericValue = parseInt(value, 10);
+  let numericValue = Number.parseInt(value, 10);
   if (!isNaN(numericValue)) {
     numericValue += step;
     return getValidNumber(String(numericValue), { min, max, loop: true });
@@ -103,7 +103,7 @@ function setHours(date: Date, value: string) {
 }
 
 function set12Hours(date: Date, value: string, period: Period) {
-  const hours = parseInt(getValid12Hour(value), 10);
+  const hours = Number.parseInt(getValid12Hour(value), 10);
   const convertedHours = convert12HourTo24Hour(hours, period);
   date.setHours(convertedHours);
   return date;

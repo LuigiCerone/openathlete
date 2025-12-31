@@ -78,7 +78,7 @@ const loadOnboardingStep = (): number => {
   try {
     const stored = localStorage.getItem(ONBOARDING_STEP_KEY);
     if (stored) {
-      const step = parseInt(stored, 10);
+      const step = Number.parseInt(stored, 10);
       if (!isNaN(step) && step >= 0) {
         return step;
       }
@@ -491,7 +491,7 @@ export function OnboardingView() {
                     setData((d) => ({
                       ...d,
                       hrMax: e.target.value
-                        ? parseInt(e.target.value)
+                        ? Number.parseInt(e.target.value)
                         : undefined,
                     }))
                   }
@@ -511,7 +511,7 @@ export function OnboardingView() {
                     setData((d) => ({
                       ...d,
                       hrRest: e.target.value
-                        ? parseInt(e.target.value)
+                        ? Number.parseInt(e.target.value)
                         : undefined,
                     }))
                   }

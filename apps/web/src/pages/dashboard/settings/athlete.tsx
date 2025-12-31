@@ -6,7 +6,7 @@ import { useParams } from 'react-router-dom';
 export function AthleteSettingsPage() {
   const { athleteId } = useParams<{ athleteId: string }>();
   const { athlete, isCurrentUser } = useAthleteInfo({
-    athleteId: athleteId ? parseInt(athleteId, 10) : undefined,
+    athleteId: athleteId ? Number.parseInt(athleteId, 10) : undefined,
   });
 
   const pageTitle = isCurrentUser

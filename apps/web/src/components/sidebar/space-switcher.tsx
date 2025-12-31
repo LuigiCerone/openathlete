@@ -78,7 +78,7 @@ export function SpaceSwitcher() {
       const numberMatch = key.match(/^[1-9]$/);
 
       if (numberMatch) {
-        const index = parseInt(numberMatch[0], 10) - 1;
+        const index = Number.parseInt(numberMatch[0], 10) - 1;
         if (index < spaces.length) {
           event.preventDefault();
           event.stopPropagation();

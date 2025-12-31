@@ -528,7 +528,7 @@ export class SubscriptionController {
   ): Promise<{ hasAccess: boolean }> {
     const hasAccess =
       await this.featureAccessService.canAccessFeatureForAthlete(
-        parseInt(athleteId, 10),
+        Number.parseInt(athleteId, 10),
         featureName,
       );
 

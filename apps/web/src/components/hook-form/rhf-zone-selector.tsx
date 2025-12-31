@@ -69,7 +69,8 @@ export const RHFZoneSelector = ({
             <Select
               value={field.value?.toString() ?? ''}
               onValueChange={(value) => {
-                const numValue = value === '' ? undefined : parseInt(value, 10);
+                const numValue =
+                  value === '' ? undefined : Number.parseInt(value, 10);
                 field.onChange(numValue);
                 onChange?.(numValue);
               }}

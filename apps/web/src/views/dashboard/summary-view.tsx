@@ -8,7 +8,7 @@ interface SummaryViewProps {
 
 export function SummaryView({ athleteId }: SummaryViewProps) {
   const { athlete, isCurrentUser } = useAthleteInfo({
-    athleteId: athleteId ? parseInt(athleteId, 10) : undefined,
+    athleteId: athleteId ? Number.parseInt(athleteId, 10) : undefined,
   });
 
   const pageTitle = isCurrentUser

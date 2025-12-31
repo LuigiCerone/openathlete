@@ -317,7 +317,7 @@ export function ChatWindow() {
                   <Select
                     value={activeId?.toString() || undefined}
                     onValueChange={(value) => {
-                      const id = parseInt(value, 10);
+                      const id = Number.parseInt(value, 10);
                       setActiveMessageThreadId(id);
                     }}
                   >

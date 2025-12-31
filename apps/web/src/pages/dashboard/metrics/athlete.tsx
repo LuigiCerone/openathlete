@@ -9,7 +9,7 @@ export function AthleteMetricsPage() {
     <>
       <title>{m.metrics()}</title>
       <MetricsView
-        athleteId={athleteId ? parseInt(athleteId, 10) : undefined}
+        athleteId={athleteId ? Number.parseInt(athleteId, 10) : undefined}
       />
     </>
   );

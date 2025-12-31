@@ -9,7 +9,7 @@ export function AthleteRecordsPage() {
     <>
       <title>{m.records()}</title>
       <RecordsView
-        athleteId={athleteId ? parseInt(athleteId, 10) : undefined}
+        athleteId={athleteId ? Number.parseInt(athleteId, 10) : undefined}
       />
     </>
   );

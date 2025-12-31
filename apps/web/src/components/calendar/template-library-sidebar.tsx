@@ -264,10 +264,10 @@ export function TemplateLibrarySidebar() {
     if (!activeId) return null;
 
     if (activeId.startsWith('template-')) {
-      const templateId = parseInt(activeId.replace('template-', ''));
+      const templateId = Number.parseInt(activeId.replace('template-', ''));
       return templates?.find((t) => t.eventTemplateId === templateId);
     } else if (activeId.startsWith('folder-')) {
-      const folderId = parseInt(activeId.replace('folder-', ''));
+      const folderId = Number.parseInt(activeId.replace('folder-', ''));
       return folders?.find((f) => f.eventTemplateFolderId === folderId);
     }
 

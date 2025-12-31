@@ -151,7 +151,7 @@ export class SubscriptionService {
         SubscriptionPlan.FREE;
 
       subscription = await this.createSubscriptionFromCheckout(
-        parseInt(userId, 10),
+        Number.parseInt(userId, 10),
         stripeSubscription.customer as string,
         stripeSubscription.id,
         plan,

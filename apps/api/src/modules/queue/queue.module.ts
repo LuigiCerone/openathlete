@@ -61,8 +61,8 @@ function parseRedisUrl(redisUrl: string): {
   );
   if (bracketedMatch) {
     host = bracketedMatch[1];
-    port = bracketedMatch[2] ? parseInt(bracketedMatch[2], 10) : 6379;
-    db = bracketedMatch[3] ? parseInt(bracketedMatch[3], 10) : undefined;
+    port = bracketedMatch[2] ? Number.parseInt(bracketedMatch[2], 10) : 6379;
+    db = bracketedMatch[3] ? Number.parseInt(bracketedMatch[3], 10) : undefined;
     return {
       host,
       port,
@@ -89,7 +89,7 @@ function parseRedisUrl(redisUrl: string): {
       ? hostPortDbToParse.substring(lastColonIndex + 1, slashIndex)
       : hostPortDbToParse.substring(lastColonIndex + 1);
 
-  port = parseInt(portStr, 10);
+  port = Number.parseInt(portStr, 10);
   if (isNaN(port)) {
     return {
       host: hostPortDbToParse,
@@ -102,7 +102,7 @@ function parseRedisUrl(redisUrl: string): {
   host = hostPortDbToParse.substring(0, lastColonIndex);
   if (slashIndex !== -1) {
     const dbStr = hostPortDbToParse.substring(slashIndex + 1);
-    const dbNum = parseInt(dbStr, 10);
+    const dbNum = Number.parseInt(dbStr, 10);
     if (!isNaN(dbNum)) {
       db = dbNum;
     }

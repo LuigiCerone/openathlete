@@ -146,8 +146,8 @@ export class WebSocketRedisService implements OnModuleInit {
       const [, host, portStr, dbStr] = bracketedMatch;
       return {
         host,
-        port: portStr ? parseInt(portStr, 10) : 6379,
-        db: dbStr ? parseInt(dbStr, 10) : undefined,
+        port: portStr ? Number.parseInt(portStr, 10) : 6379,
+        db: dbStr ? Number.parseInt(dbStr, 10) : undefined,
       };
     }
 
@@ -160,7 +160,7 @@ export class WebSocketRedisService implements OnModuleInit {
           ? hostPortDb.substring(lastColonIndex + 1, slashIndex)
           : hostPortDb.substring(lastColonIndex + 1);
 
-      const port = parseInt(portStr, 10);
+      const port = Number.parseInt(portStr, 10);
       if (isNaN(port)) {
         return {
           host: hostPortDb,
@@ -171,7 +171,7 @@ export class WebSocketRedisService implements OnModuleInit {
       const host = hostPortDb.substring(0, lastColonIndex);
       const db =
         slashIndex !== -1
-          ? parseInt(hostPortDb.substring(slashIndex + 1), 10)
+          ? Number.parseInt(hostPortDb.substring(slashIndex + 1), 10)
           : undefined;
 
       return {

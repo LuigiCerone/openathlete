@@ -67,10 +67,10 @@ function DurationFieldAdapter({
   }, [field.value, showSeconds]);
 
   const updateFormValue = (hours: string, minutes: string, seconds: string) => {
-    const hoursNum = hours === '' ? 0 : parseInt(hours, 10);
-    const minutesNum = minutes === '' ? 0 : parseInt(minutes, 10);
+    const hoursNum = hours === '' ? 0 : Number.parseInt(hours, 10);
+    const minutesNum = minutes === '' ? 0 : Number.parseInt(minutes, 10);
     const secondsNum =
-      showSeconds && seconds !== '' ? parseInt(seconds, 10) : 0;
+      showSeconds && seconds !== '' ? Number.parseInt(seconds, 10) : 0;
 
     if (hours === '' && minutes === '' && (!showSeconds || seconds === '')) {
       field.onChange(undefined);
