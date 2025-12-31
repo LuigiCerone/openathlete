@@ -66,7 +66,6 @@ That's where OpenAthlete comes in. Self-hosted or cloud-hosted. Privacy-first by
 | **Self-Hostable** | ✅ Yes | ❌ No | ❌ No |
 | **AI Planning** | ✅ Adaptive & Custom | ⚠️ Basic | ❌ No |
 | **Privacy** | ✅ You own the data | ❌ They own the data | ❌ They sell the data |
-| **Extension** | ✅ Plugin System | ❌ Closed | ❌ Closed |
 | **Cost** | **Free** (Self-hosted) | $19.99/mo | $11.99/mo |
 
 ## Recognition
