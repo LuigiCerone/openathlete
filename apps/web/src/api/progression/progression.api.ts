@@ -8,10 +8,7 @@ export class ProgressionAPI {
     sport?: SPORT_TYPE,
   ): Promise<Date | null> {
     const res = await client.get(
-      routes.progression.getFirstActivityDate(
-        athleteId,
-        sport ? sport : undefined,
-      ),
+      routes.progression.getFirstActivityDate(athleteId, sport ?? undefined),
     );
     return res.data ? new Date(res.data) : null;
   }

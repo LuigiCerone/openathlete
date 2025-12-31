@@ -22,7 +22,7 @@ import { FeatureAccessService } from 'src/modules/subscription';
 @Injectable()
 export class AthleteInvitationService {
   constructor(
-    private prisma: PrismaService,
+    private readonly prisma: PrismaService,
     private configService: ConfigService<ApiEnvSchemaType, true>,
     private eventEmitter: EventEmitter2,
     @Inject(forwardRef(() => FeatureAccessService))
