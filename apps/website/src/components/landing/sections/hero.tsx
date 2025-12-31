@@ -100,6 +100,12 @@ export function Hero() {
           >
             {m.landing_hero_subtitle()}
           </motion.p>
+          <motion.p
+            className="mt-4 text-sm text-muted-foreground/80"
+            variants={itemVariants}
+          >
+            {m.landing_hero_opensource_note()}
+          </motion.p>
 
           <motion.div
             className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row"

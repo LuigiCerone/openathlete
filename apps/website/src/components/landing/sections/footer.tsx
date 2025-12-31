@@ -134,6 +134,26 @@ export function Footer() {
                   {m.footer_tools()}
                 </Link>
               </li>
+              <li>
+                <a
+                  href="https://github.com/openathleteorg/openathlete"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  GitHub
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://docs.openathlete.org"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Documentation
+                </a>
+              </li>
             </ul>
           </div>
 

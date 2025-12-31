@@ -11,6 +11,7 @@ export { Science } from './science';
 export { PilotResults } from './pilot-results';
 export { Testimonials } from './testimonials';
 export { Pricing } from './pricing';
+export { OpenSource } from './opensource';
 export { FAQ } from './faq';
 export { FinalCTA } from './final-cta';
 export { Footer } from './footer';

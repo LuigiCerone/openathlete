@@ -8,7 +8,7 @@ import { APP_URL } from '@/config';
 import { m } from '@/paraglide/messages';
 import { getLocale } from '@/paraglide/runtime';
 import { cn } from '@/utils/shadcn';
-import { Menu, X } from 'lucide-react';
+import { Github, Menu, X } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
@@ -91,6 +91,16 @@ export function Navbar() {
                 <Link href={link.href}>{link.label}</Link>
               </Button>
             ))}
+            <Button variant="ghost" size="icon" asChild>
+              <a
+                href="https://github.com/openathleteorg/openathlete"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="GitHub"
+              >
+                <Github className="h-5 w-5" />
+              </a>
+            </Button>
             <Button asChild>
               <Link href={loginUrl} target="_self" onClick={handleLoginClick}>
                 {m.login()}
@@ -101,6 +111,16 @@ export function Navbar() {
 
           {/* Mobile Menu Button */}
           <div className="flex md:hidden items-center gap-2">
+            <Button variant="ghost" size="icon" asChild>
+              <a
+                href="https://github.com/openathleteorg/openathlete"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="GitHub"
+              >
+                <Github className="h-5 w-5" />
+              </a>
+            </Button>
             <LanguageSwitcher buttonSize="sm" />
             <Button
               variant="ghost"
@@ -135,6 +155,16 @@ export function Navbar() {
                 {link.label}
               </Link>
             ))}
+            <Link
+              href="https://github.com/openathleteorg/openathlete"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent rounded-md transition-colors"
+            >
+              <Github className="h-4 w-4" />
+              GitHub
+            </Link>
             <div className="px-4 pt-2">
               <Button asChild className="w-full">
                 <Link

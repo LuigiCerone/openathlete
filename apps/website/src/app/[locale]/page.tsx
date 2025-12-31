@@ -7,6 +7,7 @@ import {
   Hero,
   HowItWorks,
   Navbar,
+  OpenSource,
   PilotResults,
   Pricing,
   Problem,
@@ -68,6 +69,7 @@ export default async function HomePage({
         <PilotResults />
         <Testimonials />
         <Pricing />
+        <OpenSource />
         <FAQ locale={locale} />
         <FinalCTA />
         <Footer />
