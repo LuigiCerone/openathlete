@@ -70,6 +70,7 @@
   "no_description_provided": "Aucune description fournie",
   "day": "jour",
   "days": "jours",
+  "weeks": "semaines",
   "calendar_of": "Calendrier de {month}",
   "calendar_current_month": "Mois actuel",
   "error_page_403_title": "Accès refusé",

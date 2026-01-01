@@ -72,6 +72,7 @@
   "no_description_provided": "No description provided",
   "day": "day",
   "days": "days",
+  "weeks": "weeks",
   "calendar_of": "Calendar of {month}",
   "calendar_current_month": "Current month",
   "error_page_403_title": "Access denied",

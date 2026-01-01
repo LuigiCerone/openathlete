@@ -41,6 +41,7 @@ export function CycleDetailsDialog({ open, onClose, cycle, onEditCycle }: P) {
     Math.ceil(
       (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24),
     ) + 1;
+  const weeks = Math.round(duration / 7);
 
   return (
     <Dialog onOpenChange={(o) => !o && onClose()} open={open}>
@@ -82,7 +83,8 @@ export function CycleDetailsDialog({ open, onClose, cycle, onEditCycle }: P) {
                 {format(endDate, 'MMM d, yyyy')}
               </span>
               <span className="text-xs text-gray-500">
-                {duration} {duration === 1 ? m.day() : m.days()}
+                {duration} {duration === 1 ? m.day() : m.days()} • {weeks}{' '}
+                {weeks === 1 ? m.week() : m.weeks()}
               </span>
             </div>
           </div>
