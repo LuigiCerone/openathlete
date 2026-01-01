@@ -62,6 +62,19 @@ export class EventAPI {
     return data.map((event) => mapEvent(event));
   }
 
+  static async getUpcomingCompetitions(
+    isCoach?: boolean,
+    athleteId?: number,
+  ): Promise<Event[]> {
+    const params: Record<string, unknown> = { coach: isCoach, athleteId };
+
+    const res = await client.get(routes.event.getUpcomingCompetitions, {
+      params,
+    });
+    const data = res.data as Event[];
+    return data.map((event) => mapEvent(event));
+  }
+
   static async getEvent(eventId: Event['eventId']): Promise<Event> {
     const res = await client.get(routes.event.getEvent(eventId));
     return mapEvent(res.data);

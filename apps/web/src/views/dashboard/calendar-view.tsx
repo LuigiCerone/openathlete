@@ -135,7 +135,7 @@ export function CalendarView() {
       )}
     >
       {space === 'ATHLETE' && (
-        <AthleteDashboardHeader events={data} athleteId={athlete?.athleteId} />
+        <AthleteDashboardHeader athleteId={athlete?.athleteId} />
       )}
       <div className="flex-1 min-h-0">
         <Calendar

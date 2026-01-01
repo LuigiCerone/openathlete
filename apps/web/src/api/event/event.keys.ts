@@ -3,6 +3,7 @@ export const eventKeys = {
   createEvent: 'EventAPI.createEvent',
   updateEvent: 'EventAPI.updateEvent',
   getMyEvents: 'EventAPI.getMyEvents',
+  getUpcomingCompetitions: 'EventAPI.getUpcomingCompetitions',
   getEvent: 'EventAPI.getEvent',
   getEventStream: 'EventAPI.getEventStream',
   getEventWeather: 'EventAPI.getEventWeather',

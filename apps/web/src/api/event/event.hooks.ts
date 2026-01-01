@@ -256,6 +256,19 @@ export const useGetMyEventsQuery = (
     queryKey: [eventKeys.getMyEvents, isCoach, athleteId, startDate, endDate],
   });
 
+export const useGetUpcomingCompetitionsQuery = (
+  isCoach?: boolean,
+  athleteId?: number,
+  opt?: QueryOptions<
+    Awaited<ReturnType<typeof EventAPI.getUpcomingCompetitions>>
+  >,
+) =>
+  useQuery({
+    ...opt,
+    queryFn: () => EventAPI.getUpcomingCompetitions(isCoach, athleteId),
+    queryKey: [eventKeys.getUpcomingCompetitions, isCoach, athleteId],
+  });
+
 export const useGetEventQuery = (
   eventId: number,
   opt?: QueryOptions<Awaited<ReturnType<typeof EventAPI.getEvent>>>,

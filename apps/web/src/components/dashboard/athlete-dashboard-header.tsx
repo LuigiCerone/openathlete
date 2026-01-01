@@ -1,3 +1,4 @@
+import { useGetUpcomingCompetitionsQuery } from '@/api/event';
 import { AthleteMetric, useGetMetricsQuery } from '@/api/metric';
 import { useTrainingLoadMetrics } from '@/api/training-load';
 import { TrainingLoadCalculationType } from '@/api/training-load/training-load.api';
@@ -12,37 +13,24 @@ import { format } from 'date-fns';
 import { Calendar } from 'lucide-react';
 import { useMemo } from 'react';
 
-import {
-  EVENT_TYPE,
-  Event,
-  METRIC_TYPE,
-  metricUnitMap,
-} from '@openathlete/shared';
+import { METRIC_TYPE, metricUnitMap } from '@openathlete/shared';
 
 interface AthleteDashboardHeaderProps {
-  events?: Event[];
   athleteId?: number;
 }
 
 export function AthleteDashboardHeader({
-  events,
   athleteId,
 }: AthleteDashboardHeaderProps) {
   const isMobile = isCapacitor();
-  // Get upcoming competitions
+  const {
+    data: upcomingCompetitionsData = [],
+    isLoading: isLoadingCompetitions,
+  } = useGetUpcomingCompetitionsQuery(false, athleteId);
+
   const upcomingCompetitions = useMemo(() => {
-    if (!events) return [];
-    const now = new Date();
-    now.setHours(0, 0, 0, 0);
-    return events
-      .filter(
-        (event) =>
-          event.type === EVENT_TYPE.COMPETITION &&
-          new Date(event.startDate) >= now,
-      )
-      .sort((a, b) => a.startDate.getTime() - b.startDate.getTime())
-      .slice(0, 2);
-  }, [events]);
+    return upcomingCompetitionsData.slice(0, 2);
+  }, [upcomingCompetitionsData]);
 
   const today = useMemo(() => {
     const now = new Date();
@@ -120,7 +108,13 @@ export function AthleteDashboardHeader({
             <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
               {m.dashboard_header_upcoming_competitions()}
             </h3>
-            {upcomingCompetitions.length === 0 ? (
+            {isLoadingCompetitions ? (
+              <div className="space-y-1.5">
+                {Array.from({ length: 2 }).map((_, i) => (
+                  <Skeleton key={i} className="h-12 rounded-md" />
+                ))}
+              </div>
+            ) : upcomingCompetitions.length === 0 ? (
               <p className="text-xs text-muted-foreground">
                 {m.dashboard_header_no_upcoming_competitions()}
               </p>
