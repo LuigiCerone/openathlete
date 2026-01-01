@@ -149,6 +149,52 @@ export class EventService {
     );
   }
 
+  async getUpcomingCompetitions(
+    user: AuthUser,
+    isCoach: boolean,
+    athleteId?: number,
+  ) {
+    if (isCoach) {
+      user.athlete = null;
+
+      if (athleteId) {
+        user.coachAthletes = user.coachAthletes?.filter(
+          (athlete) => athlete.athleteId === athleteId,
+        );
+      }
+    } else {
+      user.coachAthletes = undefined;
+    }
+
+    const ability = await this.abilities.getFor({ user });
+    const now = startOfDay(new Date());
+
+    const events = await this.prisma.event.findMany({
+      where: {
+        AND: [
+          accessibleBy(ability, 'read').Event,
+          {
+            athleteId: { not: null },
+          },
+          {
+            type: EVENT_TYPE.COMPETITION,
+          },
+          {
+            startDate: {
+              gte: now,
+            },
+          },
+        ],
+      },
+      include: EVENT_INCLUDES,
+      orderBy: {
+        startDate: 'asc',
+      },
+    });
+
+    return events.map((e) => this.prismaEventToEvent(e));
+  }
+
   async getEventById(user: AuthUser, eventId: Event['eventId']) {
     const ability = await this.abilities.getFor({ user });
 

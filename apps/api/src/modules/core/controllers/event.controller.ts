@@ -278,6 +278,57 @@ export class EventController {
 
   @UseGuards(AuthGuard('jwt'), UserTypeGuard)
   @ApiBearerAuth()
+  @Get('upcoming-competitions')
+  @ApiOperation({
+    summary: 'Get upcoming competition events',
+    description:
+      'Retrieves all future competition events accessible to the authenticated user. If coach=true, returns competitions for all athletes the user coaches. If athleteId is provided, filters competitions for that specific athlete. Results are sorted by start date in ascending order. Uses CASL authorization to determine which events the user can access.',
+  })
+  @ApiQuery({
+    name: 'coach',
+    type: String,
+    description:
+      'If "true", returns competitions for all athletes the user coaches. Otherwise, returns competitions for the user\'s own athlete.',
+    example: 'true',
+    required: false,
+  })
+  @ApiQuery({
+    name: 'athleteId',
+    type: String,
+    description:
+      'Optional athlete ID to filter competitions. If coach=true, filters to this specific athlete. If coach=false, this parameter is ignored.',
+    example: '1',
+    required: false,
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'List of upcoming competition events retrieved successfully',
+    schema: {
+      type: 'array',
+      items: {
+        type: 'object',
+        description: 'Competition event object with all related information',
+      },
+    },
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized - invalid or missing authentication token',
+  })
+  getUpcomingCompetitions(
+    @JwtUser() user: AuthUser,
+    @Query('coach') coach: string,
+    @Query('athleteId') athleteId: string,
+  ) {
+    return this.eventService.getUpcomingCompetitions(
+      user,
+      coach === 'true',
+      athleteId ? Number(athleteId) : undefined,
+    );
+  }
+
+  @UseGuards(AuthGuard('jwt'), UserTypeGuard)
+  @ApiBearerAuth()
   @Get(':eventId')
   @ApiOperation({
     summary: 'Get a specific event by ID',
