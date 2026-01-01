@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 
-import { Prisma } from '@openathlete/database';
+import { AthleteInjury, Prisma } from '@openathlete/database';
 import { InputJsonValue } from '@openathlete/database/generated/client/runtime/library';
 import { FeatureName } from '@openathlete/shared';
 
@@ -127,8 +127,16 @@ export class ActivityFeedbackListener {
           take: 20,
         })) ?? [];
 
-      // Filter out injuries with pain score of 0
-      const activeInjuries = injuries.filter((injury) => injury.painScore > 0);
+      const injuryMap = new Map<string, AthleteInjury>();
+      for (const injury of injuries) {
+        if (!injuryMap.has(injury.location)) {
+          injuryMap.set(injury.location, injury);
+        }
+      }
+
+      const activeInjuries = Array.from(injuryMap.values()).filter(
+        (injury) => injury.painScore > 0 && injury.status !== 'RESOLVED',
+      );
 
       const latestMetrics = getLatestMetrics(metrics);
       const athleteMetricsSummary = buildMetricsContext(latestMetrics);
