@@ -8,11 +8,15 @@ import { useWeeklyLoadSummaryQuery } from '@/api/training-load';
 import { trainingLoadKeys } from '@/api/training-load/training-load.keys';
 import { useCalendarData } from '@/components/calendar/hooks/use-calendar-data';
 import { Loader } from '@/components/ui/loader';
+import { useFeatureAccess } from '@/hooks/use-feature-access';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { type PageAction, useSetPageActions } from '@/hooks/use-page-actions';
 import { m } from '@/paraglide/messages';
 import { CALENDAR_COLORED_BY, getItem, setItem } from '@/utils/local-storage';
 import { DragEndEvent } from '@dnd-kit/core';
 import { useQueryClient } from '@tanstack/react-query';
 import { addDays, startOfMonth } from 'date-fns';
+import { Activity, Award, Plus, Sparkles } from 'lucide-react';
 import * as React from 'react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
@@ -23,6 +27,7 @@ import {
   EVENT_TYPE,
   Event,
   EventTemplate,
+  FeatureName,
 } from '@openathlete/shared';
 
 import { AIGenerateEventDialog } from '../ai-generate-event-dialog/ai-generate-event.dialog';
@@ -32,6 +37,7 @@ import { CreateEventFromTemplateDialog } from '../create-event-from-template-dia
 import { CalendarBody } from './calendar-body';
 import { CalendarEventDetailsDialog } from './calendar-event-details.dialog';
 import { CalendarHeader } from './calendar-header';
+import { CalendarMobileList } from './calendar-mobile-list';
 import { CalendarWeeklyLoadChart } from './calendar-weekly-load-chart';
 import { CalendarContext } from './contexts/calendar-context';
 import { EventClipboardProvider } from './contexts/event-clipboard-context';
@@ -57,8 +63,12 @@ export function Calendar({
   onMonthChange,
   isLoading = false,
 }: P) {
+  const isMobile = useIsMobile();
   const calendarData = useCalendarData({ events });
   const { data: cycles } = useGetMyCyclesQuery(undefined, athleteId);
+  const { hasAccess: hasAIAccess } = useFeatureAccess(
+    FeatureName.AI_GENERATION,
+  );
   const weekRangeStart = calendarData.displayedWeeks[0]?.[0];
   const weekRangeEnd =
     calendarData.displayedWeeks[calendarData.displayedWeeks.length - 1]?.[6];
@@ -501,11 +511,53 @@ export function Calendar({
     ],
   );
 
-  // Register calendar handler with shared DnD context
   React.useEffect(() => {
     if (!registerCalendarHandler) return;
     return registerCalendarHandler(dndOnDragEnd);
   }, [registerCalendarHandler, dndOnDragEnd]);
+
+  const mobileActions = useMemo<PageAction[]>(() => {
+    if (!isMobile || !allowCreate) return [];
+
+    const today = new Date();
+    const actions: PageAction[] = [
+      {
+        label: m.create_event(),
+        icon: Plus,
+        onClick: () => {
+          setCreateEventDialog({ date: today, type: EVENT_TYPE.TRAINING });
+        },
+      },
+      {
+        label: m.plan_a_training(),
+        icon: Activity,
+        onClick: () => {
+          setCreateEventDialog({ date: today, type: EVENT_TYPE.TRAINING });
+        },
+      },
+      {
+        label: m.plan_a_competition(),
+        icon: Award,
+        onClick: () => {
+          setCreateEventDialog({ date: today, type: EVENT_TYPE.COMPETITION });
+        },
+      },
+    ];
+
+    if (hasAIAccess) {
+      actions.splice(1, 0, {
+        label: m.create_with_ai(),
+        icon: Sparkles,
+        onClick: () => {
+          setAIGenerateEventDialog(today);
+        },
+      });
+    }
+
+    return actions;
+  }, [isMobile, allowCreate, hasAIAccess]);
+
+  useSetPageActions(isMobile && allowCreate ? mobileActions : []);
 
   // Handle global mouse up to end drag selection and cycle resize
   useEffect(() => {
@@ -556,29 +608,41 @@ export function Calendar({
       <EventClipboardProvider>
         <EventContextMenuProvider>
           <CalendarContext.Provider value={memoizedValue}>
-            <CalendarHeader />
-            <div className="relative">
-              <div className={isLoading ? 'opacity-50 transition-opacity' : ''}>
-                <CalendarBody />
-              </div>
-              {isLoading && (
-                <div className="absolute inset-0 flex items-center justify-center bg-background/50 backdrop-blur-sm rounded-lg z-10">
-                  <div className="flex flex-col items-center gap-2">
-                    <Loader size="lg" />
-                    <p className="text-sm text-muted-foreground">
-                      {m.loading()}
-                    </p>
-                  </div>
+            {!isMobile && <CalendarHeader />}
+            <div className={isMobile ? 'w-full flex-1' : 'relative'}>
+              {isMobile ? (
+                <div className="w-full h-full">
+                  <CalendarMobileList isLoading={isLoading} />
                 </div>
+              ) : (
+                <>
+                  <div
+                    className={isLoading ? 'opacity-50 transition-opacity' : ''}
+                  >
+                    <CalendarBody />
+                  </div>
+                  {isLoading && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-background/50 backdrop-blur-sm rounded-lg z-10">
+                      <div className="flex flex-col items-center gap-2">
+                        <Loader size="lg" />
+                        <p className="text-sm text-muted-foreground">
+                          {m.loading()}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                </>
               )}
             </div>
-            <CalendarWeeklyLoadChart
-              weeks={calendarData.displayedWeeks}
-              displayedMonth={calendarData.displayedMonth}
-              weeklyLoadSummary={weeklyLoadSummaryMap}
-              isLoading={weeklyLoadSummaryLoading}
-              hasScheduledActivities={hasScheduledActivitiesWithinSixtyDays}
-            />
+            {!isMobile && (
+              <CalendarWeeklyLoadChart
+                weeks={calendarData.displayedWeeks}
+                displayedMonth={calendarData.displayedMonth}
+                weeklyLoadSummary={weeklyLoadSummaryMap}
+                isLoading={weeklyLoadSummaryLoading}
+                hasScheduledActivities={hasScheduledActivitiesWithinSixtyDays}
+              />
+            )}
             <CreateEventDialog
               key={createEventDialog?.date?.toDateString()}
               open={createEventDialog !== null}

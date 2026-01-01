@@ -1,3 +1,4 @@
+import { useIsMobile } from '@/hooks/use-mobile';
 import { useCallback, useMemo, useState } from 'react';
 
 import { Event } from '@openathlete/shared';
@@ -8,6 +9,7 @@ interface CalendarData {
 }
 
 export function useCalendarData({ defaultMonth, events }: CalendarData) {
+  const isMobile = useIsMobile();
   const [displayedMonth, setDisplayedMonth] = useState(
     defaultMonth || new Date(),
   );
@@ -54,6 +56,8 @@ export function useCalendarData({ defaultMonth, events }: CalendarData) {
     let day = 1;
     let dayPrevMonth = daysInPrevMonth - firstDayWeek + 1;
     let dayNextMonth = 1;
+
+    // Generate weeks for the displayed month
     for (let i = 0; i < weeksInMonth; i++) {
       const week = [];
       for (let j = 0; j < 7; j++) {
@@ -88,8 +92,63 @@ export function useCalendarData({ defaultMonth, events }: CalendarData) {
       }
       weeks.push(week);
     }
+
+    if (isMobile) {
+      const today = new Date();
+      const maxFutureDate = new Date(
+        today.getFullYear(),
+        today.getMonth() + 12,
+        0,
+      );
+      const minPastDate = new Date(
+        today.getFullYear(),
+        today.getMonth() - 6,
+        1,
+      );
+
+      // Add weeks in the past
+      const firstWeek = weeks[0];
+      if (firstWeek && firstWeek.length > 0) {
+        const firstDate = new Date(firstWeek[0]);
+        firstDate.setDate(firstDate.getDate() - 1);
+
+        while (firstDate >= minPastDate) {
+          const week: Date[] = [];
+          for (let j = 6; j >= 0; j--) {
+            if (firstDate >= minPastDate) {
+              week.unshift(new Date(firstDate));
+              firstDate.setDate(firstDate.getDate() - 1);
+            } else {
+              week.unshift(new Date(minPastDate));
+            }
+          }
+          weeks.unshift(week);
+        }
+      }
+
+      // Add weeks in the future
+      const lastWeek = weeks[weeks.length - 1];
+      if (lastWeek && lastWeek.length > 0) {
+        const currentDate = new Date(lastWeek[lastWeek.length - 1]);
+        currentDate.setDate(currentDate.getDate() + 1);
+
+        while (currentDate <= maxFutureDate) {
+          const week: Date[] = [];
+          for (let j = 0; j < 7; j++) {
+            if (currentDate <= maxFutureDate) {
+              week.push(new Date(currentDate));
+              currentDate.setDate(currentDate.getDate() + 1);
+            } else {
+              week.push(new Date(maxFutureDate));
+            }
+          }
+          weeks.push(week);
+        }
+      }
+    }
+
     return weeks;
-  }, [displayedMonth]);
+  }, [displayedMonth, isMobile]);
 
   return {
     displayedMonth,

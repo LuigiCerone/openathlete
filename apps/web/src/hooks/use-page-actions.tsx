@@ -52,12 +52,14 @@ export function useSetPageActions(actions?: PageAction[]) {
   useEffect(() => {
     if (actions) {
       setActions(actions);
+    } else {
+      setActions([]);
     }
     return () => {
       setActions([]);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [actions]);
 
   return setActions;
 }

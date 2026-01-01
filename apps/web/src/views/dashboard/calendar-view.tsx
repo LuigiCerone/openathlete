@@ -4,6 +4,8 @@ import { ActivityFeedbackDialog } from '@/components/activity-feedback/activity-
 import { Calendar } from '@/components/calendar/calendar';
 import { AthleteDashboardHeader } from '@/components/dashboard/athlete-dashboard-header';
 import { useSpaceContext } from '@/contexts/space';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { cn } from '@/utils/shadcn';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
@@ -13,6 +15,7 @@ import {
 } from '@openathlete/shared';
 
 export function CalendarView() {
+  const isMobile = useIsMobile();
   const { data: athlete } = useGetMyAthleteQuery();
   const { space } = useSpaceContext();
   const [displayedMonth, setDisplayedMonth] = useState(new Date());
@@ -23,19 +26,34 @@ export function CalendarView() {
   >(new Set());
 
   const { startDate, endDate } = useMemo(() => {
-    const start = new Date(
-      displayedMonth.getFullYear(),
-      displayedMonth.getMonth() - 1,
-      1,
-    );
-    const end = new Date(
-      displayedMonth.getFullYear(),
-      displayedMonth.getMonth() + 2,
-      0,
-    );
-    end.setHours(23, 59, 59, 999);
-    return { startDate: start, endDate: end };
-  }, [displayedMonth]);
+    if (isMobile) {
+      const start = new Date(
+        displayedMonth.getFullYear(),
+        displayedMonth.getMonth() - 6,
+        1,
+      );
+      const end = new Date(
+        displayedMonth.getFullYear(),
+        displayedMonth.getMonth() + 12,
+        0,
+      );
+      end.setHours(23, 59, 59, 999);
+      return { startDate: start, endDate: end };
+    } else {
+      const start = new Date(
+        displayedMonth.getFullYear(),
+        displayedMonth.getMonth() - 1,
+        1,
+      );
+      const end = new Date(
+        displayedMonth.getFullYear(),
+        displayedMonth.getMonth() + 2,
+        0,
+      );
+      end.setHours(23, 59, 59, 999);
+      return { startDate: start, endDate: end };
+    }
+  }, [displayedMonth, isMobile]);
 
   const { data, refetch, isPending } = useGetMyEventsQuery(
     undefined,
@@ -110,17 +128,24 @@ export function CalendarView() {
   };
 
   return (
-    <div className="w-full p-4 md:p-8">
+    <div
+      className={cn(
+        'w-full flex flex-col h-full',
+        isMobile ? 'p-0' : 'p-4 md:p-8',
+      )}
+    >
       {space === 'ATHLETE' && (
         <AthleteDashboardHeader events={data} athleteId={athlete?.athleteId} />
       )}
-      <Calendar
-        events={data}
-        athleteId={space === 'ATHLETE' ? athlete?.athleteId : undefined}
-        allowCreate={space === 'ATHLETE'}
-        onMonthChange={handleMonthChange}
-        isLoading={isPending}
-      />
+      <div className="flex-1 min-h-0">
+        <Calendar
+          events={data}
+          athleteId={space === 'ATHLETE' ? athlete?.athleteId : undefined}
+          allowCreate={space === 'ATHLETE'}
+          onMonthChange={handleMonthChange}
+          isLoading={isPending}
+        />
+      </div>
       {pendingFeedbackEvent && (
         <ActivityFeedbackDialog
           event={pendingFeedbackEvent}

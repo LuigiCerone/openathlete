@@ -924,5 +924,10 @@
   "invoice_status_open": "Open",
   "invoice_status_draft": "Draft",
   "invoice_status_void": "Void",
-  "invoice_status_uncollectible": "Uncollectible"
+  "invoice_status_uncollectible": "Uncollectible",
+  "create_event": "Create Event",
+  "no_events": "No events",
+  "week_summary": "Week Summary",
+  "event": "event",
+  "events": "events"
 }
