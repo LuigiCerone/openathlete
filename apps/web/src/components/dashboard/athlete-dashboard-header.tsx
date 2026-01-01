@@ -1,12 +1,13 @@
-import { useGetMetricsQuery } from '@/api/metric';
-import { AthleteMetric } from '@/api/metric';
+import { AthleteMetric, useGetMetricsQuery } from '@/api/metric';
 import { useTrainingLoadMetrics } from '@/api/training-load';
 import { TrainingLoadCalculationType } from '@/api/training-load/training-load.api';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { m } from '@/paraglide/messages';
+import { getLocale } from '@/paraglide/runtime';
 import { isCapacitor } from '@/utils/capacitor';
 import { metricTypeLabelMap } from '@/utils/label-map/core/metric-type.label-map';
+import { getDateFnsLocale } from '@/utils/locales';
 import { format } from 'date-fns';
 import { Calendar } from 'lucide-react';
 import { useMemo } from 'react';
@@ -137,7 +138,9 @@ export function AthleteDashboardHeader({
                       </p>
                       <p className="text-[10px] text-blue-700 dark:text-blue-300">
                         {getDaysUntil(competition.startDate)} •{' '}
-                        {format(competition.startDate, 'MMM d')}
+                        {format(competition.startDate, 'MMM d', {
+                          locale: getDateFnsLocale(getLocale()),
+                        })}
                       </p>
                     </div>
                   </div>
