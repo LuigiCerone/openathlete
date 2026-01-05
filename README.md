@@ -419,7 +419,7 @@ Don't code but still want to contribute? Join our [Discussions](https://github.c
 
 ## Repo Activity
 
-<img width="100%" src="https://repobeats.axiom.co/api/embed/4c9b000ff31048321e102ba8738b1dccea6421d0.svg" />
+<img width="100%" src="https://repobeats.axiom.co/api/embed/99c5ba879a6c63bdd522bb53ca2a134a080a0a4b.svg" />
 
 <!-- ACKNOWLEDGEMENTS -->
 
