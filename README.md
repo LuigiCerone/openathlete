@@ -54,7 +54,7 @@ That's where OpenAthlete comes in. Self-hosted or cloud-hosted. Privacy-first by
 - 🔗 **Device Integrations** - Connect with Strava, Garmin, Suunto, Polar, Coros, and more
 - 🎤 **Voice Feedback** - Record post-session voice notes analyzed by AI for tone, stress, and motivation
 - 👨‍🏫 **Coach Mode** - Hybrid coaching system where coaches can validate AI adjustments
-- 📱 **Mobile Apps** - Native iOS and Android apps for on-the-go training management
+- 📱 **Mobile Apps** - Native iOS (on [TestFlight](https://testflight.apple.com/join/1hBg4mR1))  and Android (coming soon) apps for on-the-go training management
 - 🔒 **Privacy-First** - Your data stays yours. Self-hostable with full control
 - 🌐 **Open Source** - Transparent, extensible, and community-driven
 
