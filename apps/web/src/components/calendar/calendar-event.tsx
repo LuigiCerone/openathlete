@@ -74,12 +74,12 @@ function EventSecondLine({ event }: { event: Event }) {
   if (event.type === 'TRAINING' || event.type === 'COMPETITION') {
     return (
       <div className="flex justify-between w-full">
-        {event.goalDuration && (
+        {!!event.goalDuration && (
           <div className="text-xs font-medium text-gray-500 dark:text-gray-400">
             {formatDuration(event.goalDuration)}
           </div>
         )}
-        {event.goalDistance && (
+        {!!event.goalDistance && (
           <div className="text-xs font-medium text-gray-500 dark:text-gray-400">
             {formatDistance(event.goalDistance, 'km')} km
           </div>
