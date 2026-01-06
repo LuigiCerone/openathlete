@@ -11,6 +11,8 @@ import { articleGenerativeAiSports } from './article-generative-ai-sports';
 import { articleHybridCoaching } from './article-hybrid-coaching';
 import { articleInjuryPrevention2 } from './article-injury-prevention-2';
 import { articleNolioTrainingpeaksComparison } from './article-nolio-trainingpeaks-comparison';
+import { articleOpenathleteFreeAlternativeTrainingpeaks } from './article-openathlete-free-alternative-trainingpeaks';
+import { articleOpenathleteOpensourceBenefits } from './article-openathlete-opensource-benefits';
 import { articleOvertrainingSigns } from './article-overtraining-signs';
 import { articlePreppingForGoal } from './article-prepping-for-goal';
 import { articleProgressiveOverload } from './article-progressive-overload';
@@ -43,6 +45,8 @@ export const blogPosts: BlogPost[] = [
   articleDigitalizingClubs,
   articleYouthTalentDetection,
   articleNolioTrainingpeaksComparison,
+  articleOpenathleteFreeAlternativeTrainingpeaks,
+  articleOpenathleteOpensourceBenefits,
   articleSyncWorkouts,
   articleTrimp,
   articleFutureAiCoaching,
