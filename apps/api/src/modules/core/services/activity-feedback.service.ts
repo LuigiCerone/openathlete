@@ -309,12 +309,41 @@ export class ActivityFeedbackService {
     try {
       let fileForOpenAI: File | Buffer;
 
+      // Determine MIME type from file extension for OpenAI compatibility
+      // OpenAI Whisper checks the actual file format, so we need to match
+      // the MIME type to the file extension
+      // For .m4a files, OpenAI expects the file to be in M4A format
+      // The MIME type should match what OpenAI expects for that extension
+      let mimeTypeForOpenAI = file.mimetype;
+      const fileName = file.originalname || 'audio.webm';
+      const extension = fileName.split('.').pop()?.toLowerCase();
+
+      // Map extensions to OpenAI-supported MIME types
+      // OpenAI supports: flac, m4a, mp3, mp4, mpeg, mpga, oga, ogg, wav, webm
+      // For .m4a files, use audio/mp4 (M4A is MPEG-4 Audio, which uses audio/mp4 MIME type)
+      // But OpenAI will check the actual file format based on extension
+      if (extension === 'm4a') {
+        mimeTypeForOpenAI = 'audio/mp4';
+      } else if (extension === 'mp3' || extension === 'mpga') {
+        mimeTypeForOpenAI = 'audio/mpeg';
+      } else if (extension === 'ogg' || extension === 'oga') {
+        mimeTypeForOpenAI = 'audio/ogg';
+      } else if (extension === 'wav') {
+        mimeTypeForOpenAI = 'audio/wav';
+      } else if (extension === 'webm') {
+        mimeTypeForOpenAI = 'audio/webm';
+      } else if (extension === 'mp4') {
+        mimeTypeForOpenAI = 'audio/mp4';
+      } else if (extension === 'flac') {
+        mimeTypeForOpenAI = 'audio/flac';
+      }
+
       if (typeof File !== 'undefined') {
         fileForOpenAI = new File(
           [file.buffer as unknown as ArrayBuffer],
-          file.originalname || 'audio.webm',
+          fileName,
           {
-            type: file.mimetype,
+            type: mimeTypeForOpenAI,
           },
         );
       } else {
