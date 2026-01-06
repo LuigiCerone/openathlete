@@ -840,16 +840,16 @@ We're here to help! Here are ways to get support:
 ### 📚 Resources
 - **Documentation**: [docs.openathlete.org](https://docs.openathlete.org)
 - **API Docs**: [api.openathlete.org/docs](https://api.openathlete.org/docs)
-- **GitHub Discussions**: [Ask questions](https://github.com/openathleteorg/openathlete/discussions)
+- **Discord**: [Join our community](https://discord.gg/2jaW4m8B)
 - **GitHub Issues**: [Report bugs](https://github.com/openathleteorg/openathlete/issues)
 
 ### 💬 Community
-- **GitHub Discussions**: Best for questions and discussions
+- **Discord**: Best for questions and discussions - [Join us](https://discord.gg/2jaW4m8B)
 - **GitHub Issues**: For bugs and feature requests
 - **Pull Requests**: For code-related questions
 
 ### 🆘 Before Asking
-1. **Search existing issues** and discussions
+1. **Search existing issues** and Discord messages
 2. **Check the documentation**
 3. **Review similar code** in the codebase
 4. **Try to reproduce** the issue yourself
@@ -884,6 +884,6 @@ By contributing to OpenAthlete, you agree that your contributions will be licens
 3. [Finding an issue to work on](https://github.com/openathleteorg/openathlete/issues?q=is:open+label:"good+first+issue")
 4. [Creating your first pull request](#pull-request-process)
 
-**Questions?** Don't hesitate to ask in [GitHub Discussions](https://github.com/openathleteorg/openathlete/discussions)!
+**Questions?** Don't hesitate to ask in our [Discord community](https://discord.gg/2jaW4m8B)!
 
 Thank you for contributing to OpenAthlete! Together, we're building the future of open-source training platforms. 🚀

@@ -12,7 +12,7 @@
     <a href="https://openathlete.org"><strong>Learn more »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/openathleteorg/openathlete/discussions">Discussions</a>
+    <a href="https://discord.gg/2jaW4m8B">Discord</a>
     ·
     <a href="https://openathlete.org">Website</a>
     ·
@@ -31,6 +31,7 @@
    <a href="https://testflight.apple.com/join/1hBg4mR1"><img src="https://img.shields.io/badge/TestFlight-iOS%20App-blue" alt="iOS App"></a>
    <a href="https://api.openathlete.org/docs"><img src="https://img.shields.io/badge/API-Swagger-green" alt="API Docs"></a>
    <a href="https://docs.openathlete.org"><img src="https://img.shields.io/badge/Docs-Online-brightgreen" alt="Documentation"></a>
+   <a href="https://discord.gg/2jaW4m8B"><img src="https://img.shields.io/badge/Discord-Community-5865F2" alt="Discord"></a>
    <a href="https://github.com/openathleteorg/openathlete/issues?q=is:issue+is:open+label:%22help+wanted%22"><img src="https://img.shields.io/badge/Help%20Wanted-Contribute-blue"></a>
    <a href="https://github.com/openathleteorg/openathlete/issues?q=is:issue+is:open+label:%22good+first+issue%22"><img src="https://img.shields.io/badge/Good%20First%20Issue-Start%20Here-green"></a>
 </p>
@@ -415,7 +416,7 @@ We also have [help wanted](https://github.com/openathleteorg/openathlete/issues?
 
 ### Translations
 
-Don't code but still want to contribute? Join our [Discussions](https://github.com/openathleteorg/openathlete/discussions) and help translate OpenAthlete into your language.
+Don't code but still want to contribute? Join our [Discord community](https://discord.gg/2jaW4m8B) and help translate OpenAthlete into your language.
 
 ## Repo Activity
 
