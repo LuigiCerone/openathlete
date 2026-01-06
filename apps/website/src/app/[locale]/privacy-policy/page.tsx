@@ -15,11 +15,13 @@ export async function generateMetadata({
     notFound();
   }
 
+  // Canonical URL should always point to the English version
+  const canonicalUrl = `${SITE_URL}/privacy-policy`;
   return {
     title: m.privacy_policy_title(),
     description: m.privacy_policy_intro(),
     alternates: {
-      canonical: `${SITE_URL}${locale === 'en' ? '' : `/${locale}`}/privacy-policy`,
+      canonical: canonicalUrl,
       languages: {
         en: `${SITE_URL}/privacy-policy`,
         fr: `${SITE_URL}/fr/privacy-policy`,

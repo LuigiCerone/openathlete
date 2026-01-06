@@ -42,9 +42,19 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(`${APP_URL}/auth/login`);
   }
 
+  // Redirect /en and /en/* to non-prefixed URLs (English is default)
+  if (firstSegment === 'en') {
+    const pathWithoutLocale = pathSegments.slice(1).join('/');
+    const redirectPath = pathWithoutLocale ? `/${pathWithoutLocale}` : '/';
+    const redirectUrl = new URL(redirectPath, request.url);
+    // Preserve query string
+    redirectUrl.search = request.nextUrl.search;
+    return NextResponse.redirect(redirectUrl, 301); // Permanent redirect
+  }
+
   if (pathnameHasLocale) {
-    // Locale is already in path - pass through to [locale] route
-    // Next.js will automatically match /en or /fr to [locale] route
+    // Locale is already in path (and it's not 'en') - pass through to [locale] route
+    // Next.js will automatically match /fr to [locale] route
     return NextResponse.next();
   }
 

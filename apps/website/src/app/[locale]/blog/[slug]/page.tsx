@@ -41,6 +41,8 @@ export async function generateMetadata({
 
   const metadata = generatePageMetadata({ locale });
   const postUrl = `${SITE_URL}${locale === 'en' ? '' : `/${locale}`}/blog/${slug}`;
+  // Canonical URL should always point to the English version
+  const canonicalUrl = `${SITE_URL}/blog/${slug}`;
 
   return {
     ...metadata,
@@ -74,7 +76,7 @@ export async function generateMetadata({
       images: post.metadata.image ? [post.metadata.image] : undefined,
     },
     alternates: {
-      canonical: postUrl,
+      canonical: canonicalUrl,
       languages: {
         en: `${SITE_URL}/blog/${slug}`,
         fr: `${SITE_URL}/fr/blog/${slug}`,

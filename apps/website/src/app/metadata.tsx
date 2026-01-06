@@ -68,7 +68,9 @@ export function generateMetadata(options?: GenerateMetadataOptions): Metadata {
   const ogLocale = locale === 'fr' ? 'fr_FR' : 'en_US';
   const alternateLocale = locale === 'fr' ? 'en_US' : 'fr_FR';
   const localePath = locale === 'fr' ? '/fr' : '';
-  const canonicalUrl = `${SITE_URL}${localePath}${path}`;
+  const currentUrl = `${SITE_URL}${localePath}${path}`;
+  // Canonical URL should always point to the English version
+  const canonicalUrl = `${SITE_URL}${path}`;
 
   return {
     title,
@@ -77,7 +79,7 @@ export function generateMetadata(options?: GenerateMetadataOptions): Metadata {
     openGraph: {
       title,
       description,
-      url: canonicalUrl,
+      url: currentUrl,
       siteName: 'OpenAthlete',
       images: [
         {
@@ -100,9 +102,9 @@ export function generateMetadata(options?: GenerateMetadataOptions): Metadata {
     alternates: {
       canonical: canonicalUrl,
       languages: {
-        en: SITE_URL,
-        fr: `${SITE_URL}/fr`,
-        'x-default': SITE_URL,
+        en: `${SITE_URL}${path}`,
+        fr: `${SITE_URL}/fr${path}`,
+        'x-default': `${SITE_URL}${path}`,
       },
     },
   };

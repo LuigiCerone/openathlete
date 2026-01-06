@@ -25,12 +25,14 @@ export async function generateMetadata({
   }
 
   const metadata = generatePageMetadata({ locale });
+  // Canonical URL should always point to the English version
+  const canonicalUrl = `${SITE_URL}/blog`;
   return {
     ...metadata,
     title: m.blog_title(),
     description: m.blog_description(),
     alternates: {
-      canonical: `${SITE_URL}${locale === 'en' ? '' : `/${locale}`}/blog`,
+      canonical: canonicalUrl,
       languages: {
         en: `${SITE_URL}/blog`,
         fr: `${SITE_URL}/fr/blog`,

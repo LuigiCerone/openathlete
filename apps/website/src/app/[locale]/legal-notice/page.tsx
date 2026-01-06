@@ -15,10 +15,12 @@ export async function generateMetadata({
     notFound();
   }
 
+  // Canonical URL should always point to the English version
+  const canonicalUrl = `${SITE_URL}/legal-notice`;
   return {
     title: m.legal_notice_title(),
     alternates: {
-      canonical: `${SITE_URL}${locale === 'en' ? '' : `/${locale}`}/legal-notice`,
+      canonical: canonicalUrl,
       languages: {
         en: `${SITE_URL}/legal-notice`,
         fr: `${SITE_URL}/fr/legal-notice`,
