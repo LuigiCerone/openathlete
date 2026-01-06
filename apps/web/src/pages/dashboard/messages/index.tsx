@@ -115,16 +115,35 @@ export function MessagesPage() {
     const mainElement = document.querySelector(
       'main[class*="overflow-y-auto"]',
     ) as HTMLElement;
+
+    const layoutContainer = document.querySelector(
+      'div.flex.min-h-screen.flex-col',
+    );
+    const layoutHeader = layoutContainer?.querySelector(
+      'header[class*="sticky"]',
+    ) as HTMLElement;
+    const messageHeaderContainer = document.querySelector(
+      '[data-message-header]',
+    );
+    const messageHeader = messageHeaderContainer?.querySelector('header');
+
+    if (layoutHeader && layoutHeader !== messageHeader) {
+      layoutHeader.style.display = 'none';
+    }
+
     if (mainElement) {
       mainRef.current = mainElement;
       mainElement.style.overflow = 'hidden';
-      mainElement.style.height = '100vh';
     }
 
     return () => {
       if (mainRef.current) {
         mainRef.current.style.overflow = '';
         mainRef.current.style.height = '';
+        mainRef.current.style.maxHeight = '';
+      }
+      if (layoutHeader && layoutHeader !== messageHeader) {
+        layoutHeader.style.display = '';
       }
     };
   }, [isMobile, mobileView]);
@@ -309,18 +328,16 @@ export function MessagesPage() {
 
     return (
       <div
-        className="flex h-screen bg-background flex-col overflow-hidden"
+        className="flex bg-background flex-col overflow-hidden"
         style={{
-          height: '100vh',
-          position: 'relative',
+          height:
+            'calc(100dvh - 56px - 8px - env(safe-area-inset-top) - env(safe-area-inset-bottom))',
+          maxHeight:
+            'calc(100dvh - 56px - 8px- env(safe-area-inset-top) - env(safe-area-inset-bottom))',
         }}
+        data-message-header
       >
-        <div
-          className="absolute top-0 left-0 right-0 z-40"
-          style={{
-            top: 'calc(120px + env(safe-area-inset-top))',
-          }}
-        >
+        <div className="flex-shrink-0">
           <MobileHeader
             title={conversationTitle}
             showBack={true}
@@ -335,19 +352,13 @@ export function MessagesPage() {
               className="flex-1 min-h-0 overflow-y-auto overscroll-contain"
               style={{
                 WebkitOverflowScrolling: 'touch',
-                paddingTop: 'calc(120px + 50px + env(safe-area-inset-top))',
               }}
             >
               <MessageMessages messageThreadId={activeId} />
             </div>
 
             <Separator className="flex-shrink-0" />
-            <div
-              className="flex-shrink-0 p-4 bg-background"
-              style={{
-                paddingBottom: 'max(1rem, env(safe-area-inset-bottom))',
-              }}
-            >
+            <div className="flex-shrink-0 p-4 bg-background">
               <ChatInput
                 threadId={activeId}
                 onSendMessage={handleSendMessage}
