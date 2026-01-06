@@ -27,7 +27,10 @@ export function CalendarMobileList({ isLoading }: P) {
   const [currentScrollIndex, setCurrentScrollIndex] = useState<number | null>(
     null,
   );
+  const [isScrollingToToday, setIsScrollingToToday] = useState(false);
   const hasScrolledToTodayRef = useRef(false);
+  const scrollAttemptsRef = useRef(0);
+  const wasLoadingRef = useRef(isLoading);
 
   const items: ListItem[] = useMemo(() => {
     const result: ListItem[] = [];
@@ -137,40 +140,107 @@ export function CalendarMobileList({ isLoading }: P) {
   }, [virtualizer, items.length, currentScrollIndex]);
 
   useEffect(() => {
+    const justFinishedLoading = wasLoadingRef.current && !isLoading;
+    wasLoadingRef.current = isLoading;
+
+    if (isLoading || items.length === 0) {
+      return;
+    }
+
+    if (justFinishedLoading || displayedMonth) {
+      scrollAttemptsRef.current = 0;
+      hasScrolledToTodayRef.current = false;
+    }
+
     if (
       todayIndex >= 0 &&
       parentRef.current &&
       items.length > todayIndex &&
       !hasScrolledToTodayRef.current
     ) {
-      const timeoutId = setTimeout(() => {
-        try {
-          virtualizer.scrollToIndex(todayIndex, {
-            align: 'start',
-            behavior: 'auto',
-          });
-          hasScrolledToTodayRef.current = true;
-          setTimeout(() => {
-            const virtualItems = virtualizer.getVirtualItems();
-            if (virtualItems.length > 0) {
-              setCurrentScrollIndex(virtualItems[0]?.index ?? todayIndex);
-            } else {
-              setCurrentScrollIndex(todayIndex);
-            }
-          }, 100);
-        } catch {
+      setIsScrollingToToday(true);
+
+      const scrollToToday = () => {
+        scrollAttemptsRef.current += 1;
+        if (scrollAttemptsRef.current > 20) {
           setCurrentScrollIndex(todayIndex);
           hasScrolledToTodayRef.current = true;
+          setIsScrollingToToday(false);
+          return;
         }
-      }, 100);
 
-      return () => clearTimeout(timeoutId);
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            try {
+              const totalSize = virtualizer.getTotalSize();
+              const virtualItems = virtualizer.getVirtualItems();
+
+              const isReady =
+                totalSize > 0 &&
+                todayIndex >= 0 &&
+                todayIndex < items.length &&
+                virtualItems.length > 0;
+
+              if (isReady) {
+                const hasCalculatedPositions =
+                  virtualItems.some(
+                    (item) => Math.abs(item.index - todayIndex) <= 5,
+                  ) || totalSize > 1000;
+
+                if (hasCalculatedPositions) {
+                  virtualizer.scrollToIndex(todayIndex, {
+                    align: 'start',
+                    behavior: 'auto',
+                  });
+                  hasScrolledToTodayRef.current = true;
+                  setTimeout(() => {
+                    const updatedVirtualItems = virtualizer.getVirtualItems();
+                    if (updatedVirtualItems.length > 0) {
+                      setCurrentScrollIndex(
+                        updatedVirtualItems[0]?.index ?? todayIndex,
+                      );
+                    } else {
+                      setCurrentScrollIndex(todayIndex);
+                    }
+                    setIsScrollingToToday(false);
+                  }, 200);
+                } else {
+                  setTimeout(scrollToToday, 50);
+                }
+              } else {
+                setTimeout(scrollToToday, 50);
+              }
+            } catch (error) {
+              console.warn('Failed to scroll to today:', error);
+              setCurrentScrollIndex(todayIndex);
+              hasScrolledToTodayRef.current = true;
+              setIsScrollingToToday(false);
+            }
+          });
+        });
+      };
+
+      const delay = justFinishedLoading ? 300 : 100;
+      const timeoutId = setTimeout(scrollToToday, delay);
+
+      return () => {
+        clearTimeout(timeoutId);
+        setIsScrollingToToday(false);
+      };
     } else if (items.length > 0 && !hasScrolledToTodayRef.current) {
       setCurrentScrollIndex(0);
       hasScrolledToTodayRef.current = true;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [displayedMonth, todayIndex, items.length]);
+  }, [
+    displayedMonth,
+    todayIndex,
+    items.length,
+    virtualizer,
+    isLoading,
+    events.length,
+    cycles.length,
+  ]);
 
   const handleScrollToToday = () => {
     if (todayIndex >= 0) {
@@ -203,7 +273,7 @@ export function CalendarMobileList({ isLoading }: P) {
   return (
     <div
       ref={parentRef}
-      className="w-full overflow-auto bg-background scrollbar-hide"
+      className="w-full overflow-auto bg-background scrollbar-hide relative"
       style={{
         contain: 'strict',
         height:
@@ -215,6 +285,14 @@ export function CalendarMobileList({ isLoading }: P) {
         msOverflowStyle: 'none',
       }}
     >
+      {isScrollingToToday && (
+        <div className="absolute inset-0 flex items-center justify-center bg-background/80 backdrop-blur-sm z-20">
+          <div className="flex flex-col items-center gap-2">
+            <Loader size="lg" />
+            <p className="text-sm text-muted-foreground">{m.loading()}</p>
+          </div>
+        </div>
+      )}
       <div
         style={{
           height: `${virtualizer.getTotalSize()}px`,
