@@ -210,8 +210,7 @@ export function CalendarMobileList({ isLoading }: P) {
               } else {
                 setTimeout(scrollToToday, 50);
               }
-            } catch (error) {
-              console.warn('Failed to scroll to today:', error);
+            } catch {
               setCurrentScrollIndex(todayIndex);
               hasScrolledToTodayRef.current = true;
               setIsScrollingToToday(false);
@@ -231,7 +230,6 @@ export function CalendarMobileList({ isLoading }: P) {
       setCurrentScrollIndex(0);
       hasScrolledToTodayRef.current = true;
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     displayedMonth,
     todayIndex,
