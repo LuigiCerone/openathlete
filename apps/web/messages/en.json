@@ -937,5 +937,5 @@
   "start_date_required": "Start date is required",
   "training_plan_imported_successfully": "Training plan \"{planName}\" imported successfully",
   "failed_to_import_training_plan": "Failed to import training plan",
-  "import": "Import"
+  "import_action": "Import"
 }

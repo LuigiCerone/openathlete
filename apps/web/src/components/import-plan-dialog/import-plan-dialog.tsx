@@ -126,7 +126,7 @@ export function ImportPlanDialog({
               className="flex-1"
               isLoading={importPlanMutation.isPending}
             >
-              {m.import()}
+              {m.import_action()}
             </Button>
           </div>
         </FormProvider>
