@@ -26,6 +26,7 @@ import { NotificationModule } from './notification';
 import { PrismaService } from './prisma/services/prisma.service';
 import { ProvidersSyncModule } from './providers-sync/providers-sync.module';
 import { QueueModule } from './queue';
+import { SeoPlanModule } from './seo/seo-plan.module';
 import { SubscriptionModule } from './subscription';
 
 @Module({
@@ -60,6 +61,7 @@ import { SubscriptionModule } from './subscription';
     NotificationModule,
     ProvidersSyncModule,
     QueueModule,
+    SeoPlanModule,
     SubscriptionModule,
   ],
   controllers: [AppController],

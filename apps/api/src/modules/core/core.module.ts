@@ -22,7 +22,12 @@ import { StatisticsController } from './controllers/statistics.controller';
 import { TrainingLoadController } from './controllers/training-load.controller';
 import { TrainingZoneController } from './controllers/training-zone.controller';
 import { ActivityFileParserService } from './helpers/activity-file-parser.service';
-import { CycleService, EventService, WorkoutService } from './services';
+import {
+  CycleService,
+  EventService,
+  TrainingPlanService,
+  WorkoutService,
+} from './services';
 import { ActivityDetailService } from './services/activity-detail.service';
 import { ActivityFeedbackService } from './services/activity-feedback.service';
 import { AthleteSettingsService } from './services/athlete-settings.service';
@@ -90,6 +95,7 @@ import { WeatherService } from './services/weather/weather.service';
     MetricService,
     TrainingZoneService,
     TrainingLoadService,
+    TrainingPlanService,
     CycleService,
     WeatherService,
     ActivityFeedbackService,
@@ -129,6 +135,7 @@ import { WeatherService } from './services/weather/weather.service';
     ActivityPipelineService,
     ActivityDetailService,
     TrainingLoadService,
+    TrainingPlanService,
     CycleService,
     ActivityFileParserService,
   ],
