@@ -1,0 +1,376 @@
+{
+  "plan": {
+    "name": "Plan Marathon 4h30",
+    "description": "Plan d'entraînement de 16 semaines pour compléter un marathon en 4h30. Ce plan est conçu pour les coureurs ayant déjà une base d'entraînement et souhaitant améliorer leur performance.",
+    "goal": "Compléter un marathon en 4h30",
+    "sportType": "RUNNING",
+    "distance": 42195,
+    "duration": 16,
+    "timeTarget": 16200
+  },
+  "cycles": [
+    {
+      "name": "Phase de Base",
+      "description": "Construction de la base aérobie et renforcement musculaire",
+      "phase": "BASE",
+      "color": "#3b82f6",
+      "weeks": [
+        {
+          "weekNumber": 1,
+          "theme": "Début de l'entraînement - Adaptation",
+          "sessions": [
+            {
+              "dayOfWeek": 1,
+              "name": "Course facile",
+              "sport": "RUNNING",
+              "description": "Échauffement progressif - 30 minutes à allure confortable",
+              "goalDistance": 5000,
+              "goalDuration": 1800,
+              "goalRpe": 3
+            },
+            {
+              "dayOfWeek": 3,
+              "name": "Course longue",
+              "sport": "RUNNING",
+              "description": "Sortie longue pour développer l'endurance - 1h15 à allure modérée",
+              "goalDistance": 12000,
+              "goalDuration": 4500,
+              "goalRpe": 4
+            },
+            {
+              "dayOfWeek": 5,
+              "name": "Course facile",
+              "sport": "RUNNING",
+              "description": "Récupération active - 40 minutes à allure confortable",
+              "goalDistance": 6000,
+              "goalDuration": 2400,
+              "goalRpe": 3
+            },
+            {
+              "dayOfWeek": 6,
+              "name": "Renforcement musculaire",
+              "sport": "STRENGTH",
+              "description": "Séance de renforcement pour prévenir les blessures - 30 minutes",
+              "goalDuration": 1800,
+              "goalRpe": 4
+            }
+          ]
+        },
+        {
+          "weekNumber": 2,
+          "theme": "Augmentation progressive du volume",
+          "sessions": [
+            {
+              "dayOfWeek": 1,
+              "name": "Course facile",
+              "sport": "RUNNING",
+              "description": "Échauffement progressif - 35 minutes à allure confortable",
+              "goalDistance": 5500,
+              "goalDuration": 2100,
+              "goalRpe": 3
+            },
+            {
+              "dayOfWeek": 3,
+              "name": "Course longue",
+              "sport": "RUNNING",
+              "description": "Sortie longue pour développer l'endurance - 1h20 à allure modérée",
+              "goalDistance": 13000,
+              "goalDuration": 4800,
+              "goalRpe": 4
+            },
+            {
+              "dayOfWeek": 5,
+              "name": "Course facile",
+              "sport": "RUNNING",
+              "description": "Récupération active - 45 minutes à allure confortable",
+              "goalDistance": 7000,
+              "goalDuration": 2700,
+              "goalRpe": 3
+            },
+            {
+              "dayOfWeek": 6,
+              "name": "Renforcement musculaire",
+              "sport": "STRENGTH",
+              "description": "Séance de renforcement pour prévenir les blessures - 30 minutes",
+              "goalDuration": 1800,
+              "goalRpe": 4
+            }
+          ]
+        },
+        {
+          "weekNumber": 3,
+          "theme": "Consolidation",
+          "sessions": [
+            {
+              "dayOfWeek": 1,
+              "name": "Course facile",
+              "sport": "RUNNING",
+              "description": "Échauffement progressif - 40 minutes à allure confortable",
+              "goalDistance": 6000,
+              "goalDuration": 2400,
+              "goalRpe": 3
+            },
+            {
+              "dayOfWeek": 3,
+              "name": "Course longue",
+              "sport": "RUNNING",
+              "description": "Sortie longue pour développer l'endurance - 1h30 à allure modérée",
+              "goalDistance": 15000,
+              "goalDuration": 5400,
+              "goalRpe": 4
+            },
+            {
+              "dayOfWeek": 5,
+              "name": "Course facile",
+              "sport": "RUNNING",
+              "description": "Récupération active - 50 minutes à allure confortable",
+              "goalDistance": 8000,
+              "goalDuration": 3000,
+              "goalRpe": 3
+            },
+            {
+              "dayOfWeek": 6,
+              "name": "Renforcement musculaire",
+              "sport": "STRENGTH",
+              "description": "Séance de renforcement pour prévenir les blessures - 30 minutes",
+              "goalDuration": 1800,
+              "goalRpe": 4
+            }
+          ]
+        },
+        {
+          "weekNumber": 4,
+          "theme": "Semaine de récupération",
+          "sessions": [
+            {
+              "dayOfWeek": 1,
+              "name": "Course facile",
+              "sport": "RUNNING",
+              "description": "Récupération - 30 minutes à allure très confortable",
+              "goalDistance": 4500,
+              "goalDuration": 1800,
+              "goalRpe": 2
+            },
+            {
+              "dayOfWeek": 3,
+              "name": "Course facile",
+              "sport": "RUNNING",
+              "description": "Récupération - 35 minutes à allure très confortable",
+              "goalDistance": 5000,
+              "goalDuration": 2100,
+              "goalRpe": 2
+            },
+            {
+              "dayOfWeek": 5,
+              "name": "Course facile",
+              "sport": "RUNNING",
+              "description": "Récupération - 30 minutes à allure très confortable",
+              "goalDistance": 4500,
+              "goalDuration": 1800,
+              "goalRpe": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Phase Spécifique",
+      "description": "Développement de la vitesse et de l'endurance spécifique au marathon",
+      "phase": "SPECIFIC",
+      "color": "#10b981",
+      "weeks": [
+        {
+          "weekNumber": 5,
+          "theme": "Introduction des séances de vitesse",
+          "sessions": [
+            {
+              "dayOfWeek": 1,
+              "name": "Course facile",
+              "sport": "RUNNING",
+              "description": "Échauffement - 40 minutes à allure confortable",
+              "goalDistance": 6000,
+              "goalDuration": 2400,
+              "goalRpe": 3
+            },
+            {
+              "dayOfWeek": 3,
+              "name": "Séance de fractionné",
+              "sport": "RUNNING",
+              "description": "5x1000m à allure 10km avec récupération 2min - Échauffement et retour au calme inclus",
+              "goalDistance": 10000,
+              "goalDuration": 3600,
+              "goalRpe": 7,
+              "workout": {
+                "steps": [
+                  {
+                    "orderIndex": 0,
+                    "stepType": "WARMUP",
+                    "name": "Échauffement",
+                    "durationType": "TIME",
+                    "durationValue": 1200,
+                    "targets": []
+                  },
+                  {
+                    "orderIndex": 1,
+                    "stepType": "REPEAT",
+                    "name": "5x1000m",
+                    "durationType": "REPS",
+                    "durationValue": 5,
+                    "targets": [],
+                    "repeatBlock": {
+                      "repetitions": 5,
+                      "childSteps": [
+                        {
+                          "orderIndex": 0,
+                          "stepType": "INTERVAL_ACTIVE",
+                          "name": "1000m rapide",
+                          "durationType": "DISTANCE",
+                          "durationValue": 1000,
+                          "targets": [
+                            {
+                              "targetType": "PACE",
+                              "targetValue": 270
+                            }
+                          ]
+                        },
+                        {
+                          "orderIndex": 1,
+                          "stepType": "INTERVAL_REST",
+                          "name": "Récupération",
+                          "durationType": "TIME",
+                          "durationValue": 120,
+                          "targets": []
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "orderIndex": 2,
+                    "stepType": "COOLDOWN",
+                    "name": "Retour au calme",
+                    "durationType": "TIME",
+                    "durationValue": 600,
+                    "targets": []
+                  }
+                ]
+              }
+            },
+            {
+              "dayOfWeek": 5,
+              "name": "Course longue",
+              "sport": "RUNNING",
+              "description": "Sortie longue - 1h45 à allure modérée",
+              "goalDistance": 18000,
+              "goalDuration": 6300,
+              "goalRpe": 4
+            },
+            {
+              "dayOfWeek": 6,
+              "name": "Renforcement musculaire",
+              "sport": "STRENGTH",
+              "description": "Séance de renforcement - 30 minutes",
+              "goalDuration": 1800,
+              "goalRpe": 4
+            }
+          ]
+        },
+        {
+          "weekNumber": 6,
+          "theme": "Augmentation de l'intensité",
+          "sessions": [
+            {
+              "dayOfWeek": 1,
+              "name": "Course facile",
+              "sport": "RUNNING",
+              "description": "Échauffement - 45 minutes à allure confortable",
+              "goalDistance": 7000,
+              "goalDuration": 2700,
+              "goalRpe": 3
+            },
+            {
+              "dayOfWeek": 3,
+              "name": "Séance de seuil",
+              "sport": "RUNNING",
+              "description": "2x20min à allure seuil avec récupération 5min - Échauffement et retour au calme inclus",
+              "goalDistance": 12000,
+              "goalDuration": 4200,
+              "goalRpe": 6,
+              "workout": {
+                "steps": [
+                  {
+                    "orderIndex": 0,
+                    "stepType": "WARMUP",
+                    "name": "Échauffement",
+                    "durationType": "TIME",
+                    "durationValue": 1200,
+                    "targets": []
+                  },
+                  {
+                    "orderIndex": 1,
+                    "stepType": "REPEAT",
+                    "name": "2x20min seuil",
+                    "durationType": "REPS",
+                    "durationValue": 2,
+                    "targets": [],
+                    "repeatBlock": {
+                      "repetitions": 2,
+                      "childSteps": [
+                        {
+                          "orderIndex": 0,
+                          "stepType": "INTERVAL_ACTIVE",
+                          "name": "20min seuil",
+                          "durationType": "TIME",
+                          "durationValue": 1200,
+                          "targets": [
+                            {
+                              "targetType": "PACE",
+                              "targetValue": 300
+                            }
+                          ]
+                        },
+                        {
+                          "orderIndex": 1,
+                          "stepType": "INTERVAL_REST",
+                          "name": "Récupération",
+                          "durationType": "TIME",
+                          "durationValue": 300,
+                          "targets": []
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "orderIndex": 2,
+                    "stepType": "COOLDOWN",
+                    "name": "Retour au calme",
+                    "durationType": "TIME",
+                    "durationValue": 600,
+                    "targets": []
+                  }
+                ]
+              }
+            },
+            {
+              "dayOfWeek": 5,
+              "name": "Course longue",
+              "sport": "RUNNING",
+              "description": "Sortie longue - 2h à allure modérée",
+              "goalDistance": 20000,
+              "goalDuration": 7200,
+              "goalRpe": 4
+            },
+            {
+              "dayOfWeek": 6,
+              "name": "Renforcement musculaire",
+              "sport": "STRENGTH",
+              "description": "Séance de renforcement - 30 minutes",
+              "goalDuration": 1800,
+              "goalRpe": 4
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+

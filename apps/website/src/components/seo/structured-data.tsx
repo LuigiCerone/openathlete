@@ -204,6 +204,8 @@ export function ArticleStructuredData({
   );
 }
 
+export { TrainingPlanStructuredData } from './training-plan-structured-data';
+
 export function SoftwareApplicationStructuredData({
   name,
   description,
