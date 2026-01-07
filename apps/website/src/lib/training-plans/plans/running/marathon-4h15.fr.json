@@ -1,0 +1,1811 @@
+{
+  "plan": {
+    "name": "Objectif Marathon 4h15",
+    "description": "Plan de 12 semaines conçu pour atteindre 4h15 au marathon. 4 séances par semaine axées sur la progressivité et le volume maîtrisé. Idéal pour un profil récréatif régulier.",
+    "goal": "Marathon en 4h15",
+    "sportType": "RUNNING",
+    "distance": 42195,
+    "duration": 12,
+    "timeTarget": 15300
+  },
+  "cycles": [
+    {
+      "name": "Phase 1 : Développement Général",
+      "description": "Construction du volume aérobie et développement de la VMA. On habitue le corps à courir 4 fois par semaine.",
+      "phase": "BASE",
+      "color": "#3b82f6",
+      "weeks": [
+        {
+          "weekNumber": 1,
+          "theme": "Reprise et Adaptation",
+          "sessions": [
+            {
+              "dayOfWeek": 2,
+              "name": "Endurance Fondamentale",
+              "sport": "RUNNING",
+              "description": "Footing en aisance respiratoire totale.",
+              "goalDuration": 2700,
+              "goalRpe": 3,
+              "workout": {
+                "steps": [
+                  {
+                    "stepType": "STEADY",
+                    "durationType": "TIME",
+                    "durationValue": 2700,
+                    "targets": [
+                      {
+                        "targetType": "RPE",
+                        "targetValue": 3
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "dayOfWeek": 4,
+              "name": "Fartlek ludique",
+              "sport": "RUNNING",
+              "description": "45 min dont 8x 30s vite / 30s lent pour dynamiser la foulée sans épuisement.",
+              "goalDuration": 2700,
+              "goalRpe": 6,
+              "workout": {
+                "steps": [
+                  {
+                    "stepType": "WARMUP",
+                    "durationType": "TIME",
+                    "durationValue": 1200,
+                    "targets": [
+                      {
+                        "targetType": "RPE",
+                        "targetValue": 3
+                      }
+                    ]
+                  },
+                  {
+                    "stepType": "REPEAT",
+                    "durationType": "OPEN",
+                    "name": "8x 30s/30s",
+                    "repeatBlock": {
+                      "repetitions": 8,
+                      "childSteps": [
+                        {
+                          "stepType": "INTERVAL_ACTIVE",
+                          "durationType": "TIME",
+                          "durationValue": 30,
+                          "targets": [
+                            {
+                              "targetType": "RPE",
+                              "targetValue": 7
+                            }
+                          ]
+                        },
+                        {
+                          "stepType": "INTERVAL_REST",
+                          "durationType": "TIME",
+                          "durationValue": 30,
+                          "targets": [
+                            {
+                              "targetType": "RPE",
+                              "targetValue": 3
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "stepType": "COOLDOWN",
+                    "durationType": "TIME",
+                    "durationValue": 600,
+                    "targets": [
+                      {
+                        "targetType": "RPE",
+                        "targetValue": 2
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "dayOfWeek": 6,
+              "name": "Footing de récupération",
+              "sport": "RUNNING",
+              "description": "30 à 40 minutes très souple.",
+              "goalDuration": 2400,
+              "goalRpe": 2,
+              "workout": {
+                "steps": [
+                  {
+                    "stepType": "STEADY",
+                    "durationType": "TIME",
+                    "durationValue": 2400,
+                    "targets": [
+                      {
+                        "targetType": "RPE",
+                        "targetValue": 2
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "dayOfWeek": 0,
+              "name": "Sortie Longue Hebdo",
+              "sport": "RUNNING",
+              "description": "1h15 en endurance pure. Le pilier de la semaine.",
+              "goalDuration": 4500,
+              "goalRpe": 3,
+              "workout": {
+                "steps": [
+                  {
+                    "stepType": "STEADY",
+                    "durationType": "TIME",
+                    "durationValue": 4500,
+                    "targets": [
+                      {
+                        "targetType": "RPE",
+                        "targetValue": 3
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "weekNumber": 2,
+          "theme": "Augmentation du volume",
+          "sessions": [
+            {
+              "dayOfWeek": 2,
+              "name": "Endurance Fondamentale",
+              "sport": "RUNNING",
+              "description": "Footing régulier.",
+              "goalDuration": 3000,
+              "goalRpe": 3,
+              "workout": {
+                "steps": [
+                  {
+                    "stepType": "STEADY",
+                    "durationType": "TIME",
+                    "durationValue": 3000,
+                    "targets": [
+                      {
+                        "targetType": "RPE",
+                        "targetValue": 3
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "dayOfWeek": 4,
+              "name": "VMA Courte",
+              "sport": "RUNNING",
+              "description": "10x 30s/30s. Un peu plus de volume d'intensité que la semaine passée.",
+              "goalDuration": 3000,
+              "goalRpe": 7,
+              "workout": {
+                "steps": [
+                  {
+                    "stepType": "WARMUP",
+                    "durationType": "TIME",
+                    "durationValue": 1200,
+                    "targets": [
+                      {
+                        "targetType": "RPE",
+                        "targetValue": 3
+                      }
+                    ]
+                  },
+                  {
+                    "stepType": "REPEAT",
+                    "durationType": "OPEN",
+                    "name": "10x 30s/30s",
+                    "repeatBlock": {
+                      "repetitions": 10,
+                      "childSteps": [
+                        {
+                          "stepType": "INTERVAL_ACTIVE",
+                          "durationType": "TIME",
+                          "durationValue": 30,
+                          "targets": [
+                            {
+                              "targetType": "RPE",
+                              "targetValue": 8
+                            }
+                          ]
+                        },
+                        {
+                          "stepType": "INTERVAL_REST",
+                          "durationType": "TIME",
+                          "durationValue": 30,
+                          "targets": [
+                            {
+                              "targetType": "RPE",
+                              "targetValue": 3
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "stepType": "COOLDOWN",
+                    "durationType": "TIME",
+                    "durationValue": 900,
+                    "targets": [
+                      {
+                        "targetType": "RPE",
+                        "targetValue": 2
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "dayOfWeek": 6,
+              "name": "Footing cool",
+              "sport": "RUNNING",
+              "description": "45 min cool.",
+              "goalDuration": 2700,
+              "goalRpe": 2,
+              "workout": {
+                "steps": [
+                  {
+                    "stepType": "STEADY",
+                    "durationType": "TIME",
+                    "durationValue": 2700,
+                    "targets": [
+                      {
+                        "targetType": "RPE",
+                        "targetValue": 2
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "dayOfWeek": 0,
+              "name": "Sortie Longue",
+              "sport": "RUNNING",
+              "description": "1h20 en endurance.",
+              "goalDuration": 4800,
+              "goalRpe": 3,
+              "workout": {
+                "steps": [
+                  {
+                    "stepType": "STEADY",
+                    "durationType": "TIME",
+                    "durationValue": 4800,
+                    "targets": [
+                      {
+                        "targetType": "RPE",
+                        "targetValue": 3
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "weekNumber": 3,
+          "theme": "Introduction du Seuil",
+          "sessions": [
+            {
+              "dayOfWeek": 2,
+              "name": "Endurance",
+              "sport": "RUNNING",
+              "description": "50 min endurance fondamentale.",
+              "goalDuration": 3000,
+              "goalRpe": 3,
+              "workout": {
+                "steps": [
+                  {
+                    "stepType": "STEADY",
+                    "durationType": "TIME",
+                    "durationValue": 3000,
+                    "targets": [
+                      {
+                        "targetType": "RPE",
+                        "targetValue": 3
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "dayOfWeek": 4,
+              "name": "Seuil court",
+              "sport": "RUNNING",
+              "description": "3 répétitions de 6 minutes à allure soutenue (semi-marathon/10km).",
+              "goalDuration": 3600,
+              "goalRpe": 7,
+              "workout": {
+                "steps": [
+                  {
+                    "stepType": "WARMUP",
+                    "durationType": "TIME",
+                    "durationValue": 1200,
+                    "targets": [
+                      {
+                        "targetType": "RPE",
+                        "targetValue": 3
+                      }
+                    ]
+                  },
+                  {
+                    "stepType": "REPEAT",
+                    "durationType": "OPEN",
+                    "name": "3x 6min Seuil",
+                    "repeatBlock": {
+                      "repetitions": 3,
+                      "childSteps": [
+                        {
+                          "stepType": "INTERVAL_ACTIVE",
+                          "durationType": "TIME",
+                          "durationValue": 360,
+                          "targets": [
+                            {
+                              "targetType": "PACE",
+                              "targetValue": 5.5
+                            }
+                          ]
+                        },
+                        {
+                          "stepType": "INTERVAL_REST",
+                          "durationType": "TIME",
+                          "durationValue": 120,
+                          "targets": [
+                            {
+                              "targetType": "RPE",
+                              "targetValue": 3
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "stepType": "COOLDOWN",
+                    "durationType": "TIME",
+                    "durationValue": 900,
+                    "targets": [
+                      {
+                        "targetType": "RPE",
+                        "targetValue": 2
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "dayOfWeek": 6,
+              "name": "Footing",
+              "sport": "RUNNING",
+              "description": "45 min récupération.",
+              "goalDuration": 2700,
+              "goalRpe": 2,
+              "workout": {
+                "steps": [
+                  {
+                    "stepType": "STEADY",
+                    "durationType": "TIME",
+                    "durationValue": 2700,
+                    "targets": [
+                      {
+                        "targetType": "RPE",
+                        "targetValue": 2
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "dayOfWeek": 0,
+              "name": "Sortie Longue",
+              "sport": "RUNNING",
+              "description": "1h30 en endurance.",
+              "goalDuration": 5400,
+              "goalRpe": 3,
+              "workout": {
+                "steps": [
+                  {
+                    "stepType": "STEADY",
+                    "durationType": "TIME",
+                    "durationValue": 5400,
+                    "targets": [
+                      {
+                        "targetType": "RPE",
+                        "targetValue": 3
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "weekNumber": 4,
+          "theme": "Assimilation (Semaine allégée)",
+          "sessions": [
+            {
+              "dayOfWeek": 2,
+              "name": "Footing court",
+              "sport": "RUNNING",
+              "description": "40 min cool.",
+              "goalDuration": 2400,
+              "goalRpe": 2,
+              "workout": {
+                "steps": [
+                  {
+                    "stepType": "STEADY",
+                    "durationType": "TIME",
+                    "durationValue": 2400,
+                    "targets": [
+                      {
+                        "targetType": "RPE",
+                        "targetValue": 2
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "dayOfWeek": 4,
+              "name": "Rappels de vitesse",
+              "sport": "RUNNING",
+              "description": "Quelques accélérations courtes (6x 45s) pour garder le rythme sans fatiguer.",
+              "goalDuration": 2700,
+              "goalRpe": 5,
+              "workout": {
+                "steps": [
+                  {
+                    "stepType": "WARMUP",
+                    "durationType": "TIME",
+                    "durationValue": 1200,
+                    "targets": [
+                      {
+                        "targetType": "RPE",
+                        "targetValue": 3
+                      }
+                    ]
+                  },
+                  {
+                    "stepType": "REPEAT",
+                    "durationType": "OPEN",
+                    "name": "6x 45s/45s",
+                    "repeatBlock": {
+                      "repetitions": 6,
+                      "childSteps": [
+                        {
+                          "stepType": "INTERVAL_ACTIVE",
+                          "durationType": "TIME",
+                          "durationValue": 45,
+                          "targets": [
+                            {
+                              "targetType": "RPE",
+                              "targetValue": 6
+                            }
+                          ]
+                        },
+                        {
+                          "stepType": "INTERVAL_REST",
+                          "durationType": "TIME",
+                          "durationValue": 45,
+                          "targets": [
+                            {
+                              "targetType": "RPE",
+                              "targetValue": 3
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "stepType": "COOLDOWN",
+                    "durationType": "TIME",
+                    "durationValue": 600,
+                    "targets": [
+                      {
+                        "targetType": "RPE",
+                        "targetValue": 2
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "dayOfWeek": 6,
+              "name": "Footing cool",
+              "sport": "RUNNING",
+              "description": "30 min très cool.",
+              "goalDuration": 1800,
+              "goalRpe": 2,
+              "workout": {
+                "steps": [
+                  {
+                    "stepType": "STEADY",
+                    "durationType": "TIME",
+                    "durationValue": 1800,
+                    "targets": [
+                      {
+                        "targetType": "RPE",
+                        "targetValue": 2
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "dayOfWeek": 0,
+              "name": "Sortie Longue Modérée",
+              "sport": "RUNNING",
+              "description": "1h10 en endurance.",
+              "goalDuration": 4200,
+              "goalRpe": 3,
+              "workout": {
+                "steps": [
+                  {
+                    "stepType": "STEADY",
+                    "durationType": "TIME",
+                    "durationValue": 4200,
+                    "targets": [
+                      {
+                        "targetType": "RPE",
+                        "targetValue": 3
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Phase 2 : Développement Spécifique",
+      "description": "Cœur de la préparation. Allongement des sorties longues et travail de l'allure cible Marathon (4h15 = ~6:02/km).",
+      "phase": "SPECIFIC",
+      "color": "#10b981",
+      "weeks": [
+        {
+          "weekNumber": 5,
+          "theme": "Volume et Seuil",
+          "sessions": [
+            {
+              "dayOfWeek": 2,
+              "name": "Endurance",
+              "sport": "RUNNING",
+              "description": "50 min endurance.",
+              "goalDuration": 3000,
+              "goalRpe": 3,
+              "workout": {
+                "steps": [
+                  {
+                    "stepType": "STEADY",
+                    "durationType": "TIME",
+                    "durationValue": 3000,
+                    "targets": [
+                      {
+                        "targetType": "RPE",
+                        "targetValue": 3
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "dayOfWeek": 4,
+              "name": "Seuil long",
+              "sport": "RUNNING",
+              "description": "2 x 10 minutes allure Seuil (plus rapide que marathon).",
+              "goalDuration": 3600,
+              "goalRpe": 7,
+              "workout": {
+                "steps": [
+                  {
+                    "stepType": "WARMUP",
+                    "durationType": "TIME",
+                    "durationValue": 1200,
+                    "targets": [
+                      {
+                        "targetType": "RPE",
+                        "targetValue": 3
+                      }
+                    ]
+                  },
+                  {
+                    "stepType": "REPEAT",
+                    "durationType": "OPEN",
+                    "name": "2x 10min Seuil",
+                    "repeatBlock": {
+                      "repetitions": 2,
+                      "childSteps": [
+                        {
+                          "stepType": "INTERVAL_ACTIVE",
+                          "durationType": "TIME",
+                          "durationValue": 600,
+                          "targets": [
+                            {
+                              "targetType": "PACE",
+                              "targetValue": 5.6
+                            }
+                          ]
+                        },
+                        {
+                          "stepType": "INTERVAL_REST",
+                          "durationType": "TIME",
+                          "durationValue": 180,
+                          "targets": [
+                            {
+                              "targetType": "RPE",
+                              "targetValue": 3
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "stepType": "COOLDOWN",
+                    "durationType": "TIME",
+                    "durationValue": 900,
+                    "targets": [
+                      {
+                        "targetType": "RPE",
+                        "targetValue": 2
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "dayOfWeek": 6,
+              "name": "Footing",
+              "sport": "RUNNING",
+              "description": "45 min cool.",
+              "goalDuration": 2700,
+              "goalRpe": 2,
+              "workout": {
+                "steps": [
+                  {
+                    "stepType": "STEADY",
+                    "durationType": "TIME",
+                    "durationValue": 2700,
+                    "targets": [
+                      {
+                        "targetType": "RPE",
+                        "targetValue": 2
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "dayOfWeek": 0,
+              "name": "Sortie Longue",
+              "sport": "RUNNING",
+              "description": "1h40 en endurance.",
+              "goalDuration": 6000,
+              "goalRpe": 3,
+              "workout": {
+                "steps": [
+                  {
+                    "stepType": "STEADY",
+                    "durationType": "TIME",
+                    "durationValue": 6000,
+                    "targets": [
+                      {
+                        "targetType": "RPE",
+                        "targetValue": 3
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "weekNumber": 6,
+          "theme": "Allure Marathon (AS42)",
+          "sessions": [
+            {
+              "dayOfWeek": 2,
+              "name": "Endurance",
+              "sport": "RUNNING",
+              "description": "55 min endurance.",
+              "goalDuration": 3300,
+              "goalRpe": 3,
+              "workout": {
+                "steps": [
+                  {
+                    "stepType": "STEADY",
+                    "durationType": "TIME",
+                    "durationValue": 3300,
+                    "targets": [
+                      {
+                        "targetType": "RPE",
+                        "targetValue": 3
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "dayOfWeek": 4,
+              "name": "Fractionné Pyramidal",
+              "sport": "RUNNING",
+              "description": "Varier les allures : 4' - 6' - 8' - 4' rapide.",
+              "goalDuration": 3600,
+              "goalRpe": 7,
+              "workout": {
+                "steps": [
+                  {
+                    "stepType": "WARMUP",
+                    "durationType": "TIME",
+                    "durationValue": 1200,
+                    "targets": [
+                      {
+                        "targetType": "RPE",
+                        "targetValue": 3
+                      }
+                    ]
+                  },
+                  {
+                    "stepType": "INTERVAL_ACTIVE",
+                    "durationType": "TIME",
+                    "durationValue": 240,
+                    "targets": [
+                      {
+                        "targetType": "PACE",
+                        "targetValue": 5.5
+                      }
+                    ]
+                  },
+                  {
+                    "stepType": "INTERVAL_REST",
+                    "durationType": "TIME",
+                    "durationValue": 120,
+                    "targets": [
+                      {
+                        "targetType": "RPE",
+                        "targetValue": 3
+                      }
+                    ]
+                  },
+                  {
+                    "stepType": "INTERVAL_ACTIVE",
+                    "durationType": "TIME",
+                    "durationValue": 360,
+                    "targets": [
+                      {
+                        "targetType": "PACE",
+                        "targetValue": 5.6
+                      }
+                    ]
+                  },
+                  {
+                    "stepType": "INTERVAL_REST",
+                    "durationType": "TIME",
+                    "durationValue": 120,
+                    "targets": [
+                      {
+                        "targetType": "RPE",
+                        "targetValue": 3
+                      }
+                    ]
+                  },
+                  {
+                    "stepType": "INTERVAL_ACTIVE",
+                    "durationType": "TIME",
+                    "durationValue": 480,
+                    "targets": [
+                      {
+                        "targetType": "PACE",
+                        "targetValue": 5.7
+                      }
+                    ]
+                  },
+                  {
+                    "stepType": "INTERVAL_REST",
+                    "durationType": "TIME",
+                    "durationValue": 120,
+                    "targets": [
+                      {
+                        "targetType": "RPE",
+                        "targetValue": 3
+                      }
+                    ]
+                  },
+                  {
+                    "stepType": "INTERVAL_ACTIVE",
+                    "durationType": "TIME",
+                    "durationValue": 240,
+                    "targets": [
+                      {
+                        "targetType": "PACE",
+                        "targetValue": 5.5
+                      }
+                    ]
+                  },
+                  {
+                    "stepType": "COOLDOWN",
+                    "durationType": "TIME",
+                    "durationValue": 600,
+                    "targets": [
+                      {
+                        "targetType": "RPE",
+                        "targetValue": 2
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "dayOfWeek": 6,
+              "name": "Footing",
+              "sport": "RUNNING",
+              "description": "45 min cool.",
+              "goalDuration": 2700,
+              "goalRpe": 2,
+              "workout": {
+                "steps": [
+                  {
+                    "stepType": "STEADY",
+                    "durationType": "TIME",
+                    "durationValue": 2700,
+                    "targets": [
+                      {
+                        "targetType": "RPE",
+                        "targetValue": 2
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "dayOfWeek": 0,
+              "name": "Sortie Longue Spécifique",
+              "sport": "RUNNING",
+              "description": "1h45 avec 20 min à allure marathon (6:02/km) au milieu.",
+              "goalDuration": 6300,
+              "goalRpe": 4,
+              "workout": {
+                "steps": [
+                  {
+                    "stepType": "WARMUP",
+                    "durationType": "TIME",
+                    "durationValue": 3000,
+                    "targets": [
+                      {
+                        "targetType": "RPE",
+                        "targetValue": 3
+                      }
+                    ]
+                  },
+                  {
+                    "stepType": "STEADY",
+                    "name": "Bloc Allure Marathon",
+                    "durationType": "TIME",
+                    "durationValue": 1200,
+                    "targets": [
+                      {
+                        "targetType": "PACE",
+                        "targetValue": 6.03
+                      }
+                    ]
+                  },
+                  {
+                    "stepType": "COOLDOWN",
+                    "durationType": "TIME",
+                    "durationValue": 2100,
+                    "targets": [
+                      {
+                        "targetType": "RPE",
+                        "targetValue": 3
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "weekNumber": 7,
+          "theme": "Volume Max - Semaine 1",
+          "sessions": [
+            {
+              "dayOfWeek": 2,
+              "name": "Endurance",
+              "sport": "RUNNING",
+              "description": "1h endurance.",
+              "goalDuration": 3600,
+              "goalRpe": 3,
+              "workout": {
+                "steps": [
+                  {
+                    "stepType": "STEADY",
+                    "durationType": "TIME",
+                    "durationValue": 3600,
+                    "targets": [
+                      {
+                        "targetType": "RPE",
+                        "targetValue": 3
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "dayOfWeek": 4,
+              "name": "Seuil Long",
+              "sport": "RUNNING",
+              "description": "3 x 8 minutes allure Seuil.",
+              "goalDuration": 4200,
+              "goalRpe": 7,
+              "workout": {
+                "steps": [
+                  {
+                    "stepType": "WARMUP",
+                    "durationType": "TIME",
+                    "durationValue": 1200,
+                    "targets": [
+                      {
+                        "targetType": "RPE",
+                        "targetValue": 3
+                      }
+                    ]
+                  },
+                  {
+                    "stepType": "REPEAT",
+                    "durationType": "OPEN",
+                    "name": "3x 8min Seuil",
+                    "repeatBlock": {
+                      "repetitions": 3,
+                      "childSteps": [
+                        {
+                          "stepType": "INTERVAL_ACTIVE",
+                          "durationType": "TIME",
+                          "durationValue": 480,
+                          "targets": [
+                            {
+                              "targetType": "PACE",
+                              "targetValue": 5.6
+                            }
+                          ]
+                        },
+                        {
+                          "stepType": "INTERVAL_REST",
+                          "durationType": "TIME",
+                          "durationValue": 120,
+                          "targets": [
+                            {
+                              "targetType": "RPE",
+                              "targetValue": 3
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "stepType": "COOLDOWN",
+                    "durationType": "TIME",
+                    "durationValue": 900,
+                    "targets": [
+                      {
+                        "targetType": "RPE",
+                        "targetValue": 2
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "dayOfWeek": 6,
+              "name": "Footing",
+              "sport": "RUNNING",
+              "description": "50 min cool.",
+              "goalDuration": 3000,
+              "goalRpe": 2,
+              "workout": {
+                "steps": [
+                  {
+                    "stepType": "STEADY",
+                    "durationType": "TIME",
+                    "durationValue": 3000,
+                    "targets": [
+                      {
+                        "targetType": "RPE",
+                        "targetValue": 2
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "dayOfWeek": 0,
+              "name": "Sortie Longue",
+              "sport": "RUNNING",
+              "description": "2h00 en endurance fondamentale. On habitue les articulations.",
+              "goalDuration": 7200,
+              "goalRpe": 3,
+              "workout": {
+                "steps": [
+                  {
+                    "stepType": "STEADY",
+                    "durationType": "TIME",
+                    "durationValue": 7200,
+                    "targets": [
+                      {
+                        "targetType": "RPE",
+                        "targetValue": 3
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "weekNumber": 8,
+          "theme": "Spécifique Marathon",
+          "sessions": [
+            {
+              "dayOfWeek": 2,
+              "name": "Endurance",
+              "sport": "RUNNING",
+              "description": "1h endurance.",
+              "goalDuration": 3600,
+              "goalRpe": 3,
+              "workout": {
+                "steps": [
+                  {
+                    "stepType": "STEADY",
+                    "durationType": "TIME",
+                    "durationValue": 3600,
+                    "targets": [
+                      {
+                        "targetType": "RPE",
+                        "targetValue": 3
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "dayOfWeek": 4,
+              "name": "Allure Marathon",
+              "sport": "RUNNING",
+              "description": "2 x 15 min à l'allure cible (4h15 pace).",
+              "goalDuration": 4200,
+              "goalRpe": 6,
+              "workout": {
+                "steps": [
+                  {
+                    "stepType": "WARMUP",
+                    "durationType": "TIME",
+                    "durationValue": 1200,
+                    "targets": [
+                      {
+                        "targetType": "RPE",
+                        "targetValue": 3
+                      }
+                    ]
+                  },
+                  {
+                    "stepType": "REPEAT",
+                    "durationType": "OPEN",
+                    "name": "2x 15min AS42",
+                    "repeatBlock": {
+                      "repetitions": 2,
+                      "childSteps": [
+                        {
+                          "stepType": "INTERVAL_ACTIVE",
+                          "durationType": "TIME",
+                          "durationValue": 900,
+                          "targets": [
+                            {
+                              "targetType": "PACE",
+                              "targetValue": 6.03
+                            }
+                          ]
+                        },
+                        {
+                          "stepType": "INTERVAL_REST",
+                          "durationType": "TIME",
+                          "durationValue": 180,
+                          "targets": [
+                            {
+                              "targetType": "RPE",
+                              "targetValue": 3
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "stepType": "COOLDOWN",
+                    "durationType": "TIME",
+                    "durationValue": 600,
+                    "targets": [
+                      {
+                        "targetType": "RPE",
+                        "targetValue": 2
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "dayOfWeek": 6,
+              "name": "Footing",
+              "sport": "RUNNING",
+              "description": "45 min cool.",
+              "goalDuration": 2700,
+              "goalRpe": 2,
+              "workout": {
+                "steps": [
+                  {
+                    "stepType": "STEADY",
+                    "durationType": "TIME",
+                    "durationValue": 2700,
+                    "targets": [
+                      {
+                        "targetType": "RPE",
+                        "targetValue": 2
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "dayOfWeek": 0,
+              "name": "Sortie Longue Spécifique",
+              "sport": "RUNNING",
+              "description": "2h15, incluant 2x20min allure marathon. Séance clé.",
+              "goalDuration": 8100,
+              "goalRpe": 4,
+              "workout": {
+                "steps": [
+                  {
+                    "stepType": "WARMUP",
+                    "durationType": "TIME",
+                    "durationValue": 3000,
+                    "targets": [
+                      {
+                        "targetType": "RPE",
+                        "targetValue": 3
+                      }
+                    ]
+                  },
+                  {
+                    "stepType": "INTERVAL_ACTIVE",
+                    "name": "Bloc AS42",
+                    "durationType": "TIME",
+                    "durationValue": 1200,
+                    "targets": [
+                      {
+                        "targetType": "PACE",
+                        "targetValue": 6.03
+                      }
+                    ]
+                  },
+                  {
+                    "stepType": "INTERVAL_REST",
+                    "name": "Recup active",
+                    "durationType": "TIME",
+                    "durationValue": 300,
+                    "targets": [
+                      {
+                        "targetType": "RPE",
+                        "targetValue": 3
+                      }
+                    ]
+                  },
+                  {
+                    "stepType": "INTERVAL_ACTIVE",
+                    "name": "Bloc AS42",
+                    "durationType": "TIME",
+                    "durationValue": 1200,
+                    "targets": [
+                      {
+                        "targetType": "PACE",
+                        "targetValue": 6.03
+                      }
+                    ]
+                  },
+                  {
+                    "stepType": "COOLDOWN",
+                    "durationType": "TIME",
+                    "durationValue": 2400,
+                    "targets": [
+                      {
+                        "targetType": "RPE",
+                        "targetValue": 3
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "weekNumber": 9,
+          "theme": "Semaine allégée (avant le pic)",
+          "sessions": [
+            {
+              "dayOfWeek": 2,
+              "name": "Footing",
+              "sport": "RUNNING",
+              "description": "45 min cool.",
+              "goalDuration": 2700,
+              "goalRpe": 2,
+              "workout": {
+                "steps": [
+                  {
+                    "stepType": "STEADY",
+                    "durationType": "TIME",
+                    "durationValue": 2700,
+                    "targets": [
+                      {
+                        "targetType": "RPE",
+                        "targetValue": 2
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "dayOfWeek": 4,
+              "name": "Rappels AS42",
+              "sport": "RUNNING",
+              "description": "30 min d'échauffement + 15 min allure marathon + 10 min calme.",
+              "goalDuration": 3300,
+              "goalRpe": 4,
+              "workout": {
+                "steps": [
+                  {
+                    "stepType": "WARMUP",
+                    "durationType": "TIME",
+                    "durationValue": 1800,
+                    "targets": [
+                      {
+                        "targetType": "RPE",
+                        "targetValue": 3
+                      }
+                    ]
+                  },
+                  {
+                    "stepType": "STEADY",
+                    "durationType": "TIME",
+                    "durationValue": 900,
+                    "targets": [
+                      {
+                        "targetType": "PACE",
+                        "targetValue": 6.03
+                      }
+                    ]
+                  },
+                  {
+                    "stepType": "COOLDOWN",
+                    "durationType": "TIME",
+                    "durationValue": 600,
+                    "targets": [
+                      {
+                        "targetType": "RPE",
+                        "targetValue": 2
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "dayOfWeek": 6,
+              "name": "Repos / Footing court",
+              "sport": "RUNNING",
+              "description": "30 min très léger.",
+              "goalDuration": 1800,
+              "goalRpe": 1,
+              "workout": {
+                "steps": [
+                  {
+                    "stepType": "STEADY",
+                    "durationType": "TIME",
+                    "durationValue": 1800,
+                    "targets": [
+                      {
+                        "targetType": "RPE",
+                        "targetValue": 1
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "dayOfWeek": 0,
+              "name": "Sortie Longue",
+              "sport": "RUNNING",
+              "description": "1h40 en endurance. On recharge les batteries.",
+              "goalDuration": 6000,
+              "goalRpe": 3,
+              "workout": {
+                "steps": [
+                  {
+                    "stepType": "STEADY",
+                    "durationType": "TIME",
+                    "durationValue": 6000,
+                    "targets": [
+                      {
+                        "targetType": "RPE",
+                        "targetValue": 3
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Phase 3 : Pic & Affûtage",
+      "description": "La plus longue sortie, puis la diminution progressive (Tapering) pour arriver frais au départ.",
+      "phase": "TAPER",
+      "color": "#f59e0b",
+      "weeks": [
+        {
+          "weekNumber": 10,
+          "theme": "Le Pic de forme (Sortie la plus longue)",
+          "sessions": [
+            {
+              "dayOfWeek": 2,
+              "name": "Endurance",
+              "sport": "RUNNING",
+              "description": "1h endurance.",
+              "goalDuration": 3600,
+              "goalRpe": 3,
+              "workout": {
+                "steps": [
+                  {
+                    "stepType": "STEADY",
+                    "durationType": "TIME",
+                    "durationValue": 3600,
+                    "targets": [
+                      {
+                        "targetType": "RPE",
+                        "targetValue": 3
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "dayOfWeek": 4,
+              "name": "Seuil / Allure Marathon",
+              "sport": "RUNNING",
+              "description": "3 x 10 min allure marathon pour bien mémoriser le rythme.",
+              "goalDuration": 3600,
+              "goalRpe": 6,
+              "workout": {
+                "steps": [
+                  {
+                    "stepType": "WARMUP",
+                    "durationType": "TIME",
+                    "durationValue": 1200,
+                    "targets": [
+                      {
+                        "targetType": "RPE",
+                        "targetValue": 3
+                      }
+                    ]
+                  },
+                  {
+                    "stepType": "REPEAT",
+                    "durationType": "OPEN",
+                    "name": "3x 10min AS42",
+                    "repeatBlock": {
+                      "repetitions": 3,
+                      "childSteps": [
+                        {
+                          "stepType": "INTERVAL_ACTIVE",
+                          "durationType": "TIME",
+                          "durationValue": 600,
+                          "targets": [
+                            {
+                              "targetType": "PACE",
+                              "targetValue": 6.03
+                            }
+                          ]
+                        },
+                        {
+                          "stepType": "INTERVAL_REST",
+                          "durationType": "TIME",
+                          "durationValue": 120,
+                          "targets": [
+                            {
+                              "targetType": "RPE",
+                              "targetValue": 3
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "stepType": "COOLDOWN",
+                    "durationType": "TIME",
+                    "durationValue": 600,
+                    "targets": [
+                      {
+                        "targetType": "RPE",
+                        "targetValue": 2
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "dayOfWeek": 6,
+              "name": "Footing",
+              "sport": "RUNNING",
+              "description": "45 min cool.",
+              "goalDuration": 2700,
+              "goalRpe": 2,
+              "workout": {
+                "steps": [
+                  {
+                    "stepType": "STEADY",
+                    "durationType": "TIME",
+                    "durationValue": 2700,
+                    "targets": [
+                      {
+                        "targetType": "RPE",
+                        "targetValue": 2
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "dayOfWeek": 0,
+              "name": "La Sortie XXL",
+              "sport": "RUNNING",
+              "description": "2h30, sortie la plus longue du plan. 80% endurance, finir par 15' allure marathon si bonne sensation.",
+              "goalDuration": 9000,
+              "goalRpe": 5,
+              "workout": {
+                "steps": [
+                  {
+                    "stepType": "STEADY",
+                    "durationType": "TIME",
+                    "durationValue": 8100,
+                    "targets": [
+                      {
+                        "targetType": "RPE",
+                        "targetValue": 3
+                      }
+                    ]
+                  },
+                  {
+                    "stepType": "STEADY",
+                    "name": "Finish AS42",
+                    "durationType": "TIME",
+                    "durationValue": 900,
+                    "targets": [
+                      {
+                        "targetType": "PACE",
+                        "targetValue": 6.03
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "weekNumber": 11,
+          "theme": "Début de l'affûtage (Taper)",
+          "sessions": [
+            {
+              "dayOfWeek": 2,
+              "name": "Endurance courte",
+              "sport": "RUNNING",
+              "description": "45 min cool.",
+              "goalDuration": 2700,
+              "goalRpe": 2,
+              "workout": {
+                "steps": [
+                  {
+                    "stepType": "STEADY",
+                    "durationType": "TIME",
+                    "durationValue": 2700,
+                    "targets": [
+                      {
+                        "targetType": "RPE",
+                        "targetValue": 2
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "dayOfWeek": 4,
+              "name": "Rappel allure",
+              "sport": "RUNNING",
+              "description": "2 x 10 min allure marathon, mais volume total réduit.",
+              "goalDuration": 2700,
+              "goalRpe": 5,
+              "workout": {
+                "steps": [
+                  {
+                    "stepType": "WARMUP",
+                    "durationType": "TIME",
+                    "durationValue": 900,
+                    "targets": [
+                      {
+                        "targetType": "RPE",
+                        "targetValue": 3
+                      }
+                    ]
+                  },
+                  {
+                    "stepType": "REPEAT",
+                    "durationType": "OPEN",
+                    "name": "2x 10min AS42",
+                    "repeatBlock": {
+                      "repetitions": 2,
+                      "childSteps": [
+                        {
+                          "stepType": "INTERVAL_ACTIVE",
+                          "durationType": "TIME",
+                          "durationValue": 600,
+                          "targets": [
+                            {
+                              "targetType": "PACE",
+                              "targetValue": 6.03
+                            }
+                          ]
+                        },
+                        {
+                          "stepType": "INTERVAL_REST",
+                          "durationType": "TIME",
+                          "durationValue": 120,
+                          "targets": [
+                            {
+                              "targetType": "RPE",
+                              "targetValue": 3
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "stepType": "COOLDOWN",
+                    "durationType": "TIME",
+                    "durationValue": 300,
+                    "targets": [
+                      {
+                        "targetType": "RPE",
+                        "targetValue": 2
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "dayOfWeek": 6,
+              "name": "Footing",
+              "sport": "RUNNING",
+              "description": "30 min très cool.",
+              "goalDuration": 1800,
+              "goalRpe": 2,
+              "workout": {
+                "steps": [
+                  {
+                    "stepType": "STEADY",
+                    "durationType": "TIME",
+                    "durationValue": 1800,
+                    "targets": [
+                      {
+                        "targetType": "RPE",
+                        "targetValue": 2
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "dayOfWeek": 0,
+              "name": "Sortie Longue Allégée",
+              "sport": "RUNNING",
+              "description": "1h20 en endurance.",
+              "goalDuration": 4800,
+              "goalRpe": 3,
+              "workout": {
+                "steps": [
+                  {
+                    "stepType": "STEADY",
+                    "durationType": "TIME",
+                    "durationValue": 4800,
+                    "targets": [
+                      {
+                        "targetType": "RPE",
+                        "targetValue": 3
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "weekNumber": 12,
+          "theme": "Semaine de la course",
+          "sessions": [
+            {
+              "dayOfWeek": 2,
+              "name": "Décrassage",
+              "sport": "RUNNING",
+              "description": "30 min très lent pour faire circuler le sang.",
+              "goalDuration": 1800,
+              "goalRpe": 1,
+              "workout": {
+                "steps": [
+                  {
+                    "stepType": "STEADY",
+                    "durationType": "TIME",
+                    "durationValue": 1800,
+                    "targets": [
+                      {
+                        "targetType": "RPE",
+                        "targetValue": 1
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "dayOfWeek": 4,
+              "name": "Activation",
+              "sport": "RUNNING",
+              "description": "20 min cool + 3 accélérations de 30s. Juste pour le tonus nerveux.",
+              "goalDuration": 1500,
+              "goalRpe": 3,
+              "workout": {
+                "steps": [
+                  {
+                    "stepType": "WARMUP",
+                    "durationType": "TIME",
+                    "durationValue": 1200,
+                    "targets": [
+                      {
+                        "targetType": "RPE",
+                        "targetValue": 2
+                      }
+                    ]
+                  },
+                  {
+                    "stepType": "REPEAT",
+                    "durationType": "OPEN",
+                    "name": "3x 30s Accél",
+                    "repeatBlock": {
+                      "repetitions": 3,
+                      "childSteps": [
+                        {
+                          "stepType": "INTERVAL_ACTIVE",
+                          "durationType": "TIME",
+                          "durationValue": 30,
+                          "targets": [
+                            {
+                              "targetType": "PACE",
+                              "targetValue": 5.0
+                            }
+                          ]
+                        },
+                        {
+                          "stepType": "INTERVAL_REST",
+                          "durationType": "TIME",
+                          "durationValue": 60,
+                          "targets": [
+                            {
+                              "targetType": "RPE",
+                              "targetValue": 1
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "dayOfWeek": 6,
+              "name": "Repos Complet",
+              "sport": "RUNNING",
+              "description": "Repos total, hydratation et chargement glucidique.",
+              "goalDuration": 0,
+              "goalRpe": 0
+            },
+            {
+              "dayOfWeek": 0,
+              "name": "MARATHON",
+              "sport": "RUNNING",
+              "description": "Jour J. Départ prudent, objectif régularité 6:02/km.",
+              "goalDistance": 42195,
+              "goalDuration": 15300,
+              "goalRpe": 9,
+              "workout": {
+                "steps": [
+                  {
+                    "stepType": "STEADY",
+                    "name": "Course",
+                    "durationType": "DISTANCE",
+                    "durationValue": 42195,
+                    "targets": [
+                      {
+                        "targetType": "PACE",
+                        "targetValue": 6.03
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
