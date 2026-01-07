@@ -63,7 +63,7 @@ export default async function TrailTrainingPlanPage({
   }
 
   try {
-    const planData = await loadPlan('trail', distance, elevationRange);
+    const planData = await loadPlan('trail', distance, elevationRange, locale);
     const path = `/training-plans/trail/${distance}/${elevationRange}`;
 
     const pageUrl = `${SITE_URL}${locale === 'en' ? '' : `/${locale}`}${path}`;

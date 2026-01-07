@@ -1,20 +1,25 @@
 /**
- * Get the file path for a training plan JSON based on sport, distance, and variant
+ * Get the file path for a training plan JSON based on sport, distance, variant, and locale
  * @param sport - Sport type: 'running', 'trail', or 'triathlon'
  * @param distance - Distance identifier (e.g., 'marathon', '50km', 'ironman')
  * @param variant - Variant identifier (e.g., '4h30', '2000d+', '12h')
+ * @param locale - Locale code (e.g., 'en', 'fr'). Defaults to 'en' if not provided
  * @returns File path relative to plans directory
  */
 export function getPlanPath(
   sport: 'running' | 'trail' | 'triathlon',
   distance: string,
   variant: string,
+  locale: string = 'en',
 ): string {
   // Normalize distance and variant for filename
   const normalizedDistance = distance.toLowerCase().replace(/\s+/g, '-');
   const normalizedVariant = variant.toLowerCase().replace(/\s+/g, '');
-
-  return `${sport}/${normalizedDistance}-${normalizedVariant}.json`;
+  // If locale is empty, return path without locale extension (for backward compatibility)
+  if (!locale) {
+    return `${sport}/${normalizedDistance}-${normalizedVariant}.json`;
+  }
+  return `${sport}/${normalizedDistance}-${normalizedVariant}.${locale}.json`;
 }
 
 /**
@@ -22,12 +27,14 @@ export function getPlanPath(
  * @param sport - Sport from route
  * @param distance - Distance from route
  * @param variant - Variant from route (timeTarget or elevationRange)
+ * @param locale - Locale code (e.g., 'en', 'fr'). Defaults to 'en' if not provided
  * @returns File path relative to plans directory
  */
 export function getPlanPathFromRoute(
   sport: string,
   distance: string,
   variant: string,
+  locale: string = 'en',
 ): string {
   // Validate sport
   if (!['running', 'trail', 'triathlon'].includes(sport.toLowerCase())) {
@@ -38,5 +45,6 @@ export function getPlanPathFromRoute(
     sport.toLowerCase() as 'running' | 'trail' | 'triathlon',
     distance,
     variant,
+    locale,
   );
 }

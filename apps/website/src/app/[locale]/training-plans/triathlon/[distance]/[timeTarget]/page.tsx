@@ -60,7 +60,7 @@ export default async function TriathlonTrainingPlanPage({
   }
 
   try {
-    const planData = await loadPlan('triathlon', distance, timeTarget);
+    const planData = await loadPlan('triathlon', distance, timeTarget, locale);
     const path = `/training-plans/triathlon/${distance}/${timeTarget}`;
 
     const pageUrl = `${SITE_URL}${locale === 'en' ? '' : `/${locale}`}${path}`;

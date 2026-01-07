@@ -60,7 +60,7 @@ export default async function RunningTrainingPlanPage({
   }
 
   try {
-    const planData = await loadPlan('running', distance, timeTarget);
+    const planData = await loadPlan('running', distance, timeTarget, locale);
     const path = `/training-plans/running/${distance}/${timeTarget}`;
 
     const pageUrl = `${SITE_URL}${locale === 'en' ? '' : `/${locale}`}${path}`;

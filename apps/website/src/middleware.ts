@@ -42,8 +42,39 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(`${APP_URL}/auth/login`);
   }
 
+  // Check for explicit locale preference in cookie
+  const explicitLocale = request.cookies.get('NEXT_LOCALE')?.value;
+  const hasExplicitLocale =
+    explicitLocale &&
+    SUPPORTED_LOCALES.includes(
+      explicitLocale as (typeof SUPPORTED_LOCALES)[number],
+    );
+
   // Redirect /en and /en/* to non-prefixed URLs (English is default)
-  if (firstSegment === 'en') {
+  // BUT: Don't redirect if:
+  // 1. User has explicitly chosen English (cookie exists), OR
+  // 2. User is navigating from language switcher (referer contains /fr or /en)
+  // This prevents the redirect loop when user explicitly selects English
+  const referer = request.headers.get('referer');
+  let refererHasExplicitLocale = false;
+  if (referer) {
+    try {
+      const refererUrl = new URL(referer);
+      const refererFirstSegment = refererUrl.pathname
+        .split('/')
+        .filter(Boolean)[0];
+      refererHasExplicitLocale =
+        refererFirstSegment === 'fr' || refererFirstSegment === 'en';
+    } catch {
+      // Invalid referer URL, ignore
+    }
+  }
+
+  if (
+    firstSegment === 'en' &&
+    !hasExplicitLocale &&
+    !refererHasExplicitLocale
+  ) {
     const pathWithoutLocale = pathSegments.slice(1).join('/');
     const redirectPath = pathWithoutLocale ? `/${pathWithoutLocale}` : '/';
     const redirectUrl = new URL(redirectPath, request.url);
@@ -53,16 +84,22 @@ export function middleware(request: NextRequest) {
   }
 
   if (pathnameHasLocale) {
-    // Locale is already in path (and it's not 'en') - pass through to [locale] route
-    // Next.js will automatically match /fr to [locale] route
+    // Locale is already in path - pass through to [locale] route
+    // If it's /en with explicit cookie, we already handled it above (no redirect)
+    // Next.js will automatically match /fr or /en to [locale] route
     return NextResponse.next();
   }
 
-  // Detect locale from Accept-Language header or default to 'en'
+  // Detect locale: prioritize explicit cookie choice, then Accept-Language header, then default to 'en'
   const acceptLanguage = request.headers.get('accept-language');
   let locale = DEFAULT_LOCALE;
 
-  if (acceptLanguage) {
+  // First, check if user has explicitly chosen a locale (cookie)
+  if (hasExplicitLocale) {
+    locale = explicitLocale as typeof DEFAULT_LOCALE;
+  }
+  // Otherwise, use Accept-Language header
+  else if (acceptLanguage) {
     const preferredLocale = acceptLanguage
       .split(',')
       .map((lang) => lang.split(';')[0].trim().toLowerCase())

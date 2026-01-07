@@ -48,6 +48,12 @@ export function LanguageSwitcher({
       return;
     }
 
+    // Store explicit locale choice in cookie to prevent middleware from using Accept-Language
+    // Set cookie to expire in 1 year
+    const expires = new Date();
+    expires.setFullYear(expires.getFullYear() + 1);
+    document.cookie = `NEXT_LOCALE=${newLocale}; path=/; expires=${expires.toUTCString()}; SameSite=Lax`;
+
     // Extract current path without locale
     const pathSegments = pathname.split('/').filter(Boolean);
     const hasLocale = SUPPORTED_LOCALES.includes(
