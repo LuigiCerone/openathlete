@@ -120,22 +120,22 @@ function mapTargetToPrismaCreate(target: WorkoutStepTargetDto) {
       ? null
       : Number(v);
   return {
-    target_type: target.targetType,
-    target_min: toNum(target.targetMin),
-    target_max: toNum(target.targetMax),
-    target_value: toNum(target.targetValue),
-    metric_type: target.metricType || null,
+    targetType: target.targetType,
+    targetMin: toNum(target.targetMin),
+    targetMax: toNum(target.targetMax),
+    targetValue: toNum(target.targetValue),
+    metricType: target.metricType || null,
   };
 }
 
 function mapStepToPrismaCreate(step: CreateWorkoutStepDto, index?: number) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const base: any = {
-    order_index: typeof index === 'number' ? index : 0,
-    step_type: step.stepType,
+    orderIndex: typeof index === 'number' ? index : 0,
+    stepType: step.stepType,
     name: step.name ?? null,
-    duration_type: step.durationType ?? WORKOUT_DURATION_TYPE.OPEN,
-    duration_value: step.durationValue ?? null,
+    durationType: step.durationType ?? WORKOUT_DURATION_TYPE.OPEN,
+    durationValue: step.durationValue ?? null,
     notes: step.notes ?? null,
     targets: {
       create: (step.targets || [])
@@ -145,10 +145,10 @@ function mapStepToPrismaCreate(step: CreateWorkoutStepDto, index?: number) {
   };
 
   if (step.repeatBlock && step.repeatBlock.childSteps?.length) {
-    base.repeat_block = {
+    base.repeatBlock = {
       create: {
         repetitions: step.repeatBlock.repetitions,
-        child_steps: {
+        childSteps: {
           create: step.repeatBlock.childSteps.map((child, childIdx) => ({
             ...mapStepToPrismaCreate(child, childIdx),
           })),

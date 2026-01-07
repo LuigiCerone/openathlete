@@ -21,7 +21,12 @@ const options = {
   ],
   treeshake: 'smallest',
   plugins: [typescript()],
-  external: ['zod', 'libphonenumber-js'],
+  external: [
+    'zod',
+    'libphonenumber-js',
+    '@openathlete/database',
+    /^@openathlete\/database\/.*/,
+  ],
 };
 
 export default options;
