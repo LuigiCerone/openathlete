@@ -930,5 +930,12 @@
   "no_events": "No events",
   "week_summary": "Week Summary",
   "event": "event",
-  "events": "events"
+  "events": "events",
+  "import_training_plan": "Import Training Plan",
+  "importing_plan_name": "Importing: {planName}",
+  "training_plan_start_date": "Start Date",
+  "start_date_required": "Start date is required",
+  "training_plan_imported_successfully": "Training plan \"{planName}\" imported successfully",
+  "failed_to_import_training_plan": "Failed to import training plan",
+  "import": "Import"
 }

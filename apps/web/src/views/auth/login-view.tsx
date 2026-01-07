@@ -7,15 +7,28 @@ import { m } from '@/paraglide/messages';
 import { getPath } from '@/routes/paths';
 import { cn } from '@/utils/shadcn';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import z from 'zod';
 
 import { loginDtoSchema } from '@openathlete/shared';
 
+const PLAN_TOKEN_STORAGE_KEY = 'pendingPlanToken';
+
 export function LoginView({ className }: React.ComponentProps<'form'>) {
   const { initialize } = useAuthContext();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const planToken = searchParams.get('planToken');
+
+  // Store planToken in sessionStorage if present
+  useEffect(() => {
+    if (planToken) {
+      sessionStorage.setItem(PLAN_TOKEN_STORAGE_KEY, planToken);
+    }
+  }, [planToken]);
+
   const loginMutation = useLoginMutation({
     onSuccess: async () => {
       await initialize();

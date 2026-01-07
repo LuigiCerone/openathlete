@@ -212,6 +212,11 @@ export const routes = {
     getAthleteFeatureAccess: (athleteId: number, featureName: string) =>
       `/subscription/athlete/${athleteId}/feature-access/${featureName}`,
   },
+  seoPlan: {
+    create: '/seo-plan',
+    getPlan: (token: string) => `/seo-plan/${token}`,
+    import: (token: string) => `/seo-plan/${token}/import`,
+  },
 } as const;
 
 const client = axios.create({

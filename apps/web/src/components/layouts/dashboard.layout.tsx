@@ -26,6 +26,7 @@ import {
   DraggableType,
 } from '../create-event-from-template-dialog/dnd-types';
 import { MobileLayout } from '../mobile/mobile-layout';
+import { PlanImportHandler } from '../plan-import-handler';
 import { AppSidebar } from '../sidebar/app-sidebar';
 import { SportIcon } from '../sport-icon/sport-icon';
 
@@ -168,6 +169,7 @@ function LayoutContent({ children }: P) {
           </>
         )}
       </SpaceConsumer>
+      <PlanImportHandler />
       <DragOverlay dropAnimation={null} style={{ cursor: 'grabbing' }}>
         {getDragOverlayContent()}
       </DragOverlay>

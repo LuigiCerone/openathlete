@@ -15,12 +15,15 @@ import z from 'zod';
 
 import { createAccountDtoSchema } from '@openathlete/shared';
 
+const PLAN_TOKEN_STORAGE_KEY = 'pendingPlanToken';
+
 export function CreateAccountView({ className }: React.ComponentProps<'form'>) {
   const { initialize } = useAuthContext();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const invitationToken = searchParams.get('invitation');
   const coachInvitationToken = searchParams.get('coach-invitation');
+  const planToken = searchParams.get('planToken');
   const [invitationEmail, setInvitationEmail] = useState<string | null>(null);
   const [isVerifyingInvitation, setIsVerifyingInvitation] = useState(false);
   const methods = useForm<z.infer<typeof createAccountDtoSchema>>({
@@ -34,6 +37,13 @@ export function CreateAccountView({ className }: React.ComponentProps<'form'>) {
       coachInvitationToken: coachInvitationToken || undefined,
     },
   });
+
+  // Store planToken in sessionStorage if present
+  useEffect(() => {
+    if (planToken) {
+      sessionStorage.setItem(PLAN_TOKEN_STORAGE_KEY, planToken);
+    }
+  }, [planToken]);
 
   useEffect(() => {
     const token = invitationToken || coachInvitationToken;
