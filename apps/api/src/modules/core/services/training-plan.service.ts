@@ -153,7 +153,10 @@ export class TrainingPlanService {
                   goalDistance: session.goalDistance || null,
                   goalDuration: session.goalDuration || null,
                   goalElevationGain: session.goalElevationGain || null,
-                  goalRpe: session.goalRpe || null,
+                  goalRpe:
+                    session.goalRpe !== null && session.goalRpe !== undefined
+                      ? session.goalRpe / 10
+                      : null,
                 },
               },
             },
