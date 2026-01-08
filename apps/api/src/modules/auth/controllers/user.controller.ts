@@ -1,7 +1,15 @@
 import { ZodValidationPipe } from 'nestjs-zod';
 import { z } from 'zod';
 
-import { Body, Controller, Get, Patch, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Patch,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import {
   ApiBearerAuth,
@@ -527,5 +535,34 @@ export class UserController {
     body: { pushToken: string },
   ) {
     return this.userService.updatePushToken(user, body.pushToken);
+  }
+
+  @UseGuards(AuthGuard('jwt'), UserTypeGuard)
+  @ApiBearerAuth()
+  @Delete()
+  @ApiOperation({
+    summary: 'Delete user account',
+    description:
+      "Permanently deletes the authenticated user's account and all associated data including athlete profile, events, training data, messages, and relationships. This operation cannot be undone.",
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Account deleted successfully',
+    schema: {
+      type: 'object',
+      properties: {
+        success: {
+          type: 'boolean',
+          example: true,
+        },
+      },
+    },
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized - invalid or missing authentication token',
+  })
+  deleteAccount(@JwtUser() user: AuthUser) {
+    return this.userService.deleteAccount(user);
   }
 }
