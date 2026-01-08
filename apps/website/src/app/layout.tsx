@@ -67,14 +67,6 @@ export const metadata: Metadata = {
       'max-snippet': -1,
     },
   },
-  alternates: {
-    canonical: 'https://openathlete.org',
-    languages: {
-      en: 'https://openathlete.org',
-      fr: 'https://openathlete.org/fr',
-      'x-default': 'https://openathlete.org',
-    },
-  },
   icons: {
     icon: [
       { url: '/favicon.png', type: 'image/png' },
