@@ -30,7 +30,7 @@ export const PLAN_REGISTRY: Record<
     { distance: 'marathon', variant: '4h15' }, // done
     { distance: 'marathon', variant: '4h30' }, // done
     { distance: 'marathon', variant: '5h' }, // done
-    { distance: 'marathon', variant: '5h30' },
+    { distance: 'marathon', variant: '5h30' }, // done
   ],
   trail: [
     { distance: '10km', variant: '0d+' },
