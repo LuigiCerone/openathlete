@@ -52,4 +52,9 @@ export class UserAPI {
     const res = await client.patch(routes.user.updatePushToken, { pushToken });
     return res.data;
   }
+
+  static async deleteAccount(): Promise<{ success: boolean }> {
+    const res = await client.delete(routes.user.deleteAccount);
+    return res.data;
+  }
 }

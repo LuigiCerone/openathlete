@@ -1,5 +1,6 @@
 import { useGetMyAthleteQuery } from '@/api/athlete';
-import { useUpdateAccountMutation } from '@/api/user';
+import { useDeleteAccountMutation, useUpdateAccountMutation } from '@/api/user';
+import { ConfirmAction } from '@/components/confirm-action';
 import { FormProvider, RHFTextField } from '@/components/hook-form';
 import { RHFSelect } from '@/components/hook-form/rhf-select';
 import { SessionValidationSettingsCard } from '@/components/session-validation-settings-card';
@@ -8,6 +9,7 @@ import { SelectItem } from '@/components/ui/select';
 import { useAuthContext } from '@/contexts/auth';
 import { m } from '@/paraglide/messages';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
@@ -17,11 +19,21 @@ import { updateAccountDtoSchema } from '@openathlete/shared';
 import { SettingsSection } from './settings-section';
 
 export function ProfileTab() {
-  const { user } = useAuthContext();
+  const { user, logout } = useAuthContext();
   const { data: athlete } = useGetMyAthleteQuery();
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const updateAccountMutation = useUpdateAccountMutation({
     onSuccess: async () => {
       toast.success(m.account_updated_successfully());
+    },
+  });
+  const deleteAccountMutation = useDeleteAccountMutation({
+    onSuccess: () => {
+      toast.success(m.account_deleted_successfully());
+      logout();
+    },
+    onError: () => {
+      toast.error(m.failed_to_delete_account());
     },
   });
   const methods = useForm<z.infer<typeof updateAccountDtoSchema>>({
@@ -82,6 +94,31 @@ export function ProfileTab() {
       {athlete?.athleteId && (
         <SessionValidationSettingsCard athleteId={athlete.athleteId} />
       )}
+      <SettingsSection
+        title={m.delete_account()}
+        description={m.delete_account_description()}
+      >
+        <div className="flex w-full max-w-md flex-col gap-4">
+          <Button
+            variant="destructive"
+            className="w-fit"
+            onClick={() => setDeleteDialogOpen(true)}
+          >
+            {m.delete_account()}
+          </Button>
+        </div>
+      </SettingsSection>
+      <ConfirmAction
+        open={deleteDialogOpen}
+        onClose={() => setDeleteDialogOpen(false)}
+        onConfirm={() => {
+          deleteAccountMutation.mutate();
+        }}
+        title={m.delete_account()}
+        message={m.confirm_delete_account()}
+        confirmText={m.delete_account()}
+        isLoading={deleteAccountMutation.isPending}
+      />
     </div>
   );
 }

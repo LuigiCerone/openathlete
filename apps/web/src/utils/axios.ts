@@ -18,6 +18,7 @@ export const routes = {
     getMe: '/user/me',
     createAccount: '/user',
     updateAccount: '/user',
+    deleteAccount: '/user',
     updateLanguage: '/user/language',
     passwordReset: '/user/password-reset',
     passwordResetRequest: '/user/password-reset/request',

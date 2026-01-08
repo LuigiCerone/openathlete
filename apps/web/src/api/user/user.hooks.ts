@@ -84,3 +84,16 @@ export const usePasswordResetMutation = (
     mutationFn: UserAPI.passwordReset,
   });
 };
+
+export const useDeleteAccountMutation = (
+  opt?: MutationOptions<
+    Awaited<ReturnType<typeof UserAPI.deleteAccount>>,
+    Error,
+    void
+  >,
+) => {
+  return useMutation({
+    ...opt,
+    mutationFn: UserAPI.deleteAccount,
+  });
+};
