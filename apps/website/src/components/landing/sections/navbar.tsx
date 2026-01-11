@@ -13,12 +13,6 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 
-declare global {
-  interface Window {
-    gtag_report_conversion?: (url?: string) => boolean;
-  }
-}
-
 export function Navbar() {
   const pathname = usePathname();
   const locale = getLocale();
@@ -57,18 +51,6 @@ export function Navbar() {
 
   const loginUrl = `${APP_URL}/auth/login`;
 
-  const handleLoginClick = (
-    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
-  ) => {
-    e.preventDefault();
-    if (typeof window !== 'undefined' && window.gtag_report_conversion) {
-      window.gtag_report_conversion(loginUrl);
-    } else {
-      // Fallback if gtag is not loaded yet
-      window.location.href = loginUrl;
-    }
-  };
-
   return (
     <nav className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <Container>
@@ -102,7 +84,7 @@ export function Navbar() {
               </a>
             </Button>
             <Button asChild>
-              <Link href={loginUrl} target="_self" onClick={handleLoginClick}>
+              <Link href={loginUrl} target="_self">
                 {m.login()}
               </Link>
             </Button>
@@ -170,9 +152,8 @@ export function Navbar() {
                 <Link
                   href={loginUrl}
                   target="_self"
-                  onClick={(e) => {
+                  onClick={() => {
                     setMobileMenuOpen(false);
-                    handleLoginClick(e);
                   }}
                 >
                   {m.login()}

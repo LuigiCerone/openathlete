@@ -13,12 +13,6 @@ import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import * as React from 'react';
 
-declare global {
-  interface Window {
-    gtag_report_conversion?: (url?: string) => boolean;
-  }
-}
-
 const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
@@ -56,18 +50,6 @@ const titleVariants = {
 
 export function Hero() {
   const signupUrl = `${APP_URL}/auth/create-account`;
-
-  const handleSignupClick = (
-    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
-  ) => {
-    e.preventDefault();
-    if (typeof window !== 'undefined' && window.gtag_report_conversion) {
-      window.gtag_report_conversion(signupUrl);
-    } else {
-      // Fallback if gtag is not loaded yet
-      window.location.href = signupUrl;
-    }
-  };
 
   return (
     <section className="relative overflow-hidden bg-gradient-to-b from-background via-background to-muted/10 py-20 md:py-32">
@@ -112,7 +94,7 @@ export function Hero() {
             variants={itemVariants}
           >
             <Button size="lg" asChild className="group">
-              <Link href={signupUrl} onClick={handleSignupClick}>
+              <Link href={signupUrl}>
                 {m.landing_hero_cta_primary()}
                 <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Link>

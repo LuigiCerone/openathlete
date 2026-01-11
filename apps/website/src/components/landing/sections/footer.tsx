@@ -8,12 +8,6 @@ import { getLocale } from '@/paraglide/runtime';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-declare global {
-  interface Window {
-    gtag_report_conversion?: (url?: string) => boolean;
-  }
-}
-
 export function Footer() {
   const pathname = usePathname();
   const locale = getLocale();
@@ -34,30 +28,6 @@ export function Footer() {
 
   const loginUrl = `${APP_URL}/auth/login`;
   const signupUrl = `${APP_URL}/auth/create-account`;
-
-  const handleLoginClick = (
-    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
-  ) => {
-    e.preventDefault();
-    if (typeof window !== 'undefined' && window.gtag_report_conversion) {
-      window.gtag_report_conversion(loginUrl);
-    } else {
-      // Fallback if gtag is not loaded yet
-      window.location.href = loginUrl;
-    }
-  };
-
-  const handleSignupClick = (
-    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
-  ) => {
-    e.preventDefault();
-    if (typeof window !== 'undefined' && window.gtag_report_conversion) {
-      window.gtag_report_conversion(signupUrl);
-    } else {
-      // Fallback if gtag is not loaded yet
-      window.location.href = signupUrl;
-    }
-  };
 
   return (
     <footer className="border-t bg-muted/30 py-16">
@@ -87,7 +57,6 @@ export function Footer() {
                 <Link
                   href={loginUrl}
                   className="text-muted-foreground hover:text-foreground transition-colors"
-                  onClick={handleLoginClick}
                 >
                   {m.login()}
                 </Link>
@@ -96,7 +65,6 @@ export function Footer() {
                 <Link
                   href={signupUrl}
                   className="text-muted-foreground hover:text-foreground transition-colors"
-                  onClick={handleSignupClick}
                 >
                   {m.footer_signup()}
                 </Link>

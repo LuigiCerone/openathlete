@@ -102,36 +102,6 @@ export default function RootLayout({
             gtag('config', 'G-HGDZFGYRSP');
           `}
         </Script>
-        {/* Google tag (gtag.js) */}
-        <Script
-          src="https://www.googletagmanager.com/gtag/js?id=AW-17797901653"
-          strategy="afterInteractive"
-        />
-        <Script id="google-ads" strategy="afterInteractive">
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'AW-17797901653');
-          `}
-        </Script>
-        {/* Google Ads Conversion Tracking */}
-        <Script id="google-ads-conversion" strategy="afterInteractive">
-          {`
-            function gtag_report_conversion(url) {
-              var callback = function () {
-                if (typeof(url) != 'undefined') {
-                  window.location = url;
-                }
-              };
-              gtag('event', 'conversion', {
-                'send_to': 'AW-17797901653/td2dCLqZodAbENXa2aZC',
-                'event_callback': callback
-              });
-              return false;
-            }
-          `}
-        </Script>
         <OrganizationStructuredData />
         <WebSiteStructuredData />
         {children}
