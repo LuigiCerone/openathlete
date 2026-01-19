@@ -65,8 +65,12 @@ resource "scaleway_container" "api" {
     SUUNTO_REDIRECT_URI = "https://app.openathlete.org/auth/callback/suunto"
     SUUNTO_SUBSCRIPTION_KEY = scaleway_secret_version.suunto_subscription_key_v.data
     FIREBASE_FUNCTIONS_URL = scaleway_secret_version.firebase_functions_url_v.data
-    FIREBASE_SERVICE_ACCOUNT_JSON = scaleway_secret_version.firebase_service_account_json_v.data
     BETTER_STACK_DSN = scaleway_secret_version.better_stack_dsn_v.data
+  }
+
+  // Secret env vars have a higher size limit (service-account JSON can exceed 1000 chars)
+  secret_environment_variables = {
+    FIREBASE_SERVICE_ACCOUNT_JSON = scaleway_secret_version.firebase_service_account_json_v.data
   }
 
   depends_on = [
@@ -148,8 +152,12 @@ resource "scaleway_container" "import_worker" {
     SUUNTO_REDIRECT_URI = "https://app.openathlete.org/auth/callback/suunto"
     SUUNTO_SUBSCRIPTION_KEY = scaleway_secret_version.suunto_subscription_key_v.data
     FIREBASE_FUNCTIONS_URL = scaleway_secret_version.firebase_functions_url_v.data
-    FIREBASE_SERVICE_ACCOUNT_JSON = scaleway_secret_version.firebase_service_account_json_v.data
     BETTER_STACK_DSN = scaleway_secret_version.better_stack_dsn_v.data
+  }
+
+  // Secret env vars have a higher size limit (service-account JSON can exceed 1000 chars)
+  secret_environment_variables = {
+    FIREBASE_SERVICE_ACCOUNT_JSON = scaleway_secret_version.firebase_service_account_json_v.data
   }
 
   depends_on = [
