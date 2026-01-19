@@ -2124,6 +2124,13 @@ export class GarminProviderService
       return;
     }
 
+    if (!payload.permissions) {
+      this.logger.debug(
+        `User permissions change webhook received for user ${payload.userId} with no permissions`,
+      );
+      return;
+    }
+
     const hasWorkoutImport = payload.permissions.includes('WORKOUT_IMPORT');
 
     this.logger.log(

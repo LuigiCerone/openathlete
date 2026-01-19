@@ -26,6 +26,40 @@ export class SubscriptionService {
   ) {}
 
   /**
+   * Ensure a Stripe customer exists for this user and persist its ID.
+   * Useful for flows like opening the billing portal when the user never checked out yet.
+   */
+  async getOrCreateStripeCustomerId(userId: number): Promise<string> {
+    const subscription = await this.getOrCreateSubscription(userId);
+
+    if (subscription.stripeCustomerId) {
+      return subscription.stripeCustomerId;
+    }
+
+    const user = await this.prisma.user.findUnique({
+      where: { userId },
+      select: { email: true },
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    const customer = await this.stripeService.getOrCreateCustomer(
+      userId,
+      user.email,
+    );
+
+    const updated = await this.prisma.subscription.update({
+      where: { subscriptionId: subscription.subscriptionId },
+      data: { stripeCustomerId: customer.id },
+    });
+
+    // `customer.id` is always defined; this is just defensive.
+    return updated.stripeCustomerId ?? customer.id;
+  }
+
+  /**
    * Get current subscription for a user
    */
   async getCurrentSubscription(userId: number): Promise<Subscription | null> {

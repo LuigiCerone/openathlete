@@ -464,17 +464,12 @@ export class SubscriptionController {
     @JwtUser() user: AuthUser,
     @Query('returnUrl') returnUrl?: string,
   ) {
-    const subscription = await this.subscriptionService.getCurrentSubscription(
-      user.userId,
-    );
-
-    if (!subscription?.stripeCustomerId) {
-      throw new Error('No Stripe customer found');
-    }
+    const stripeCustomerId =
+      await this.subscriptionService.getOrCreateStripeCustomerId(user.userId);
 
     const defaultReturnUrl = `${this.configService.get('APP_URL')}/dashboard/settings/subscription`;
     const session = await this.stripeService.createCustomerPortalSession(
-      subscription.stripeCustomerId,
+      stripeCustomerId,
       returnUrl || defaultReturnUrl,
     );
 
