@@ -182,6 +182,12 @@ variable "firebase_functions_url" {
   sensitive   = true
 }
 
+variable "firebase_service_account_json" {
+  description = "Firebase Admin service account JSON (string) used to verify Firebase ID tokens (stored in Secret Manager)."
+  type        = string
+  sensitive   = true
+}
+
 variable "better_stack_dsn" {
   description = "Better Stack (Sentry) DSN for error tracking and monitoring (stored in Secret Manager)."
   type        = string
