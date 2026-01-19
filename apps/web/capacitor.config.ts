@@ -24,6 +24,9 @@ const config: CapacitorConfig = {
       splashFullScreen: true,
       splashImmersive: true,
     },
+    FirebaseAuthentication: {
+      providers: ['google.com'],
+    },
   },
   android: {
     buildOptions: {

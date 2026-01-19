@@ -7,6 +7,7 @@ import { useAuthContext } from '@/contexts/auth';
 import { m } from '@/paraglide/messages';
 import { getPath } from '@/routes/paths';
 import { cn } from '@/utils/shadcn';
+import { OAuthButtons } from '@/views/auth/oauth-buttons';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -141,6 +142,11 @@ export function CreateAccountView({ className }: React.ComponentProps<'form'>) {
         >
           {m.create_account()}
         </Button>
+        <OAuthButtons
+          invitationToken={invitationToken}
+          coachInvitationToken={coachInvitationToken}
+          redirectTo={getPath(['dashboard'])}
+        />
       </div>
       <div className="text-center text-sm">
         {m.already_have_account()}{' '}

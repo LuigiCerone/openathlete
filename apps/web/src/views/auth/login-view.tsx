@@ -6,6 +6,7 @@ import { useAuthContext } from '@/contexts/auth';
 import { m } from '@/paraglide/messages';
 import { getPath } from '@/routes/paths';
 import { cn } from '@/utils/shadcn';
+import { OAuthButtons } from '@/views/auth/oauth-buttons';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
@@ -86,15 +87,7 @@ export function LoginView({ className }: React.ComponentProps<'form'>) {
         >
           {m.login()}
         </Button>
-        {/* <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
-          <span className="bg-background text-muted-foreground relative z-10 px-2">
-            Or continue with
-          </span>
-        </div>
-        <Button variant="outline" className="w-full">
-          <StravaIcon />
-          Login with Strava
-        </Button> */}
+        <OAuthButtons />
       </div>
       <div className="text-center text-sm">
         {m.dont_have_account()}{' '}

@@ -1,6 +1,7 @@
 import { UserAPI } from '@/api/user';
 import { getPath } from '@/routes/paths';
 import { isValidToken } from '@/utils/auth';
+import { signOutFirebase } from '@/utils/firebase-auth';
 import { ACCESS_TOKEN, clear, getItem, setItem } from '@/utils/local-storage';
 import { initializePushNotifications } from '@/utils/push-notifications';
 import { useCallback, useEffect, useMemo, useReducer } from 'react';
@@ -154,6 +155,9 @@ export function AuthProvider({ children }: Props) {
 
   const logout = useCallback((navigate?: (path: string) => void) => {
     clear();
+    signOutFirebase().catch((error) => {
+      console.error('Failed to sign out Firebase:', error);
+    });
     dispatch({
       type: Types.LOGOUT,
     });

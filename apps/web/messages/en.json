@@ -919,6 +919,9 @@
   "subscription_resume_success": "Subscription resumed",
   "subscription_resume_error": "Failed to resume subscription",
   "subscription_portal_error": "Failed to open billing portal",
+  "subscription_checkout_error": "Failed to start checkout",
+  "subscription_purchase_title": "Choose a plan",
+  "subscription_purchase_description": "Upgrade your plan to unlock premium features.",
   "subscription_status_active": "Active",
   "subscription_status_trialing": "Trialing",
   "subscription_status_canceled": "Canceled",
@@ -942,5 +945,10 @@
   "start_date_required": "Start date is required",
   "training_plan_imported_successfully": "Training plan \"{planName}\" imported successfully",
   "failed_to_import_training_plan": "Failed to import training plan",
-  "import_action": "Import"
+  "import_action": "Import",
+  "or_continue_with": "Or continue with",
+  "continue_with_google": "Continue with Google",
+  "continue_with_apple": "Continue with Apple",
+  "continue_with_github": "Continue with GitHub",
+  "oauth_login_failed": "OAuth sign-in failed. Please try again."
 }

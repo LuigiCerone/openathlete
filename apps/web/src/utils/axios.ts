@@ -10,6 +10,7 @@ import { ACCESS_TOKEN, REFRESH_TOKEN, setItem } from './local-storage';
 export const routes = {
   auth: {
     login: '/auth/login',
+    firebaseLogin: '/auth/firebase',
     refreshToken: '/auth/refresh-token',
     emailExists: '/auth/email-exists',
     verifyInvitation: '/auth/invitation',

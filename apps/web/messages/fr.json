@@ -919,6 +919,9 @@
   "subscription_resume_success": "Abonnement repris",
   "subscription_resume_error": "Échec de la reprise de l'abonnement",
   "subscription_portal_error": "Échec de l'ouverture du portail de facturation",
+  "subscription_checkout_error": "Échec du démarrage du paiement",
+  "subscription_purchase_title": "Choisir un plan",
+  "subscription_purchase_description": "Passez à un plan supérieur pour débloquer les fonctionnalités premium.",
   "subscription_status_active": "Actif",
   "subscription_status_trialing": "Essai gratuit",
   "subscription_status_canceled": "Annulé",
@@ -942,5 +945,10 @@
   "start_date_required": "La date de début est requise",
   "training_plan_imported_successfully": "Plan d'entraînement \"{planName}\" importé avec succès",
   "failed_to_import_training_plan": "Échec de l'importation du plan d'entraînement",
-  "import_action": "Importer"
+  "import_action": "Importer",
+  "or_continue_with": "Ou continuer avec",
+  "continue_with_google": "Continuer avec Google",
+  "continue_with_apple": "Continuer avec Apple",
+  "continue_with_github": "Continuer avec GitHub",
+  "oauth_login_failed": "Échec de la connexion OAuth. Veuillez réessayer."
 }

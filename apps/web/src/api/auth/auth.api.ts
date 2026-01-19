@@ -1,10 +1,21 @@
 import client, { routes } from '@/utils/axios';
 
-import { AuthResponseDto, LoginDto } from '@openathlete/shared';
+import {
+  AuthResponseDto,
+  FirebaseLoginDto,
+  LoginDto,
+} from '@openathlete/shared';
 
 export class AuthAPI {
   static async login(body: LoginDto): Promise<AuthResponseDto> {
     const res = await client.post(routes.auth.login, body);
+    return res.data;
+  }
+
+  static async loginWithFirebase(
+    body: FirebaseLoginDto,
+  ): Promise<AuthResponseDto> {
+    const res = await client.post(routes.auth.firebaseLogin, body);
     return res.data;
   }
 

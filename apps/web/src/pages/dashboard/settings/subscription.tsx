@@ -1,10 +1,12 @@
 import {
   useCancelSubscription,
+  useCreateCheckout,
   useCurrentSubscription,
   useCustomerPortal,
   useInvoices,
   useResumeSubscription,
 } from '@/api/subscription';
+import { PlanCard } from '@/components/paywall/plan-card';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -13,6 +15,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { m } from '@/paraglide/messages';
 import { format } from 'date-fns';
 import { Download, ExternalLink, FileText } from 'lucide-react';
@@ -53,14 +56,33 @@ const invoiceStatusMap: Record<string, string> = {
   uncollectible: m.invoice_status_uncollectible(),
 };
 
+// Group plans by category (paid plans only)
+const ATHLETE_PLANS = [SubscriptionPlan.ATHLETE_PRO];
+const COACH_PLANS = [SubscriptionPlan.COACH_PRO, SubscriptionPlan.COACH_ULTRA];
+const CLUB_PLANS = [SubscriptionPlan.CLUB_PRO, SubscriptionPlan.CLUB_ULTRA];
+
+function isSubscriptionActive(status: SubscriptionStatus): boolean {
+  return (
+    status === SubscriptionStatus.ACTIVE ||
+    status === SubscriptionStatus.TRIALING
+  );
+}
+
 export function SubscriptionSettingsPage() {
   const { data: subscription, isLoading } = useCurrentSubscription();
   const { data: invoices } = useInvoices();
   const cancelMutation = useCancelSubscription();
   const resumeMutation = useResumeSubscription();
   const portalMutation = useCustomerPortal();
+  const createCheckout = useCreateCheckout();
 
   const [isLoadingPortal, setIsLoadingPortal] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState<SubscriptionPlan | null>(
+    null,
+  );
+  const [activeTab, setActiveTab] = useState<'athlete' | 'coach' | 'club'>(
+    'athlete',
+  );
 
   const handleManageBilling = async () => {
     setIsLoadingPortal(true);
@@ -104,6 +126,118 @@ export function SubscriptionSettingsPage() {
 
   const plan = subscription.plan as SubscriptionPlan;
   const planConfig = PLAN_CONFIGS[plan];
+  const status = subscription.status as SubscriptionStatus;
+
+  // UX rule: if subscription is "active" but user is on FREE, treat as no subscription
+  const shouldShowPurchaseOnly =
+    plan === SubscriptionPlan.FREE && isSubscriptionActive(status);
+
+  const handleUpgrade = async (nextPlan: SubscriptionPlan) => {
+    setSelectedPlan(nextPlan);
+    try {
+      const successUrl = `${window.location.origin}/dashboard/settings?tab=subscription&success=true`;
+      const cancelUrl = `${window.location.origin}/dashboard/settings?tab=subscription&canceled=true`;
+
+      const { url } = await createCheckout.mutateAsync({
+        plan: nextPlan,
+        successUrl,
+        cancelUrl,
+      });
+
+      window.location.href = url;
+    } catch {
+      toast.error(m.subscription_checkout_error());
+    }
+  };
+
+  if (shouldShowPurchaseOnly) {
+    return (
+      <div className="space-y-6">
+        <Card>
+          <CardHeader>
+            <CardTitle>{m.subscription_purchase_title()}</CardTitle>
+            <CardDescription>
+              {m.subscription_purchase_description()}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Tabs
+              value={activeTab}
+              onValueChange={(v) => setActiveTab(v as typeof activeTab)}
+            >
+              <TabsList className="grid w-full grid-cols-3">
+                <TabsTrigger value="athlete">
+                  {m.paywall_tab_athlete()}
+                </TabsTrigger>
+                <TabsTrigger value="coach">{m.paywall_tab_coach()}</TabsTrigger>
+                <TabsTrigger value="club">{m.paywall_tab_club()}</TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="athlete" className="mt-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {ATHLETE_PLANS.map((p) => {
+                    const config = PLAN_CONFIGS[p];
+                    return (
+                      <PlanCard
+                        key={config.plan}
+                        plan={config}
+                        onSelect={() => handleUpgrade(config.plan)}
+                        isLoading={
+                          createCheckout.isPending &&
+                          selectedPlan === config.plan
+                        }
+                        isCurrentPlan={false}
+                      />
+                    );
+                  })}
+                </div>
+              </TabsContent>
+
+              <TabsContent value="coach" className="mt-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {COACH_PLANS.map((p) => {
+                    const config = PLAN_CONFIGS[p];
+                    return (
+                      <PlanCard
+                        key={config.plan}
+                        plan={config}
+                        onSelect={() => handleUpgrade(config.plan)}
+                        isLoading={
+                          createCheckout.isPending &&
+                          selectedPlan === config.plan
+                        }
+                        isCurrentPlan={false}
+                      />
+                    );
+                  })}
+                </div>
+              </TabsContent>
+
+              <TabsContent value="club" className="mt-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {CLUB_PLANS.map((p) => {
+                    const config = PLAN_CONFIGS[p];
+                    return (
+                      <PlanCard
+                        key={config.plan}
+                        plan={config}
+                        onSelect={() => handleUpgrade(config.plan)}
+                        isLoading={
+                          createCheckout.isPending &&
+                          selectedPlan === config.plan
+                        }
+                        isCurrentPlan={false}
+                      />
+                    );
+                  })}
+                </div>
+              </TabsContent>
+            </Tabs>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
