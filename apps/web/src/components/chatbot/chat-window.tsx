@@ -362,14 +362,14 @@ export function ChatWindow() {
               )}
             </div>
             <Separator />
-            <div className="flex-1 overflow-hidden flex flex-col">
+            <div className="flex-1 min-h-0 overflow-y-auto">
               {activeId ? (
                 <MessageMessages
                   messageThreadId={activeId}
                   isWindowMode={true}
                 />
               ) : (
-                <div className="flex items-center justify-center h-full text-muted-foreground">
+                <div className="flex items-center justify-center min-h-full text-muted-foreground">
                   <p>{m.chatbot_select_or_create()}</p>
                 </div>
               )}
