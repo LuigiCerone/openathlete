@@ -122,13 +122,14 @@ export class UserService {
     invitationToken,
     coachInvitationToken,
   }: CreateAccountDto) => {
+    const normalizedEmail = email.toLowerCase();
     const hashedPassword = await this.hashPassword(password);
 
     if (!hashedPassword) {
       throw new BadRequestException('Failed to hash password');
     }
 
-    const userExists = await this.exists({ email });
+    const userExists = await this.exists({ email: normalizedEmail });
 
     if (userExists) {
       throw new ConflictException('User already exists');
@@ -178,7 +179,7 @@ export class UserService {
 
     const created = await this.prisma.user.create({
       data: {
-        email,
+        email: normalizedEmail,
         password: hashedPassword,
         firstName: firstName,
         lastName: lastName,
@@ -229,7 +230,7 @@ export class UserService {
       SendEmailEvent.SLUG,
       new SendEmailEvent({
         type: 'welcome',
-        to: email,
+        to: normalizedEmail,
         params: {
           name: firstName,
           dashboard_url: `${this.configService.get('APP_URL')}/dashboard`,
@@ -243,7 +244,7 @@ export class UserService {
         type: 'signup-notification',
         to: 'contact@openathlete.org',
         params: {
-          email,
+          email: normalizedEmail,
           firstName,
           lastName,
         },

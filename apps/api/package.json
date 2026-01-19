@@ -55,6 +55,7 @@
     "class-validator": "^0.14.1",
     "dotenv": "^16.4.7",
     "fast-xml-parser": "^5.3.2",
+    "firebase-admin": "^13.6.0",
     "ical-generator": "^8.1.1",
     "ioredis": "^5.8.2",
     "jsonwebtoken": "^9.0.2",

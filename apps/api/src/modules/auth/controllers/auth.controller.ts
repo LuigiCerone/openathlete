@@ -11,8 +11,10 @@ import {
 
 import {
   AuthResponseDto,
+  FirebaseLoginDto,
   LoginDto,
   RefreshTokenDto,
+  firebaseLoginDtoSchema,
   loginDtoSchema,
   refreshTokenDtoSchema,
 } from '@openathlete/shared';
@@ -83,6 +85,18 @@ export class AuthController {
     @Body(new ZodValidationPipe(loginDtoSchema)) credentials: LoginDto,
   ): Promise<AuthResponseDto> {
     return await this.authService.login(credentials);
+  }
+
+  @Post('firebase')
+  @ApiOperation({
+    summary: 'Authenticate user with Firebase OAuth (ID token exchange)',
+    description:
+      'Verifies a Firebase ID token (OAuth providers: Google/Apple/GitHub), creates a user if missing, and returns OpenAthlete access and refresh tokens.',
+  })
+  async loginWithFirebase(
+    @Body(new ZodValidationPipe(firebaseLoginDtoSchema)) body: FirebaseLoginDto,
+  ): Promise<AuthResponseDto> {
+    return await this.authService.loginWithFirebase(body);
   }
 
   @Post('refresh-token')

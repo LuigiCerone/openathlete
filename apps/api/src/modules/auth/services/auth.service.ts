@@ -1,4 +1,5 @@
 import { JwtPayload, sign, verify } from 'jsonwebtoken';
+import { randomUUID } from 'node:crypto';
 
 import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -6,13 +7,35 @@ import { ConfigService } from '@nestjs/config';
 import {
   ApiEnvSchemaType,
   AuthResponseDto,
+  FirebaseLoginDto,
   LoginDto,
 } from '@openathlete/shared';
 
 import { PrismaService } from 'src/modules/prisma/services/prisma.service';
 
 import { AuthUser } from '../decorators/user.decorator';
+import { FirebaseAuthService } from './firebase-auth.service';
 import { UserService } from './user.service';
+
+function deriveNames(params: { name?: string; email: string }): {
+  firstName: string;
+  lastName: string;
+} {
+  const safeName = (params.name || '').trim();
+  if (safeName) {
+    const parts = safeName.split(/\s+/g).filter(Boolean);
+    if (parts.length === 1) {
+      return { firstName: parts[0]!, lastName: '' };
+    }
+    return {
+      firstName: parts[0]!,
+      lastName: parts.slice(1).join(' '),
+    };
+  }
+
+  const emailLocalPart = params.email.split('@')[0] || 'Athlete';
+  return { firstName: emailLocalPart, lastName: '' };
+}
 
 @Injectable()
 export class AuthService {
@@ -22,6 +45,7 @@ export class AuthService {
     private readonly prisma: PrismaService,
     private userService: UserService,
     private readonly configService: ConfigService<ApiEnvSchemaType, true>,
+    private readonly firebaseAuthService: FirebaseAuthService,
   ) {}
 
   private createToken(
@@ -82,6 +106,41 @@ export class AuthService {
       },
     });
     if (!user) throw new UnauthorizedException();
+
+    return {
+      accessToken: this.createToken(user.userId, user.email, false),
+      refreshToken: this.createToken(user.userId, user.email, true),
+    };
+  }
+
+  async loginWithFirebase(body: FirebaseLoginDto): Promise<AuthResponseDto> {
+    const verified = await this.firebaseAuthService.verifyIdToken(body.idToken);
+    const email = verified.email.toLowerCase();
+
+    let user = await this.prisma.user.findFirst({
+      where: { email },
+      select: { userId: true, email: true },
+    });
+
+    if (!user) {
+      const { firstName, lastName } = deriveNames({
+        name: verified.name,
+        email,
+      });
+
+      // Create a strong random password (OAuth users won't use it directly).
+      const randomPassword = randomUUID();
+      const created = await this.userService.createAccount({
+        email,
+        password: randomPassword,
+        firstName,
+        lastName,
+        invitationToken: body.invitationToken,
+        coachInvitationToken: body.coachInvitationToken,
+      });
+
+      user = { userId: created.userId, email };
+    }
 
     return {
       accessToken: this.createToken(user.userId, user.email, false),

@@ -12,6 +12,7 @@ import { UserTypeGuard } from './guards';
 import { AuthService, CaslAbilityFactory, UserService } from './services';
 import { AthleteInvitationService } from './services/athlete-invitation.service';
 import { CoachInvitationService } from './services/coach-invitation.service';
+import { FirebaseAuthService } from './services/firebase-auth.service';
 import { InvitationService } from './services/invitation.service';
 import { TokenService } from './services/token.service';
 import { JwtStrategy } from './strategies';
@@ -30,6 +31,7 @@ import { JwtStrategy } from './strategies';
   controllers: [AuthController, UserController],
   providers: [
     AuthService,
+    FirebaseAuthService,
     UserService,
     TokenService,
     AthleteInvitationService,
