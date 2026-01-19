@@ -288,6 +288,13 @@ export const ApiEnvSchema = z
       .optional()
       .describe('Firebase Cloud Functions URL (optional)'),
 
+    FIREBASE_SERVICE_ACCOUNT_JSON: z
+      .string()
+      .optional()
+      .describe(
+        'Firebase Admin service account JSON as a string (optional, required for Firebase Auth ID token verification)',
+      ),
+
     // Feature flags
     ENABLE_ACTIVITY_IMPORT: z
       .string()
