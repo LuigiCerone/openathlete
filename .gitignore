@@ -14,6 +14,7 @@
 !.vscode/launch.json
 !.vscode/extensions.json
 !.vscode/openathlete.code-workspace
+.vscode
 
 # Docker compose local volumes
 volumes
