@@ -8,6 +8,7 @@ import { useSearchParams } from 'react-router-dom';
 import { AthletesTab } from './athletes-tab';
 import { CoachesTab } from './coaches-tab';
 import { ConnectorsTab } from './connectors-tab';
+import { ContributeTab } from './contribute-tab';
 import { EquipmentTab } from './equipment-tab';
 import { InvitationsTab } from './invitations-tab';
 import { ProfileTab } from './profile-tab';
@@ -52,6 +53,7 @@ export function SettingsView() {
             )}
             <TabsTrigger value="invitations">{m.invitations()}</TabsTrigger>
             <TabsTrigger value="subscription">{m.subscription()}</TabsTrigger>
+            <TabsTrigger value="contribute">{m.contribute()}</TabsTrigger>
           </TabsList>
         </div>
         <TabsContent value="connectors" className="mt-6">
@@ -77,6 +79,9 @@ export function SettingsView() {
         </TabsContent>
         <TabsContent value="subscription" className="mt-6">
           <SubscriptionSettingsPage />
+        </TabsContent>
+        <TabsContent value="contribute" className="mt-6">
+          <ContributeTab />
         </TabsContent>
       </Tabs>
     </div>
