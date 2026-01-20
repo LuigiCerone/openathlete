@@ -72,6 +72,7 @@ export class SuuntoProviderService
   protected readonly provider = ConnectorProvider.SUUNTO;
   private readonly importWindowMs = 30 * 24 * 60 * 60 * 1000; // 30 days
   private readonly metricsSyncWindowDays = 28; // Maximum fetch interval per Suunto API
+  private static readonly workoutKeyAllowlist = /^[A-Za-z0-9_-]{1,128}$/;
 
   private get subscriptionKey(): string {
     return this.configService.get('SUUNTO_SUBSCRIPTION_KEY') || '';
@@ -92,6 +93,34 @@ export class SuuntoProviderService
     }
 
     return headers;
+  }
+
+  /**
+   * Validate Suunto workoutKey used in outbound requests.
+   * This prevents request manipulation / SSRF-style issues from untrusted input (e.g. webhook payloads).
+   */
+  private normalizeWorkoutKey(workoutKey: string): string {
+    const normalized = workoutKey.trim();
+    if (!SuuntoProviderService.workoutKeyAllowlist.test(normalized)) {
+      throw new BadRequestException('Invalid Suunto workoutKey');
+    }
+    return normalized;
+  }
+
+  private getSuuntoWorkoutUrl(workoutKey: string): string {
+    const key = this.normalizeWorkoutKey(workoutKey);
+    return new URL(
+      `/v3/workouts/${encodeURIComponent(key)}`,
+      'https://cloudapi.suunto.com',
+    ).toString();
+  }
+
+  private getSuuntoWorkoutFitUrl(workoutKey: string): string {
+    const key = this.normalizeWorkoutKey(workoutKey);
+    return new URL(
+      `/v3/workouts/${encodeURIComponent(key)}/fit`,
+      'https://cloudapi.suunto.com',
+    ).toString();
   }
 
   /**
@@ -780,7 +809,7 @@ export class SuuntoProviderService
           headers.Accept = 'application/octet-stream';
 
           return axios.get<ArrayBuffer>(
-            `https://cloudapi.suunto.com/v3/workouts/${workoutKey}/fit`,
+            this.getSuuntoWorkoutFitUrl(workoutKey),
             {
               headers,
               responseType: 'arraybuffer',
@@ -1045,7 +1074,7 @@ export class SuuntoProviderService
               testAccount,
               async (accessToken) => {
                 const { data } = await axios.get<SuuntoWorkoutResponse>(
-                  `https://cloudapi.suunto.com/v3/workouts/${workoutKey}`,
+                  this.getSuuntoWorkoutUrl(workoutKey),
                   {
                     headers: this.getWorkoutApiHeaders(accessToken),
                     timeout: 5000, // Short timeout for quick check
@@ -1103,7 +1132,7 @@ export class SuuntoProviderService
           account,
           async (accessToken) => {
             const { data } = await axios.get<SuuntoWorkoutResponse>(
-              `https://cloudapi.suunto.com/v3/workouts/${workoutKey}`,
+              this.getSuuntoWorkoutUrl(workoutKey),
               {
                 headers: this.getWorkoutApiHeaders(accessToken),
                 timeout: 15000,
