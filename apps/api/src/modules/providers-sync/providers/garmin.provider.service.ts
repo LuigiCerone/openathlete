@@ -84,6 +84,31 @@ export class GarminProviderService
   protected readonly provider = ConnectorProvider.GARMIN;
   private readonly importWindowMs = 30 * 24 * 60 * 60 * 1000;
 
+  private getSafeGarminCallbackUrl(callbackURL: string): string {
+    let url: URL;
+    try {
+      url = new URL(callbackURL);
+    } catch {
+      throw new BadRequestException('Invalid Garmin callbackURL');
+    }
+
+    if (url.protocol !== 'https:') {
+      throw new BadRequestException('Invalid Garmin callbackURL');
+    }
+
+    // Disallow credentials in URL (userinfo).
+    if (url.username || url.password) {
+      throw new BadRequestException('Invalid Garmin callbackURL');
+    }
+
+    // Only allow default HTTPS port (or explicitly 443).
+    if (url.port && url.port !== '443') {
+      throw new BadRequestException('Invalid Garmin callbackURL');
+    }
+
+    return url.toString();
+  }
+
   protected get oauthConfig(): OAuthConfig {
     return {
       authorizationUrl: 'https://connect.garmin.com/oauth2Confirm',
@@ -1107,7 +1132,8 @@ export class GarminProviderService
   ): Promise<T[]> {
     return this.makeAuthenticatedRequest<T[]>(account, async (accessToken) => {
       try {
-        const response = await axios.get<T[] | T>(callbackURL, {
+        const safeCallbackUrl = this.getSafeGarminCallbackUrl(callbackURL);
+        const response = await axios.get<T[] | T>(safeCallbackUrl, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
@@ -1974,7 +2000,8 @@ export class GarminProviderService
     try {
       const accessToken = await this.getValidAccessToken(account);
 
-      const response = await axios.get(callbackURL, {
+      const safeCallbackUrl = this.getSafeGarminCallbackUrl(callbackURL);
+      const response = await axios.get(safeCallbackUrl, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
