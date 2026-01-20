@@ -45,6 +45,31 @@ export class StravaProviderService
   implements ProviderImportCapability
 {
   protected readonly provider = ConnectorProvider.STRAVA;
+  private static readonly stravaActivityIdAllowlist = /^\d{1,20}$/;
+
+  private tryNormalizeStravaActivityId(activityId: unknown): string | null {
+    const idStr =
+      typeof activityId === 'string'
+        ? activityId.trim()
+        : String(activityId).trim();
+
+    if (!StravaProviderService.stravaActivityIdAllowlist.test(idStr)) {
+      return null;
+    }
+
+    if (idStr === '0') {
+      return null;
+    }
+
+    return idStr;
+  }
+
+  private getStravaActivityUrl(activityId: string): string {
+    return new URL(
+      `/api/v3/activities/${encodeURIComponent(activityId)}`,
+      'https://www.strava.com',
+    ).toString();
+  }
 
   protected get oauthConfig(): OAuthConfig {
     return {
@@ -525,6 +550,16 @@ export class StravaProviderService
       payload.object_id &&
       payload.owner_id
     ) {
+      const activityId = this.tryNormalizeStravaActivityId(payload.object_id);
+      if (!activityId) {
+        // Webhook payload is untrusted; reject unexpected IDs to prevent request forgery / SSRF.
+        // Don't throw: webhook handlers should be resilient and return 200.
+        this.logger.warn(
+          `Invalid Strava webhook object_id: ${String(payload.object_id)}`,
+        );
+        return;
+      }
+
       // Find account by external_user_id (Strava athlete ID)
       const account = await this.prisma.providerAccount.findFirst({
         where: {
@@ -558,7 +593,7 @@ export class StravaProviderService
       // Check if activity already imported
       const existingActivity = await this.prisma.eventActivity.findFirst({
         where: {
-          externalId: payload.object_id.toString(),
+          externalId: activityId,
         },
       });
 
@@ -575,7 +610,7 @@ export class StravaProviderService
           account,
           async (accessToken) => {
             const response = await axios.get<StravaSummaryActivity>(
-              `https://www.strava.com/api/v3/activities/${payload.object_id}`,
+              this.getStravaActivityUrl(activityId),
               {
                 headers: {
                   Authorization: `Bearer ${accessToken}`,
@@ -607,9 +642,7 @@ export class StravaProviderService
         false,
       );
 
-      this.logger.log(
-        `Queued activity ${payload.object_id} from webhook for import`,
-      );
+      this.logger.log(`Queued activity ${activityId} from webhook for import`);
     }
   }
 }
