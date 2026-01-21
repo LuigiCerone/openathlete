@@ -103,36 +103,39 @@ export class SubscriptionService {
       throw new NotFoundException('Stripe subscription not found');
     }
 
+    const stripeSub = stripeSubscription as Stripe.Subscription & {
+      current_period_start?: number;
+      current_period_end?: number;
+      trial_end?: number | null;
+    };
+
     // Check if subscription already exists
     const existing = await this.prisma.subscription.findUnique({
       where: { userId: userId },
     });
 
+    const currentPeriodStart =
+      stripeSub.current_period_start != null
+        ? new Date(stripeSub.current_period_start * 1000)
+        : new Date();
+
+    const currentPeriodEnd =
+      stripeSub.current_period_end != null
+        ? new Date(stripeSub.current_period_end * 1000)
+        : new Date();
+
+    const trialEnd =
+      stripeSub.trial_end != null ? new Date(stripeSub.trial_end * 1000) : null;
+
     const subscriptionData = {
-      userId: userId,
       plan: this.mapPlanToPrisma(plan),
-      status: this.mapStatusToPrisma(
-        stripeSubscription.status as Stripe.Subscription.Status,
-      ),
-      stripe_customer_id: customerId,
-      stripe_subscription_id: subscriptionId,
-      current_period_start:
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (stripeSubscription as any).current_period_start != null
-          ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            new Date((stripeSubscription as any).current_period_start * 1000)
-          : new Date(),
-      current_period_end:
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (stripeSubscription as any).current_period_end != null
-          ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            new Date((stripeSubscription as any).current_period_end * 1000)
-          : new Date(),
-      trial_end:
-        stripeSubscription.trial_end != null
-          ? new Date(stripeSubscription.trial_end * 1000)
-          : null,
-      cancel_at_period_end: stripeSubscription.cancel_at_period_end ?? false,
+      status: this.mapStatusToPrisma(stripeSubscription.status),
+      stripeCustomerId: customerId,
+      stripeSubscriptionId: subscriptionId,
+      currentPeriodStart,
+      currentPeriodEnd,
+      trialEnd,
+      cancelAtPeriodEnd: stripeSubscription.cancel_at_period_end ?? false,
     };
 
     if (existing) {
@@ -143,7 +146,10 @@ export class SubscriptionService {
     }
 
     return await this.prisma.subscription.create({
-      data: subscriptionData,
+      data: {
+        userId,
+        ...subscriptionData,
+      },
     });
   }
 
@@ -153,6 +159,12 @@ export class SubscriptionService {
   async updateSubscriptionFromWebhook(
     stripeSubscription: Stripe.Subscription,
   ): Promise<Subscription> {
+    const stripeSub = stripeSubscription as Stripe.Subscription & {
+      current_period_start?: number;
+      current_period_end?: number;
+      trial_end?: number | null;
+    };
+
     let subscription = await this.prisma.subscription.findUnique({
       where: {
         stripeSubscriptionId: stripeSubscription.id,
@@ -258,25 +270,17 @@ export class SubscriptionService {
 
     // Safely extract period dates from Stripe subscription
     const currentPeriodStart =
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (stripeSubscription as any).current_period_start != null
-        ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          new Date((stripeSubscription as any).current_period_start * 1000)
+      stripeSub.current_period_start != null
+        ? new Date(stripeSub.current_period_start * 1000)
         : subscription.currentPeriodStart || new Date();
 
     const currentPeriodEnd =
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (stripeSubscription as any).current_period_end != null
-        ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          new Date((stripeSubscription as any).current_period_end * 1000)
+      stripeSub.current_period_end != null
+        ? new Date(stripeSub.current_period_end * 1000)
         : subscription.currentPeriodEnd || new Date();
 
     const trialEnd =
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (stripeSubscription as any).trial_end != null
-        ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          new Date((stripeSubscription as any).trial_end * 1000)
-        : null;
+      stripeSub.trial_end != null ? new Date(stripeSub.trial_end * 1000) : null;
 
     return await this.prisma.subscription.update({
       where: { subscriptionId: subscription.subscriptionId },
