@@ -962,5 +962,7 @@
   "ios_payment_block_title": "Paiement indisponible sur iOS",
   "ios_payment_block_description": "En raison des politiques de l'App Store d'Apple, les paiements ne peuvent pas être traités directement dans l'application iOS.",
   "ios_payment_block_message": "Pour finaliser votre achat ou gérer votre abonnement, veuillez vous rendre sur notre application web.",
-  "ios_payment_block_go_to_web": "Aller à l'application web"
+  "ios_payment_block_go_to_web": "Aller à l'application web",
+  "feature_unavailable_ios": "Fonctionnalité indisponible",
+  "feature_unavailable_ios_description": "Cette fonctionnalité n'est pas disponible sur iOS. Veuillez utiliser l'application web pour accéder aux fonctionnalités d'abonnement."
 }

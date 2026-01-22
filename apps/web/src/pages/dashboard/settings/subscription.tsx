@@ -125,6 +125,22 @@ export function SubscriptionSettingsPage() {
     }
   };
 
+  // If payments are disabled (iOS), show unavailable message
+  if (isPaymentDisabled()) {
+    return (
+      <div className="space-y-6">
+        <Card>
+          <CardHeader>
+            <CardTitle>{m.feature_unavailable_ios()}</CardTitle>
+            <CardDescription>
+              {m.feature_unavailable_ios_description()}
+            </CardDescription>
+          </CardHeader>
+        </Card>
+      </div>
+    );
+  }
+
   if (isLoading) {
     return <div>{m.loading()}</div>;
   }

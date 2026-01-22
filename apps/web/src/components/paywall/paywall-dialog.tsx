@@ -111,6 +111,24 @@ export function PaywallDialog({
     }
   }, [currentPlan]);
 
+  // If payments are disabled (iOS), show unavailable message
+  if (isPaymentDisabled()) {
+    return (
+      <Dialog open={open} onOpenChange={onOpenChange}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-xl">
+              {m.feature_unavailable_ios()}
+            </DialogTitle>
+            <DialogDescription className="text-base pt-2">
+              {m.feature_unavailable_ios_description()}
+            </DialogDescription>
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
+    );
+  }
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-5xl max-h-[90vh] overflow-y-auto">

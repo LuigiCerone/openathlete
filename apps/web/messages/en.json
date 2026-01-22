@@ -962,5 +962,7 @@
   "ios_payment_block_title": "Payment unavailable on iOS",
   "ios_payment_block_description": "Due to Apple's App Store policies, payments cannot be processed directly within the iOS app.",
   "ios_payment_block_message": "To complete your purchase or manage your subscription, please visit our web application.",
-  "ios_payment_block_go_to_web": "Go to web app"
+  "ios_payment_block_go_to_web": "Go to web app",
+  "feature_unavailable_ios": "Feature unavailable",
+  "feature_unavailable_ios_description": "This feature is not available on iOS. Please use the web application to access subscription features."
 }
