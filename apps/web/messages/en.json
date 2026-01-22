@@ -958,5 +958,9 @@
   "continue_with_google": "Continue with Google",
   "continue_with_apple": "Continue with Apple",
   "continue_with_github": "Continue with GitHub",
-  "oauth_login_failed": "OAuth sign-in failed. Please try again."
+  "oauth_login_failed": "OAuth sign-in failed. Please try again.",
+  "ios_payment_block_title": "Payment unavailable on iOS",
+  "ios_payment_block_description": "Due to Apple's App Store policies, payments cannot be processed directly within the iOS app.",
+  "ios_payment_block_message": "To complete your purchase or manage your subscription, please visit our web application.",
+  "ios_payment_block_go_to_web": "Go to web app"
 }

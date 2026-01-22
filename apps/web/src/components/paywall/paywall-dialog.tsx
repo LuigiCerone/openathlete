@@ -1,11 +1,13 @@
 import { useCreateCheckout, useCurrentSubscription } from '@/api/subscription';
 import { SparklesIcon } from '@/components/ui/sparkles-icon';
 import { m } from '@/paraglide/messages';
+import { isPaymentDisabled } from '@/utils/capacitor';
 import { Users } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import { PLAN_CONFIGS, SubscriptionPlan } from '@openathlete/shared';
 
+import { IOSPaymentBlockDialog } from '../payment/ios-payment-block-dialog';
 import {
   Dialog,
   DialogContent,
@@ -42,8 +44,15 @@ export function PaywallDialog({
   const [activeTab, setActiveTab] = useState<'athlete' | 'coach' | 'club'>(
     'athlete',
   );
+  const [showIOSPaymentBlock, setShowIOSPaymentBlock] = useState(false);
 
   const handleUpgrade = async (plan: SubscriptionPlan) => {
+    // Check if payments are disabled (iOS)
+    if (isPaymentDisabled()) {
+      setShowIOSPaymentBlock(true);
+      return;
+    }
+
     setSelectedPlan(plan);
     try {
       const successUrl = `${window.location.origin}/dashboard/settings?tab=subscription&success=true`;
@@ -197,6 +206,10 @@ export function PaywallDialog({
           </Tabs>
         </div>
       </DialogContent>
+      <IOSPaymentBlockDialog
+        open={showIOSPaymentBlock}
+        onOpenChange={setShowIOSPaymentBlock}
+      />
     </Dialog>
   );
 }

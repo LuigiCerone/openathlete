@@ -6,6 +6,7 @@ import {
   useInvoices,
   useResumeSubscription,
 } from '@/api/subscription';
+import { IOSPaymentBlockDialog } from '@/components/payment/ios-payment-block-dialog';
 import { PlanCard } from '@/components/paywall/plan-card';
 import { Button } from '@/components/ui/button';
 import {
@@ -17,6 +18,7 @@ import {
 } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { m } from '@/paraglide/messages';
+import { isPaymentDisabled } from '@/utils/capacitor';
 import { format } from 'date-fns';
 import { Download, ExternalLink, FileText } from 'lucide-react';
 import { useState } from 'react';
@@ -83,8 +85,15 @@ export function SubscriptionSettingsPage() {
   const [activeTab, setActiveTab] = useState<'athlete' | 'coach' | 'club'>(
     'athlete',
   );
+  const [showIOSPaymentBlock, setShowIOSPaymentBlock] = useState(false);
 
   const handleManageBilling = async () => {
+    // Check if payments are disabled (iOS)
+    if (isPaymentDisabled()) {
+      setShowIOSPaymentBlock(true);
+      return;
+    }
+
     setIsLoadingPortal(true);
     try {
       const returnUrl = `${window.location.origin}/dashboard/settings?tab=subscription`;
@@ -133,6 +142,12 @@ export function SubscriptionSettingsPage() {
     plan === SubscriptionPlan.FREE && isSubscriptionActive(status);
 
   const handleUpgrade = async (nextPlan: SubscriptionPlan) => {
+    // Check if payments are disabled (iOS)
+    if (isPaymentDisabled()) {
+      setShowIOSPaymentBlock(true);
+      return;
+    }
+
     setSelectedPlan(nextPlan);
     try {
       const successUrl = `${window.location.origin}/dashboard/settings?tab=subscription&success=true`;
@@ -387,6 +402,10 @@ export function SubscriptionSettingsPage() {
           )}
         </CardContent>
       </Card>
+      <IOSPaymentBlockDialog
+        open={showIOSPaymentBlock}
+        onOpenChange={setShowIOSPaymentBlock}
+      />
     </div>
   );
 }
