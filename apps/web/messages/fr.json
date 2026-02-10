@@ -901,6 +901,7 @@
   "subscription": "Abonnement",
   "contribute": "Contribuer",
   "contribute_tab_description": "Soutenez le projet financièrement ou contribuez au développement d'OpenAthlete sur GitHub.",
+  "contribute_tab_description_ios": "Contribuez au développement d'OpenAthlete sur GitHub : choisissez un ticket, proposez des améliorations ou aidez sur la doc et les traductions.",
   "support_the_project": "Soutenir le projet",
   "support_the_project_description": "Aidez-nous à rendre OpenAthlete durable et à livrer de nouvelles fonctionnalités plus rapidement.",
   "open_patreon": "Ouvrir Patreon",

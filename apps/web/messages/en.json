@@ -901,6 +901,7 @@
   "subscription": "Subscription",
   "contribute": "Contribute",
   "contribute_tab_description": "Support the project financially or help build OpenAthlete on GitHub.",
+  "contribute_tab_description_ios": "Help build OpenAthlete on GitHub: pick an issue, propose improvements, or help with docs and translations.",
   "support_the_project": "Support the project",
   "support_the_project_description": "Help us keep OpenAthlete sustainable and ship new features faster.",
   "open_patreon": "Open Patreon",

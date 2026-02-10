@@ -1,6 +1,7 @@
+import { SafeArea, SystemBarsStyle } from '@capacitor-community/safe-area';
 import { StatusBar, Style } from '@capacitor/status-bar';
 
-import { isCapacitor } from './capacitor';
+import { isAndroid, isCapacitor, isIOS } from './capacitor';
 
 export async function initStatusBar() {
   if (!isCapacitor()) {
@@ -8,10 +9,18 @@ export async function initStatusBar() {
   }
 
   try {
-    await StatusBar.setOverlaysWebView({ overlay: false });
+    if (isIOS()) {
+      await StatusBar.setOverlaysWebView({ overlay: false });
+    }
+    if (isAndroid()) {
+      document.documentElement.setAttribute(
+        'data-capacitor-platform',
+        'android',
+      );
+    }
     await updateStatusBarStyle();
   } catch (error) {
-    console.error('StatusBar plugin not available:', error);
+    console.error('Status bar init failed:', error);
   }
 }
 
@@ -20,19 +29,24 @@ export async function updateStatusBarStyle(theme?: 'light' | 'dark') {
     return;
   }
 
+  const isDark =
+    theme === 'dark' ||
+    (!theme && document.documentElement.classList.contains('dark')) ||
+    (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches);
+
   try {
-    const isDark =
-      theme === 'dark' ||
-      (!theme && document.documentElement.classList.contains('dark')) ||
-      (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches);
-
-    await StatusBar.setStyle({
-      style: isDark ? Style.Dark : Style.Light,
-    });
-
-    await StatusBar.setBackgroundColor({
-      color: isDark ? '#050C34' : '#ffffff',
-    });
+    if (isIOS()) {
+      await StatusBar.setStyle({
+        style: isDark ? Style.Dark : Style.Light,
+      });
+      await StatusBar.setBackgroundColor({
+        color: isDark ? '#050C34' : '#ffffff',
+      });
+    } else if (isAndroid()) {
+      await SafeArea.setSystemBarsStyle({
+        style: isDark ? SystemBarsStyle.Dark : SystemBarsStyle.Light,
+      });
+    }
   } catch (error) {
     console.error('Failed to update status bar style:', error);
   }

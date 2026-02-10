@@ -14,6 +14,12 @@ const config: CapacitorConfig = {
     // End of local development configuration
   },
   plugins: {
+    SafeArea: {
+      statusBarStyle: undefined,
+      navigationBarStyle: undefined,
+      detectViewportFitCoverChanges: true,
+      initialViewportFitCover: true,
+    },
     SplashScreen: {
       launchShowDuration: 2000,
       launchAutoHide: true,

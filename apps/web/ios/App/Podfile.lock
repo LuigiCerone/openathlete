@@ -3,6 +3,8 @@ PODS:
     - CapacitorCordova
   - CapacitorBrowser (7.0.2):
     - Capacitor
+  - CapacitorCommunitySafeArea (7.0.0):
+    - Capacitor
   - CapacitorCordova (7.4.4)
   - CapacitorFirebaseAuthentication (7.4.0):
     - Capacitor
@@ -13,7 +15,7 @@ PODS:
     - FirebaseAuth (~> 11.7.0)
   - CapacitorPushNotifications (7.0.4):
     - Capacitor
-  - CapacitorStatusBar (7.0.3):
+  - CapacitorStatusBar (7.0.4):
     - Capacitor
   - CapacitorVoiceRecorder (1.2.0):
     - Capacitor
@@ -138,10 +140,11 @@ PODS:
 DEPENDENCIES:
   - "Capacitor (from `../../../../node_modules/.pnpm/@capacitor+ios@7.4.4_@capacitor+core@7.4.4/node_modules/@capacitor/ios`)"
   - "CapacitorBrowser (from `../../../../node_modules/.pnpm/@capacitor+browser@7.0.2_@capacitor+core@7.4.4/node_modules/@capacitor/browser`)"
+  - "CapacitorCommunitySafeArea (from `../../../../node_modules/.pnpm/@capacitor-community+safe-area@7.0.0_@capacitor+core@7.4.4/node_modules/@capacitor-community/safe-area`)"
   - "CapacitorCordova (from `../../../../node_modules/.pnpm/@capacitor+ios@7.4.4_@capacitor+core@7.4.4/node_modules/@capacitor/ios`)"
   - "CapacitorFirebaseAuthentication (from `../../../../node_modules/.pnpm/@capacitor-firebase+authentication@7.4.0_@capacitor+core@7.4.4_firebase@11.10.0/node_modules/@capacitor-firebase/authentication`)"
   - "CapacitorPushNotifications (from `../../../../node_modules/.pnpm/@capacitor+push-notifications@7.0.4_@capacitor+core@7.4.4/node_modules/@capacitor/push-notifications`)"
-  - "CapacitorStatusBar (from `../../../../node_modules/.pnpm/@capacitor+status-bar@7.0.3_@capacitor+core@7.4.4/node_modules/@capacitor/status-bar`)"
+  - "CapacitorStatusBar (from `../../../../node_modules/.pnpm/@capacitor+status-bar@7.0.4_@capacitor+core@7.4.4/node_modules/@capacitor/status-bar`)"
   - "CapacitorVoiceRecorder (from `../../../../node_modules/.pnpm/capacitor-voice-recorder@1.2.0_@capacitor+core@7.4.4/node_modules/capacitor-voice-recorder`)"
   - Firebase/Core (~> 11.7.0)
   - Firebase/Messaging (~> 11.7.0)
@@ -171,6 +174,8 @@ EXTERNAL SOURCES:
     :path: "../../../../node_modules/.pnpm/@capacitor+ios@7.4.4_@capacitor+core@7.4.4/node_modules/@capacitor/ios"
   CapacitorBrowser:
     :path: "../../../../node_modules/.pnpm/@capacitor+browser@7.0.2_@capacitor+core@7.4.4/node_modules/@capacitor/browser"
+  CapacitorCommunitySafeArea:
+    :path: "../../../../node_modules/.pnpm/@capacitor-community+safe-area@7.0.0_@capacitor+core@7.4.4/node_modules/@capacitor-community/safe-area"
   CapacitorCordova:
     :path: "../../../../node_modules/.pnpm/@capacitor+ios@7.4.4_@capacitor+core@7.4.4/node_modules/@capacitor/ios"
   CapacitorFirebaseAuthentication:
@@ -178,17 +183,18 @@ EXTERNAL SOURCES:
   CapacitorPushNotifications:
     :path: "../../../../node_modules/.pnpm/@capacitor+push-notifications@7.0.4_@capacitor+core@7.4.4/node_modules/@capacitor/push-notifications"
   CapacitorStatusBar:
-    :path: "../../../../node_modules/.pnpm/@capacitor+status-bar@7.0.3_@capacitor+core@7.4.4/node_modules/@capacitor/status-bar"
+    :path: "../../../../node_modules/.pnpm/@capacitor+status-bar@7.0.4_@capacitor+core@7.4.4/node_modules/@capacitor/status-bar"
   CapacitorVoiceRecorder:
     :path: "../../../../node_modules/.pnpm/capacitor-voice-recorder@1.2.0_@capacitor+core@7.4.4/node_modules/capacitor-voice-recorder"
 
 SPEC CHECKSUMS:
   Capacitor: 358dd1c3fdd71d969547b17e159fd8a7736cb45f
   CapacitorBrowser: 22541e48442de44dc629c214388290d6eecc6ae9
+  CapacitorCommunitySafeArea: 211e919d3f0ff6020a3b2acb3b772fa30fb685ef
   CapacitorCordova: bf648a636f3c153f652d312ae145fb508b6ffced
   CapacitorFirebaseAuthentication: 2297f469e0f7a51a19446d28c452179675dfc330
   CapacitorPushNotifications: 7604512af53bbfdf1dd8fb2256b9ef1e8a69cdc2
-  CapacitorStatusBar: 0659ddc7b1713764a05831463d215b177a15d054
+  CapacitorStatusBar: d0e0151c89c001a9c7125bac59ddedf76b664768
   CapacitorVoiceRecorder: 03d4cbd2dc50bc222777171633b6abbc4355940f
   Firebase: a64bf6a8546e6eab54f1c715cd6151f39d2329f4
   FirebaseAnalytics: bc9e565af9044ba8d6c6e4157e4edca8e5fdf7ec
@@ -208,6 +214,6 @@ SPEC CHECKSUMS:
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
   RecaptchaInterop: 7d1a4a01a6b2cb1610a47ef3f85f0c411434cb21
 
-PODFILE CHECKSUM: 142b68940aa18e68be2d31cea4fdf9af3bc19e2a
+PODFILE CHECKSUM: c9f43e955bdef0448055b839d34839ad7f8dea0b
 
 COCOAPODS: 1.16.2

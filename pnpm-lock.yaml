@@ -273,6 +273,9 @@ importers:
 
   apps/web:
     dependencies:
+      '@capacitor-community/safe-area':
+        specifier: ^7.0.0
+        version: 7.0.0(@capacitor/core@7.4.4)
       '@capacitor-firebase/authentication':
         specifier: ^7.4.0
         version: 7.4.0(@capacitor/core@7.4.4)(firebase@11.10.0)
@@ -296,7 +299,7 @@ importers:
         version: 7.0.4(@capacitor/core@7.4.4)
       '@capacitor/status-bar':
         specifier: ^7.0.3
-        version: 7.0.3(@capacitor/core@7.4.4)
+        version: 7.0.4(@capacitor/core@7.4.4)
       '@dnd-kit/core':
         specifier: ^6.3.1
         version: 6.3.1(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
@@ -1191,6 +1194,11 @@ packages:
   '@borewit/text-codec@0.1.1':
     resolution: {integrity: sha512-5L/uBxmjaCIX5h8Z+uu+kA9BQLkc/Wl06UGR5ajNRxu+/XjonB5i8JpgFMrPj3LXTCPA0pv8yxUvbUi+QthGGA==}
 
+  '@capacitor-community/safe-area@7.0.0':
+    resolution: {integrity: sha512-+bze1ChJasYBvLtgp2mFeAHxiOmXqHvb1adtO0MbobZ/5WCrTsOi6ebECJkUpao4MJ4mqCBOus0jOXJXwx3YgA==}
+    peerDependencies:
+      '@capacitor/core': '>=7.0.0'
+
   '@capacitor-firebase/authentication@7.4.0':
     resolution: {integrity: sha512-T1ygiWfIguqGUmap87Gh836nCpnOm0C43v6O2xwrowCSx7442khs20NScm2cOebba5PX1aLWwZL19BENV148Yg==}
     peerDependencies:
@@ -1238,8 +1246,8 @@ packages:
     peerDependencies:
       '@capacitor/core': '>=7.0.0'
 
-  '@capacitor/status-bar@7.0.3':
-    resolution: {integrity: sha512-JyRpVnKwHij9hgPWolF6PK+HT3e2HSPjN11/h2OmKxq8GAdPGARFLv+97eZl0pvuvm0Kka/LpiLb5whXISBg7Q==}
+  '@capacitor/status-bar@7.0.4':
+    resolution: {integrity: sha512-2BszlCqIlBZxHLjRyQbumKyuuisutkeJH+5eSKAEJKaDVJcfmAzr2v3MXWsRLrAHJFteLzRXkOlce5msSy28tQ==}
     peerDependencies:
       '@capacitor/core': '>=7.0.0'
 
@@ -11100,6 +11108,10 @@ snapshots:
 
   '@borewit/text-codec@0.1.1': {}
 
+  '@capacitor-community/safe-area@7.0.0(@capacitor/core@7.4.4)':
+    dependencies:
+      '@capacitor/core': 7.4.4
+
   '@capacitor-firebase/authentication@7.4.0(@capacitor/core@7.4.4)(firebase@11.10.0)':
     dependencies:
       '@capacitor/core': 7.4.4
@@ -11194,7 +11206,7 @@ snapshots:
     dependencies:
       '@capacitor/core': 7.4.4
 
-  '@capacitor/status-bar@7.0.3(@capacitor/core@7.4.4)':
+  '@capacitor/status-bar@7.0.4(@capacitor/core@7.4.4)':
     dependencies:
       '@capacitor/core': 7.4.4
 
