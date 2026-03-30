@@ -37,4 +37,3 @@ declare module '@garmin/fitsdk' {
 
   export function parse(buffer: ArrayBuffer | Buffer): FitFile;
 }
-

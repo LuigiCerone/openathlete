@@ -5,8 +5,8 @@ import { buildAthleteInvitationEmail } from './templates/athlete-invitation.temp
 import { buildCoachInvitationExistingEmail } from './templates/coach-invitation-existing.template';
 import { buildCoachInvitationNewEmail } from './templates/coach-invitation-new.template';
 import { buildPasswordResetEmail } from './templates/password-reset.template';
-import { buildSubscriptionConfirmationEmail } from './templates/subscription-confirmation.template';
 import { buildSignupNotificationEmail } from './templates/signup-notification.template';
+import { buildSubscriptionConfirmationEmail } from './templates/subscription-confirmation.template';
 import { buildWelcomeEmail } from './templates/welcome.template';
 
 export const emailTemplates = {
