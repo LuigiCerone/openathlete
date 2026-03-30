@@ -10,9 +10,14 @@ import {
   RawBodyRequest,
   Req,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
-import { SubscriptionPlan } from '@openathlete/shared';
+import { ApiEnvSchemaType, SubscriptionPlan } from '@openathlete/shared';
+
+import { SendEmailEvent } from 'src/events';
+import { PrismaService } from 'src/modules/prisma/services/prisma.service';
 
 import { StripeService } from '../services/stripe.service';
 import { SubscriptionService } from '../services/subscription.service';
@@ -25,6 +30,9 @@ export class StripeWebhookController {
   constructor(
     private readonly stripeService: StripeService,
     private readonly subscriptionService: SubscriptionService,
+    private readonly prisma: PrismaService,
+    private readonly eventEmitter: EventEmitter2,
+    private readonly configService: ConfigService<ApiEnvSchemaType, true>,
   ) {}
 
   @Post()
@@ -34,10 +42,10 @@ export class StripeWebhookController {
     description:
       "Receives and processes webhook events from Stripe. This endpoint verifies the webhook signature using the Stripe webhook secret to ensure the request is authentic and hasn't been tampered with. The raw request body is required for signature verification. After verification, the event is processed based on its type:\n\n" +
       '**Handled Events:**\n' +
-      '- `checkout.session.completed`: Creates a subscription in the database after a successful Stripe checkout. Extracts user ID from customer metadata, validates the plan, and creates the subscription record with all billing period information.\n' +
+      '- `checkout.session.completed`: Creates a subscription in the database after a successful Stripe checkout. Extracts user ID from customer metadata, validates the plan, creates the subscription record with all billing period information, and sends a subscription confirmation email to the user.\n' +
       "- `customer.subscription.updated`: Updates the subscription status, plan, billing periods, trial end date, and cancellation status. The plan is extracted from the subscription's price ID (source of truth) rather than metadata.\n" +
       '- `customer.subscription.deleted`: Marks the subscription as canceled when Stripe deletes it. Updates the subscription status to canceled.\n' +
-      '- `invoice.paid`: Logs payment confirmation. Currently only logs the event but can be extended for additional logic (e.g., sending confirmation emails).\n\n' +
+      '- `invoice.paid`: Logs payment confirmation.\n\n' +
       '**Security:** The endpoint verifies the Stripe signature header to ensure requests are authentic. Invalid signatures are rejected and logged. The endpoint returns 200 OK to acknowledge receipt, even if the event type is unhandled, to prevent Stripe from retrying the webhook.',
   })
   @ApiHeader({
@@ -173,8 +181,10 @@ export class StripeWebhookController {
       return;
     }
 
+    const numericUserId = Number.parseInt(userId, 10);
+
     await this.subscriptionService.createSubscriptionFromCheckout(
-      Number.parseInt(userId, 10),
+      numericUserId,
       customerId,
       subscriptionId,
       plan,
@@ -183,6 +193,27 @@ export class StripeWebhookController {
     this.logger.log(
       `Subscription created for user ${userId} with plan ${plan}`,
     );
+
+    const user = await this.prisma.user.findUnique({
+      where: { userId: numericUserId },
+      select: { email: true, firstName: true },
+    });
+
+    if (user?.email) {
+      const appUrl = this.configService.get('APP_URL');
+      this.eventEmitter.emit(
+        SendEmailEvent.SLUG,
+        new SendEmailEvent({
+          type: 'subscription-confirmation',
+          to: user.email,
+          params: {
+            plan,
+            name: user.firstName || undefined,
+            subscription_settings_url: `${appUrl}/dashboard/settings?tab=subscription`,
+          },
+        }),
+      );
+    }
   }
 
   private async handleSubscriptionUpdated(subscription: Stripe.Subscription) {
