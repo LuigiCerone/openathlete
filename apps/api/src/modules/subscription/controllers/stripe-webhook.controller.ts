@@ -20,7 +20,10 @@ import { SendEmailEvent } from 'src/events';
 import { PrismaService } from 'src/modules/prisma/services/prisma.service';
 
 import { StripeService } from '../services/stripe.service';
-import { SubscriptionService } from '../services/subscription.service';
+import {
+  SubscriptionService,
+  SubscriptionUserMissingError,
+} from '../services/subscription.service';
 
 @ApiTags('Subscription')
 @Controller('subscription/webhook')
@@ -182,13 +185,29 @@ export class StripeWebhookController {
     }
 
     const numericUserId = Number.parseInt(userId, 10);
+    if (!Number.isInteger(numericUserId) || numericUserId <= 0) {
+      this.logger.error(
+        `Invalid userId in customer metadata: ${userId} (session ${session.id})`,
+      );
+      return;
+    }
 
-    await this.subscriptionService.createSubscriptionFromCheckout(
-      numericUserId,
-      customerId,
-      subscriptionId,
-      plan,
-    );
+    try {
+      await this.subscriptionService.createSubscriptionFromCheckout(
+        numericUserId,
+        customerId,
+        subscriptionId,
+        plan,
+      );
+    } catch (e) {
+      if (e instanceof SubscriptionUserMissingError) {
+        this.logger.error(
+          `checkout.session.completed: no DB user for Stripe metadata userId=${numericUserId} session=${session.id} customer=${customerId}`,
+        );
+        return;
+      }
+      throw e;
+    }
 
     this.logger.log(
       `Subscription created for user ${userId} with plan ${plan}`,
@@ -217,13 +236,36 @@ export class StripeWebhookController {
   }
 
   private async handleSubscriptionUpdated(subscription: Stripe.Subscription) {
-    await this.subscriptionService.updateSubscriptionFromWebhook(subscription);
+    try {
+      await this.subscriptionService.updateSubscriptionFromWebhook(
+        subscription,
+      );
+    } catch (e) {
+      if (e instanceof SubscriptionUserMissingError) {
+        this.logger.error(
+          `customer.subscription.updated: user missing for Stripe subscription ${subscription.id}: ${e.message}`,
+        );
+        return;
+      }
+      throw e;
+    }
     this.logger.log(`Subscription updated: ${subscription.id}`);
   }
 
   private async handleSubscriptionDeleted(subscription: Stripe.Subscription) {
-    // When subscription is deleted, set status to canceled
-    await this.subscriptionService.updateSubscriptionFromWebhook(subscription);
+    try {
+      await this.subscriptionService.updateSubscriptionFromWebhook(
+        subscription,
+      );
+    } catch (e) {
+      if (e instanceof SubscriptionUserMissingError) {
+        this.logger.error(
+          `customer.subscription.deleted: user missing for Stripe subscription ${subscription.id}: ${e.message}`,
+        );
+        return;
+      }
+      throw e;
+    }
     this.logger.log(`Subscription deleted: ${subscription.id}`);
   }
 

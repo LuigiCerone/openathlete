@@ -1,6 +1,11 @@
 import Stripe from 'stripe';
 
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 
 import {
   SubscriptionPlan as PrismaSubscriptionPlan,
@@ -15,6 +20,13 @@ import {
 
 import { PrismaService } from '../../prisma/services/prisma.service';
 import { StripeService } from './stripe.service';
+
+export class SubscriptionUserMissingError extends Error {
+  constructor(public readonly userId: number) {
+    super(`User ${userId} does not exist`);
+    this.name = 'SubscriptionUserMissingError';
+  }
+}
 
 @Injectable()
 export class SubscriptionService {
@@ -72,6 +84,15 @@ export class SubscriptionService {
    * Get or create subscription (defaults to FREE)
    */
   async getOrCreateSubscription(userId: number): Promise<Subscription> {
+    try {
+      await this.assertUserExistsForSubscription(userId);
+    } catch (e) {
+      if (e instanceof SubscriptionUserMissingError) {
+        throw new NotFoundException('User not found');
+      }
+      throw e;
+    }
+
     let subscription = await this.getCurrentSubscription(userId);
 
     if (!subscription) {
@@ -97,6 +118,8 @@ export class SubscriptionService {
     subscriptionId: string,
     plan: SubscriptionPlan,
   ): Promise<Subscription> {
+    await this.assertUserExistsForSubscription(userId);
+
     const stripeSubscription =
       await this.stripeService.getSubscription(subscriptionId);
     if (!stripeSubscription) {
@@ -475,6 +498,21 @@ export class SubscriptionService {
         return SubscriptionPlan.CLUB_PRO;
       case PrismaSubscriptionPlan.CLUB_ULTRA:
         return SubscriptionPlan.CLUB_ULTRA;
+    }
+  }
+
+  private async assertUserExistsForSubscription(userId: number): Promise<void> {
+    if (!Number.isInteger(userId) || userId <= 0) {
+      throw new BadRequestException('Invalid user id');
+    }
+
+    const user = await this.prisma.user.findUnique({
+      where: { userId },
+      select: { userId: true },
+    });
+
+    if (!user) {
+      throw new SubscriptionUserMissingError(userId);
     }
   }
 }
