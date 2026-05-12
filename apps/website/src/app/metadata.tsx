@@ -19,31 +19,32 @@ export function generateMetadata(options?: GenerateMetadataOptions): Metadata {
   } = options || {};
 
   // Default metadata (English)
-  const defaultTitle = 'OpenAthlete — AI-assisted endurance coaching platform';
+  const defaultTitle =
+    'OpenAthlete — Ethical European open-source alternative to TrainingPeaks & Strava';
   const defaultDescription =
-    'OpenAthlete is the intelligent coaching platform that helps coaches and athletes plan, analyze and prevent fatigue through AI. Save time, progress with confidence.';
+    'AGPLv3 endurance training platform: EU-oriented hosting, transparent CTL/ATL/TSB logic in code, self-hosting, and full export. Built in Grenoble.';
 
   // French metadata
   const frTitle =
-    "OpenAthlete — Plateforme de coaching d'endurance assistée par IA";
+    'OpenAthlete — Alternative européenne open source à TrainingPeaks et Strava';
   const frDescription =
-    "OpenAthlete est la plateforme de coaching intelligente qui aide les coachs et les athlètes à planifier, analyser et prévenir la fatigue grâce à l'IA. Gagnez du temps, progressez en toute confiance.";
+    "Plateforme d'endurance sous AGPLv3 : hébergement orienté UE, logique CTL/ATL/TSB lisible dans le code, auto-hébergement et export complet. Développée à Grenoble.";
 
   // Coaches page metadata
   const coachesTitleEn = 'OpenAthlete — For Coaches';
   const coachesDescriptionEn =
-    'Manage more athletes with less time. AI assists you in planning, fatigue detection, and injury prevention.';
-  const coachesTitleFr = 'OpenAthlete — Pour les Coachs';
+    'This page has been removed for now. OpenAthlete is an open-source endurance training platform hosted in the EU.';
+  const coachesTitleFr = 'OpenAthlete — Pour les coachs';
   const coachesDescriptionFr =
-    "Gérez plus d'athlètes avec moins de temps. L'IA vous assiste dans la planification, la détection de fatigue et la prévention des blessures.";
+    'Cette page est provisoirement retirée. OpenAthlete est une plateforme open source orientée Union européenne.';
 
   // Clubs page metadata
   const clubsTitleEn = 'OpenAthlete — For Clubs';
   const clubsDescriptionEn =
-    'Manage your club efficiently. Offer personalized tracking to all your athletes. Your coaches save time, your club gains quality.';
-  const clubsTitleFr = 'OpenAthlete — Pour les Clubs';
+    'This page has been removed for now. OpenAthlete is an open-source endurance training platform hosted in the EU.';
+  const clubsTitleFr = 'OpenAthlete — Pour les clubs';
   const clubsDescriptionFr =
-    'Gérez votre club efficacement. Offrez un suivi personnalisé à tous vos athlètes. Vos coachs gagnent du temps, votre club gagne en qualité.';
+    'Cette page est provisoirement retirée. OpenAthlete est une plateforme open source orientée Union européenne.';
 
   // Determine title and description based on path
   let title: string;

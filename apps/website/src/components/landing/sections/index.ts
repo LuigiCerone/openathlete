@@ -6,6 +6,7 @@ export { Solution } from './solution';
 export { HowItWorks } from './how-it-works';
 export { Benefits } from './benefits';
 export { Features } from './features';
+export { Comparison } from './comparison';
 export { Providers } from './providers';
 export { Science } from './science';
 export { PilotResults } from './pilot-results';

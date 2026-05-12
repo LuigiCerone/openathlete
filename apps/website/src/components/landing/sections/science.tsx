@@ -1,27 +1,27 @@
 import { Container } from '@/components/landing/container';
+import { LandingSectionHeader } from '@/components/landing/landing-canvas';
 import { Section } from '@/components/landing/section';
 import { m } from '@/paraglide/messages';
 
 export function Science() {
   return (
-    <Section id="science">
+    <Section id="science" surface="default">
       <Container>
-        <div className="mx-auto max-w-3xl text-center">
-          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
-            {m.landing_science_title()}
-          </h2>
-          <p className="mt-6 text-lg leading-8 text-muted-foreground">
-            {m.landing_science_text()}
-          </p>
-        </div>
+        <LandingSectionHeader
+          title={m.landing_science_title()}
+          titleId="science-heading"
+        />
 
-        {/* <div className="mt-16">
-          <ImagePlaceholder
-            description="Visualisation scientifique : graphiques de métriques (charge, HRV, sommeil, dérive cardiaque) avec annotations montrant comment l'IA détecte les patterns. Style data-viz moderne et professionnel, avec des couleurs sobres."
-            aspectRatio="16/9"
-            className="max-w-4xl mx-auto"
-          />
-        </div> */}
+        <div className="mx-auto mt-12 max-w-3xl">
+          <div className="rounded-2xl border border-border/50 bg-card/25 p-6 shadow-inner backdrop-blur-sm sm:p-8 dark:bg-card/15">
+            <p className="text-pretty text-sm leading-relaxed text-muted-foreground sm:text-[15px] sm:leading-relaxed">
+              {m.landing_science_p1()}
+            </p>
+            <p className="mt-5 text-pretty text-sm leading-relaxed text-muted-foreground sm:text-[15px] sm:leading-relaxed">
+              {m.landing_science_p2()}
+            </p>
+          </div>
+        </div>
       </Container>
     </Section>
   );

@@ -30,8 +30,12 @@ export function Footer() {
   const signupUrl = `${APP_URL}/auth/create-account`;
 
   return (
-    <footer className="border-t bg-muted/30 py-16">
-      <Container>
+    <footer className="relative overflow-hidden border-t border-border/40 bg-gradient-to-b from-muted/30 via-background to-muted/20 py-16 dark:from-muted/15 dark:to-background">
+      <div
+        className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-border/80 to-transparent"
+        aria-hidden
+      />
+      <Container className="relative z-10">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-6">
           {/* Brand */}
           <div className="lg:col-span-2">
@@ -51,7 +55,9 @@ export function Footer() {
 
           {/* Product */}
           <div>
-            <h3 className="text-sm font-semibold mb-4">{m.footer_product()}</h3>
+            <h3 className="mb-4 text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+              {m.footer_product()}
+            </h3>
             <ul className="space-y-3 text-sm">
               <li>
                 <Link
@@ -82,7 +88,7 @@ export function Footer() {
 
           {/* Resources */}
           <div>
-            <h3 className="text-sm font-semibold mb-4">
+            <h3 className="mb-4 text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
               {m.footer_resources()}
             </h3>
             <ul className="space-y-3 text-sm">
@@ -92,14 +98,6 @@ export function Footer() {
                   className="text-muted-foreground hover:text-foreground transition-colors"
                 >
                   {m.blog_title()}
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href={getLocalizedPath('/tools')}
-                  className="text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  {m.footer_tools()}
                 </Link>
               </li>
               <li>
@@ -127,7 +125,7 @@ export function Footer() {
 
           {/* Connecteurs */}
           <div>
-            <h3 className="text-sm font-semibold mb-4">
+            <h3 className="mb-4 text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
               {m.footer_connectors()}
             </h3>
             <ul className="space-y-3 text-sm">
@@ -168,7 +166,9 @@ export function Footer() {
 
           {/* Legal */}
           <div>
-            <h3 className="text-sm font-semibold mb-4">{m.footer_legal()}</h3>
+            <h3 className="mb-4 text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+              {m.footer_legal()}
+            </h3>
             <ul className="space-y-3 text-sm">
               <li>
                 <Link

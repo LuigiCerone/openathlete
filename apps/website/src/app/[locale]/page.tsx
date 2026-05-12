@@ -1,24 +1,21 @@
 import {
-  Benefits,
+  Comparison,
   FAQ,
   Features,
   FinalCTA,
   Footer,
   Hero,
-  HowItWorks,
   Navbar,
   OpenSource,
-  PilotResults,
   Pricing,
   Problem,
-  Providers,
   Science,
   Solution,
-  Testimonials,
   TopBar,
 } from '@/components/landing/sections';
 import { WebPageStructuredData } from '@/components/seo/structured-data';
 import { SITE_URL } from '@/config';
+import { m } from '@/paraglide/messages';
 import { notFound } from 'next/navigation';
 
 import { generateMetadata as generatePageMetadata } from '../metadata';
@@ -41,18 +38,15 @@ export default async function HomePage({
 }) {
   const { locale } = await params;
 
-  // Validate locale
   if (locale !== 'en' && locale !== 'fr') {
     notFound();
   }
 
-  // Locale is already set in the layout
-
   return (
     <>
       <WebPageStructuredData
-        title="OpenAthlete — AI-assisted endurance coaching platform"
-        description="OpenAthlete is the intelligent coaching platform that helps coaches and athletes plan, analyze and prevent fatigue through AI. Save time, progress with confidence."
+        title={m.landing_seo_title()}
+        description={m.landing_seo_description()}
         url={`${SITE_URL}${locale === 'en' ? '' : `/${locale}`}`}
       />
       <div className="min-h-screen bg-background">
@@ -61,13 +55,9 @@ export default async function HomePage({
         <Hero />
         <Problem />
         <Solution />
-        <HowItWorks />
-        <Benefits />
         <Features />
-        <Providers />
+        <Comparison />
         <Science />
-        <PilotResults />
-        <Testimonials />
         <Pricing />
         <OpenSource />
         <FAQ locale={locale} />

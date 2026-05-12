@@ -39,7 +39,7 @@ export function OrganizationStructuredData() {
         url: SITE_URL,
         logo: `${SITE_URL}/logo_dark.png`,
         description:
-          'AI-assisted endurance coaching platform for coaches and athletes',
+          'Open-source endurance training platform: EU-oriented hosting, AGPLv3, transparent load metrics, self-hosting, and full data export.',
         contactPoint: {
           '@type': 'ContactPoint',
           email: 'contact@openathlete.org',
@@ -61,7 +61,7 @@ export function WebSiteStructuredData() {
         name: 'OpenAthlete',
         url: SITE_URL,
         description:
-          'AI-assisted endurance coaching platform that helps coaches and athletes plan, analyze and prevent fatigue through AI.',
+          'Open-source endurance training platform with EU-oriented hosting, transparent algorithms, and athlete-owned data.',
         potentialAction: {
           '@type': 'SearchAction',
           target: {

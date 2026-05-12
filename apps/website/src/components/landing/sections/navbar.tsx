@@ -32,27 +32,19 @@ export function Navbar() {
 
   const navLinks = [
     {
-      href: `/${currentLocale}/coaches`,
-      label: m.coaches_nav_link(),
-    },
-    {
-      href: `/${currentLocale}/clubs`,
-      label: m.clubs_nav_link(),
-    },
-    {
       href: `/${currentLocale}/blog`,
       label: m.blog_title(),
     },
     {
-      href: `/${currentLocale}/#how-it-works`,
-      label: m.landing_hero_cta_secondary(),
+      href: `/${currentLocale}/#features`,
+      label: m.landing_nav_features(),
     },
   ];
 
   const loginUrl = `${APP_URL}/auth/login`;
 
   return (
-    <nav className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <nav className="sticky top-0 z-50 border-b border-border/40 bg-background/80 shadow-sm shadow-black/[0.03] backdrop-blur-xl supports-[backdrop-filter]:bg-background/70 dark:shadow-black/20">
       <Container>
         <div className="flex h-16 items-center justify-between">
           <Link
@@ -61,7 +53,7 @@ export function Navbar() {
             onClick={() => setMobileMenuOpen(false)}
           >
             <BrandLogo className="h-6 w-auto" />
-            <span className="text-xl font-bold tracking-tight">
+            <span className="text-lg font-semibold tracking-tight">
               OpenAthlete
             </span>
           </Link>

@@ -154,6 +154,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   // Generate entries for each static route and locale
   for (const route of staticRoutes) {
+    // Landing pages temporarily redirect home; omit until real content ships.
+    if (route === '/coaches' || route === '/clubs') {
+      continue;
+    }
     const routeMetadata = getRouteMetadata(route);
     const lastModified =
       route === '/' || route.startsWith('/blog') || route.startsWith('/tools')

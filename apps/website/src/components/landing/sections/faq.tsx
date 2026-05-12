@@ -1,5 +1,6 @@
 import { Container } from '@/components/landing/container';
 import { FAQItem } from '@/components/landing/faq-item';
+import { LandingSectionHeader } from '@/components/landing/landing-canvas';
 import { Section } from '@/components/landing/section';
 import { FAQPageStructuredData } from '@/components/seo/structured-data';
 import { SITE_URL } from '@/config';
@@ -38,23 +39,25 @@ export function FAQ({ locale = 'en' }: FAQProps) {
   return (
     <>
       <FAQPageStructuredData faqs={faqs} url={faqUrl} />
-      <Section id="faq">
+      <Section id="faq" surface="default">
         <Container>
-          <div className="mx-auto max-w-2xl text-center">
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
-              {m.landing_faq_title()}
-            </h2>
-          </div>
+          <LandingSectionHeader
+            title={m.landing_faq_title()}
+            titleId="faq-heading"
+          />
 
-          <div className="mx-auto mt-16 max-w-3xl">
-            <div className="space-y-4">
-              {faqs.map((faq, index) => (
-                <FAQItem
-                  key={index}
-                  question={faq.question}
-                  answer={faq.answer}
-                />
-              ))}
+          <div className="mx-auto mt-12 max-w-3xl">
+            <div className="rounded-2xl border border-border/50 bg-card/25 p-2 shadow-[0_16px_48px_-28px_rgba(0,0,0,0.12)] backdrop-blur-sm dark:bg-card/15 dark:shadow-black/25 sm:p-3">
+              <div className="divide-y divide-border/40 rounded-xl bg-gradient-to-b from-card/60 to-muted/10 px-1 dark:from-card/20 dark:to-muted/5">
+                {faqs.map((faq, index) => (
+                  <FAQItem
+                    key={index}
+                    question={faq.question}
+                    answer={faq.answer}
+                    className="px-3 sm:px-4"
+                  />
+                ))}
+              </div>
             </div>
           </div>
         </Container>
