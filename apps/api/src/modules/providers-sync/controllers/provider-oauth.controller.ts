@@ -6,6 +6,8 @@ import {
   Body,
   Controller,
   Get,
+  HttpCode,
+  HttpStatus,
   Logger,
   Param,
   Patch,
@@ -887,6 +889,7 @@ export class ProviderOAuthController {
   }
 
   @Post('garmin/webhook/activity-ping')
+  @HttpCode(HttpStatus.OK)
   @ApiOperation({
     summary: 'Garmin activity ping webhook',
     description:
@@ -946,28 +949,42 @@ export class ProviderOAuthController {
       };
     }
 
-    for (const activityPing of payload.activities) {
-      const userId = activityPing.userId;
-      const callbackURL = activityPing.callbackURL;
+    // Process callbacks asynchronously after returning HTTP 200 to avoid
+    // Garmin webhook timeouts. Each callback fetch can take several seconds
+    // and the batch may contain many entries.
+    const activities = payload.activities;
+    setImmediate(() => {
+      void (async () => {
+        for (const activityPing of activities) {
+          const userId = activityPing.userId;
+          const callbackURL = activityPing.callbackURL;
 
-      if (!userId || !callbackURL) {
-        continue;
-      }
+          if (!userId || !callbackURL) {
+            this.logger.warn(
+              'Garmin activity ping missing userId or callbackURL; skipping',
+            );
+            continue;
+          }
 
-      try {
-        await this.garminProviderService.handleActivityPingWebhook({
-          userId,
-          callbackURL,
-        });
-      } catch {
-        // Continue processing other pings even if one fails
-      }
-    }
+          try {
+            await this.garminProviderService.handleActivityPingWebhook({
+              userId,
+              callbackURL,
+            });
+          } catch (error) {
+            this.logger.error(
+              `Failed to handle Garmin activity ping for user ${userId}: ${error instanceof Error ? error.message : String(error)}`,
+            );
+          }
+        }
+      })();
+    });
 
     return { success: true };
   }
 
   @Post('garmin/webhook/health-ping')
+  @HttpCode(HttpStatus.OK)
   @ApiOperation({
     summary: 'Garmin health ping webhook',
     description:
@@ -1004,6 +1021,7 @@ export class ProviderOAuthController {
   }
 
   @Post('garmin/webhook/activity-files')
+  @HttpCode(HttpStatus.OK)
   @ApiOperation({
     summary: 'Garmin activity files webhook',
     description:
@@ -1123,43 +1141,59 @@ export class ProviderOAuthController {
       };
     }
 
-    for (const filePing of payload.activityFiles) {
-      const userId = filePing.userId;
-      const callbackURL = filePing.callbackURL;
-      const fileType = filePing.fileType;
-      const activityId = filePing.activityId;
+    // Process callbacks asynchronously after returning HTTP 200 to avoid
+    // Garmin webhook timeouts (file downloads can take several seconds each).
+    const activityFiles = payload.activityFiles;
+    setImmediate(() => {
+      void (async () => {
+        for (const filePing of activityFiles) {
+          const userId = filePing.userId;
+          const callbackURL = filePing.callbackURL;
+          const fileType = filePing.fileType;
+          const activityId = filePing.activityId;
 
-      if (!userId || !callbackURL || !fileType || !activityId) {
-        continue;
-      }
+          if (!userId || !callbackURL || !fileType || !activityId) {
+            this.logger.warn(
+              'Garmin activity file ping missing required fields; skipping',
+            );
+            continue;
+          }
 
-      if (fileType !== 'FIT' && fileType !== 'GPX') {
-        continue;
-      }
+          if (fileType !== 'FIT' && fileType !== 'GPX') {
+            this.logger.debug(
+              `Garmin activity file ping with unsupported fileType ${fileType}; skipping`,
+            );
+            continue;
+          }
 
-      try {
-        await this.garminProviderService.handleActivityFilePingWebhook({
-          userId,
-          summaryId: filePing.summaryId || '',
-          fileType: fileType as 'FIT' | 'GPX',
-          callbackURL,
-          activityType: filePing.activityType || '',
-          deviceName: filePing.deviceName || '',
-          startTimeInSeconds: filePing.startTimeInSeconds || 0,
-          activityId,
-          activityName: filePing.activityName || '',
-          manual: filePing.manual || false,
-          activityDescription: filePing.activityDescription,
-        });
-      } catch {
-        // Continue processing other files even if one fails
-      }
-    }
+          try {
+            await this.garminProviderService.handleActivityFilePingWebhook({
+              userId,
+              summaryId: filePing.summaryId || '',
+              fileType: fileType as 'FIT' | 'GPX',
+              callbackURL,
+              activityType: filePing.activityType || '',
+              deviceName: filePing.deviceName || '',
+              startTimeInSeconds: filePing.startTimeInSeconds || 0,
+              activityId,
+              activityName: filePing.activityName || '',
+              manual: filePing.manual || false,
+              activityDescription: filePing.activityDescription,
+            });
+          } catch (error) {
+            this.logger.error(
+              `Failed to handle Garmin activity file ping for activity ${activityId}: ${error instanceof Error ? error.message : String(error)}`,
+            );
+          }
+        }
+      })();
+    });
 
     return { success: true };
   }
 
   @Post('garmin/webhook/deregistration')
+  @HttpCode(HttpStatus.OK)
   @ApiOperation({
     summary: 'Garmin user deregistration webhook',
     description:
@@ -1200,6 +1234,7 @@ export class ProviderOAuthController {
   }
 
   @Post('garmin/webhook/user-permissions-change')
+  @HttpCode(HttpStatus.OK)
   @ApiOperation({
     summary: 'Garmin user permissions change webhook',
     description:

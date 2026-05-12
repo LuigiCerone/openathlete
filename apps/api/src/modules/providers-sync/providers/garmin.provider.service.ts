@@ -794,83 +794,112 @@ export class GarminProviderService
     });
 
     if (!account || !account.athlete || !account.athlete.user) {
+      this.logger.warn(
+        `Garmin activity ping for unknown/inactive user ${payload.userId}; no callback fetched`,
+      );
+      return;
+    }
+
+    // Always fetch the callback URL to "answer" the ping (Garmin requirement),
+    // even if import is disabled. Persistence/queueing is skipped in that case.
+    let activities: GarminActivitySummary[] = [];
+    try {
+      activities = await this.fetchActivitySummaries(
+        account,
+        payload.callbackURL,
+      );
+    } catch (error) {
+      this.logger.error(
+        `Failed to fetch Garmin activity callback for account ${account.providerAccountId}: ${error instanceof Error ? error.message : String(error)}`,
+      );
       return;
     }
 
     if (!account.importActivitiesEnabled) {
       this.logger.debug(
-        `Import disabled for Garmin account ${account.providerAccountId}, skipping activity ping`,
+        `Activity import disabled for Garmin account ${account.providerAccountId}; fetched ${activities.length} activities but skipping queue`,
       );
       return;
     }
 
-    try {
-      const accessToken = await this.getValidAccessToken(account);
+    if (activities.length === 0) {
+      return;
+    }
 
-      const response = await axios.get<GarminActivitySummary[]>(
-        payload.callbackURL,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-          timeout: 30000,
+    const activityIds = activities.map((a) => String(a.activityId));
+    const existingExternalIds = await this.prisma.eventActivity.findMany({
+      where: {
+        externalId: {
+          in: activityIds,
         },
-      );
+      },
+      select: {
+        externalId: true,
+      },
+    });
 
-      const activities = response.data || [];
-      if (activities.length === 0) {
-        return;
-      }
+    const existingIdsSet = new Set(
+      existingExternalIds.map((a) => a.externalId),
+    );
 
-      const activityIds = activities.map((a) => String(a.activityId));
-      const existingExternalIds = await this.prisma.eventActivity.findMany({
-        where: {
-          externalId: {
-            in: activityIds,
-          },
-        },
-        select: {
-          externalId: true,
-        },
+    const newActivities: ImportedActivity[] = activities
+      .filter((a) => !existingIdsSet.has(String(a.activityId)))
+      .map((activity) => {
+        const startDate = new Date(
+          (activity.startTimeInSeconds + activity.startTimeOffsetInSeconds) *
+            1000,
+        );
+        const endDate = new Date(
+          startDate.getTime() + activity.durationInSeconds * 1000,
+        );
+
+        return {
+          externalId: String(activity.activityId),
+          name: activity.activityName,
+          startDate,
+          endDate,
+          sport: mapGarminActivityType(activity.activityType),
+          raw: activity,
+        };
       });
 
-      const existingIdsSet = new Set(
-        existingExternalIds.map((a) => a.externalId),
-      );
+    if (newActivities.length === 0) {
+      return;
+    }
 
-      const newActivities: ImportedActivity[] = activities
-        .filter((a) => !existingIdsSet.has(String(a.activityId)))
-        .map((activity) => {
-          const startDate = new Date(
-            (activity.startTimeInSeconds + activity.startTimeOffsetInSeconds) *
-              1000,
-          );
-          const endDate = new Date(
-            startDate.getTime() + activity.durationInSeconds * 1000,
-          );
-
-          return {
-            externalId: String(activity.activityId),
-            name: activity.activityName,
-            startDate,
-            endDate,
-            sport: mapGarminActivityType(activity.activityType),
-            raw: activity,
-          };
-        });
-
-      if (newActivities.length === 0) {
-        return;
-      }
-
+    try {
       await this.queueService.addActivityImportJobs(
         account,
         newActivities,
         false,
       );
-    } catch {
-      // Webhook should return 200 even if processing fails
+    } catch (error) {
+      this.logger.error(
+        `Failed to enqueue Garmin activities for account ${account.providerAccountId}: ${error instanceof Error ? error.message : String(error)}`,
+      );
     }
+  }
+
+  private async fetchActivitySummaries(
+    account: ProviderAccount,
+    callbackURL: string,
+  ): Promise<GarminActivitySummary[]> {
+    const safeCallbackUrl = this.getSafeGarminCallbackUrl(callbackURL);
+    return this.makeAuthenticatedRequest<GarminActivitySummary[]>(
+      account,
+      async (accessToken) => {
+        const response = await axios.get<GarminActivitySummary[]>(
+          safeCallbackUrl,
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+            timeout: 30000,
+          },
+        );
+        return Array.isArray(response.data) ? response.data : [];
+      },
+    );
   }
 
   private async storePendingFile(
@@ -940,6 +969,9 @@ export class GarminProviderService
 
       for (const notification of notifications) {
         if (!notification?.userId || !notification.callbackURL) {
+          this.logger.warn(
+            `Garmin ${summaryType} ping missing userId or callbackURL; skipping`,
+          );
           continue;
         }
 
@@ -952,12 +984,8 @@ export class GarminProviderService
         });
 
         if (!account) {
-          continue;
-        }
-
-        if (!account.importMetricsEnabled) {
-          this.logger.debug(
-            `Metric import disabled for Garmin account ${account.providerAccountId}, skipping ${summaryType} summary`,
+          this.logger.warn(
+            `Garmin ${summaryType} ping for unknown/inactive user ${notification.userId}; no callback fetched`,
           );
           continue;
         }
@@ -967,11 +995,11 @@ export class GarminProviderService
             account,
             summaryType,
             notification.callbackURL,
+            account.importMetricsEnabled,
           );
         } catch (error) {
           this.logger.error(
-            `Failed to process Garmin ${summaryType} summary for account ${account.providerAccountId}`,
-            error instanceof Error ? error.message : error,
+            `Failed to process Garmin ${summaryType} summary for account ${account.providerAccountId}: ${error instanceof Error ? error.message : String(error)}`,
           );
         }
       }
@@ -982,16 +1010,42 @@ export class GarminProviderService
     account: ProviderAccount,
     summaryType: GarminHealthSummaryType,
     callbackURL: string,
+    shouldPersist: boolean,
   ): Promise<void> {
+    // Epochs are 15-minute wellness slices already aggregated in dailies.
+    // We still need to answer the ping (fetch the callback) to keep Garmin happy.
+    if (summaryType === 'epochs') {
+      await this.fetchHealthSummaries(account, callbackURL);
+      if (shouldPersist) {
+        this.logger.debug(
+          `Garmin epochs ping fetched for account ${account.providerAccountId}; data already aggregated in dailies`,
+        );
+      }
+      return;
+    }
+
+    const persistIfEnabled = async <U>(
+      data: U[],
+      mapper: (data: U[]) => MetricRecord[],
+    ): Promise<void> => {
+      if (!shouldPersist) {
+        this.logger.debug(
+          `Garmin ${summaryType} ping answered for account ${account.providerAccountId} (import disabled, ${data.length} item(s) discarded)`,
+        );
+        return;
+      }
+      const metrics = mapper(data);
+      await this.saveMetrics(account.athleteId, metrics);
+    };
+
     switch (summaryType) {
       case 'dailies': {
         const data = await this.fetchHealthSummaries<GarminDailySummary>(
           account,
           callbackURL,
         );
-        await this.saveMetrics(
-          account.athleteId,
-          this.mapDailySummariesToMetrics(data),
+        await persistIfEnabled(data, (d) =>
+          this.mapDailySummariesToMetrics(d),
         );
         break;
       }
@@ -1000,9 +1054,8 @@ export class GarminProviderService
           account,
           callbackURL,
         );
-        await this.saveMetrics(
-          account.athleteId,
-          this.mapSleepSummariesToMetrics(data),
+        await persistIfEnabled(data, (d) =>
+          this.mapSleepSummariesToMetrics(d),
         );
         break;
       }
@@ -1012,9 +1065,8 @@ export class GarminProviderService
             account,
             callbackURL,
           );
-        await this.saveMetrics(
-          account.athleteId,
-          this.mapBodyCompSummariesToMetrics(data),
+        await persistIfEnabled(data, (d) =>
+          this.mapBodyCompSummariesToMetrics(d),
         );
         break;
       }
@@ -1023,9 +1075,8 @@ export class GarminProviderService
           account,
           callbackURL,
         );
-        await this.saveMetrics(
-          account.athleteId,
-          this.mapUserMetricsSummariesToMetrics(data),
+        await persistIfEnabled(data, (d) =>
+          this.mapUserMetricsSummariesToMetrics(d),
         );
         break;
       }
@@ -1034,9 +1085,8 @@ export class GarminProviderService
           account,
           callbackURL,
         );
-        await this.saveMetrics(
-          account.athleteId,
-          this.mapPulseOxSummariesToMetrics(data),
+        await persistIfEnabled(data, (d) =>
+          this.mapPulseOxSummariesToMetrics(d),
         );
         break;
       }
@@ -1045,9 +1095,8 @@ export class GarminProviderService
           account,
           callbackURL,
         );
-        await this.saveMetrics(
-          account.athleteId,
-          this.mapRespirationSummariesToMetrics(data),
+        await persistIfEnabled(data, (d) =>
+          this.mapRespirationSummariesToMetrics(d),
         );
         break;
       }
@@ -1057,9 +1106,8 @@ export class GarminProviderService
             account,
             callbackURL,
           );
-        await this.saveMetrics(
-          account.athleteId,
-          this.mapHealthSnapshotSummariesToMetrics(data),
+        await persistIfEnabled(data, (d) =>
+          this.mapHealthSnapshotSummariesToMetrics(d),
         );
         break;
       }
@@ -1068,9 +1116,8 @@ export class GarminProviderService
           account,
           callbackURL,
         );
-        await this.saveMetrics(
-          account.athleteId,
-          this.mapHrvSummariesToMetrics(data),
+        await persistIfEnabled(data, (d) =>
+          this.mapHrvSummariesToMetrics(d),
         );
         break;
       }
@@ -1080,9 +1127,8 @@ export class GarminProviderService
             account,
             callbackURL,
           );
-        await this.saveMetrics(
-          account.athleteId,
-          this.mapBloodPressureSummariesToMetrics(data),
+        await persistIfEnabled(data, (d) =>
+          this.mapBloodPressureSummariesToMetrics(d),
         );
         break;
       }
@@ -1091,9 +1137,8 @@ export class GarminProviderService
           account,
           callbackURL,
         );
-        await this.saveMetrics(
-          account.athleteId,
-          this.mapSkinTempSummariesToMetrics(data),
+        await persistIfEnabled(data, (d) =>
+          this.mapSkinTempSummariesToMetrics(d),
         );
         break;
       }
@@ -1103,26 +1148,18 @@ export class GarminProviderService
             account,
             callbackURL,
           );
-        await this.saveMetrics(
-          account.athleteId,
-          this.mapStressDetailsSummariesToMetrics(data),
+        await persistIfEnabled(data, (d) =>
+          this.mapStressDetailsSummariesToMetrics(d),
         );
         break;
       }
-      case 'epochs': {
-        // Epochs are 15-minute wellness data slices
-        // We can skip processing epochs as they're already aggregated in dailies
-        // But we'll log that we received them for debugging
-        this.logger.debug(
-          `Received epochs ping for account ${account.providerAccountId}, skipping (data aggregated in dailies)`,
-        );
-        break;
-      }
-      default:
+      default: {
         this.logger.warn(
-          `Unhandled Garmin health summary type: ${summaryType}`,
+          `Unhandled Garmin health summary type: ${summaryType as string}; still fetching callback to answer ping`,
         );
+        await this.fetchHealthSummaries(account, callbackURL);
         break;
+      }
     }
   }
 
@@ -1130,9 +1167,9 @@ export class GarminProviderService
     account: ProviderAccount,
     callbackURL: string,
   ): Promise<T[]> {
+    const safeCallbackUrl = this.getSafeGarminCallbackUrl(callbackURL);
     return this.makeAuthenticatedRequest<T[]>(account, async (accessToken) => {
       try {
-        const safeCallbackUrl = this.getSafeGarminCallbackUrl(callbackURL);
         const response = await axios.get<T[] | T>(safeCallbackUrl, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -1147,8 +1184,27 @@ export class GarminProviderService
           return [response.data as T];
         }
         return [];
-      } catch {
-        return [];
+      } catch (error) {
+        // Let 401 propagate so makeAuthenticatedRequest can refresh the token
+        // and retry. Other 4xx are treated as "answered with empty payload".
+        if (isAxiosError(error) && error.response?.status === 401) {
+          throw error;
+        }
+        if (
+          isAxiosError(error) &&
+          error.response?.status &&
+          error.response.status >= 400 &&
+          error.response.status < 500
+        ) {
+          this.logger.warn(
+            `Garmin health callback returned ${error.response.status} for account ${account.providerAccountId}: ${error.message}`,
+          );
+          return [];
+        }
+        this.logger.error(
+          `Garmin health callback fetch failed for account ${account.providerAccountId}: ${error instanceof Error ? error.message : String(error)}`,
+        );
+        throw error;
       }
     });
   }
@@ -1939,6 +1995,9 @@ export class GarminProviderService
     payload: GarminActivityFilePingWebhook,
   ): Promise<void> {
     if (payload.fileType !== 'FIT' && payload.fileType !== 'GPX') {
+      this.logger.debug(
+        `Garmin activity file ping skipped: unsupported fileType ${payload.fileType}`,
+      );
       return;
     }
 
@@ -1958,12 +2017,15 @@ export class GarminProviderService
     });
 
     if (!account || !account.athlete || !account.athlete.user) {
+      this.logger.warn(
+        `Garmin activity file ping for unknown/inactive user ${payload.userId}; no callback fetched`,
+      );
       return;
     }
 
     if (!account.importActivitiesEnabled) {
       this.logger.debug(
-        `Import disabled for Garmin account ${account.providerAccountId}, skipping activity file ping`,
+        `Activity import disabled for Garmin account ${account.providerAccountId}; activity file ping not answered`,
       );
       return;
     }
@@ -1979,6 +2041,11 @@ export class GarminProviderService
     });
 
     if (!activity) {
+      // Activity ping hasn't been processed yet. Cache the callback URL so we
+      // can fetch the file once the activity is created in our DB.
+      this.logger.debug(
+        `Caching Garmin activity file callback for activity ${payload.activityId} (not in DB yet)`,
+      );
       await this.storePendingFile(String(payload.activityId), payload);
       return;
     }
@@ -2056,8 +2123,10 @@ export class GarminProviderService
           false,
         );
       }
-    } catch {
-      // Failed to download/parse file, activity remains without stream
+    } catch (error) {
+      this.logger.error(
+        `Failed to download/parse Garmin activity file for activity ${activity.eventActivityId} (account ${account.providerAccountId}): ${error instanceof Error ? error.message : String(error)}`,
+      );
     }
   }
 
