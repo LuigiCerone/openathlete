@@ -7,7 +7,10 @@
   <h3 align="center">OpenAthlete</h3>
 
   <p align="center">
-    The open-source, AI-powered endurance training platform.
+    The ethical European alternative to TrainingPeaks and Strava.
+    <br />
+    <br />
+    OpenAthlete is open source under the AGPLv3, built so you can own your training data: self-host, export, and avoid vendor lock-in. Core hosting and processing are oriented toward the European Union with GDPR-minded defaults.
     <br />
     <a href="https://openathlete.org"><strong>Learn more »</strong></a>
     <br />
@@ -40,34 +43,36 @@
 
 ## About the Project
 
-# Training infrastructure for absolutely everyone
+# Training infrastructure that respects athletes
 
-The open-source, AI-powered endurance training platform. You are in charge of your own data, training plans, and performance optimization.
+Endurance athletes feed years of intimate training data into proprietary U.S. platforms such as TrainingPeaks, Strava, and Garmin Connect, with little practical say in how that data is processed, monetized, or retained.
 
-Training platforms are awesome. They make our athletic lives easier. We use them for tracking workouts, planning training sessions, and monitoring progress. However, most tools are very limited in terms of control, customization, and data ownership.
-
-That's where OpenAthlete comes in. Self-hosted or cloud-hosted. Privacy-first by design. API-driven and ready to be deployed on your own domain. Full control of your training data and AI-powered insights.
+OpenAthlete is a different proposition: comparable tracking and analysis in an open-source stack, hosted in the EU when you use managed infrastructure, self-hostable when you prefer your own hardware, and with training-load logic you can read and adapt in the repository. It is maintained by an ultra-trail runner based in Grenoble.
 
 ### Key Features
 
-- 🤖 **AI-Powered Training** - Generate workouts, analyze performance, and get intelligent training suggestions
-- 📊 **Comprehensive Tracking** - Track workouts, visualize progress, and monitor fatigue metrics (CTL/ATL/TSB)
-- 🔗 **Device Integrations** - Connect with Strava, Garmin, Suunto, Polar, Coros, and more
-- 🎤 **Voice Feedback** - Record post-session voice notes analyzed by AI for tone, stress, and motivation
-- 👨‍🏫 **Coach Mode** - Hybrid coaching system where coaches can validate AI adjustments
-- 📱 **Mobile Apps** - Native iOS (on [TestFlight](https://testflight.apple.com/join/1hBg4mR1))  and Android (coming soon) apps for on-the-go training management
-- 🔒 **Privacy-First** - Your data stays yours. Self-hostable with full control
-- 🌐 **Open Source** - Transparent, extensible, and community-driven
+- 🇪🇺 **EU-Hosted & GDPR-Native** — Data processed in the European Union
+- 🔒 **You Own Your Data** — Self-hostable, full export, no lock-in
+- 🔍 **Transparent Algorithms** — Training load formulas (CTL/ATL/TSB) are in the code, auditable, customizable
+- 📊 **Comprehensive Tracking** — Workouts, fitness/fatigue/form metrics, progression visualizations
+- 🔗 **Device Integrations** — Strava, Garmin, Suunto, Polar, Coros
+- 📱 **Mobile Apps** — Native iOS ([TestFlight](https://testflight.apple.com/join/1hBg4mR1)), Android coming
+- 🤖 **AI Assistance** — Modest helpers for session generation and load monitoring (not a replacement for a coach)
+- 🌐 **Open Source** — AGPLv3, community-driven, sustainably funded
 
 ### Comparison
 
-| Feature | 🟢 OpenAthlete | 🔵 TrainingPeaks | 🟠 Strava |
-| :--- | :---: | :---: | :---: |
-| **Business Model** | Open Source / SaaS | Proprietary | Proprietary |
-| **Self-Hostable** | ✅ Yes | ❌ No | ❌ No |
-| **AI Planning** | ✅ Adaptive & Custom | ⚠️ Basic | ❌ No |
-| **Privacy** | ✅ You own the data | ❌ They own the data | ❌ They sell the data |
-| **Cost** | **Free** (Self-hosted) | $19.99/mo | $11.99/mo |
+| Feature | 🟢 OpenAthlete Cloud | 🔵 TrainingPeaks | 🟠 Strava | 🟣 Intervals.icu |
+| --- | --- | --- | --- | --- |
+| **Open source code** | ✅ AGPLv3 | ❌ | ❌ | ❌ |
+| **Self-hostable option** | ✅ Free | ❌ | ❌ | ❌ |
+| **Data hosted in EU** | ✅ France | ❌ US | ❌ US | ⚠️ Mixed |
+| **GDPR-native** | ✅ | ⚠️ | ⚠️ | ⚠️ |
+| **Transparent algorithms** | ✅ Code audit | ❌ Black box | ❌ Black box | ⚠️ Partial |
+| **Full data export** | ✅ Native | ⚠️ Limited | ⚠️ Limited | ✅ |
+| **CTL/ATL/TSB tracking** | ✅ | ✅ | ❌ | ✅ |
+| **AI session generation** | ✅ Optional | ⚠️ Premium | ❌ | ❌ |
+| **Price** | 12€/mo or 99€/yr | $19.99/mo | $11.99/mo | Free (donation) |
 
 ## Recognition
 
@@ -83,7 +88,7 @@ OpenAthlete is built by athletes, for athletes. We're proud to be part of the op
 - [Tailwind CSS](https://tailwindcss.com/) - Utility-first CSS
 - [ShadCN UI](https://ui.shadcn.com/) - Beautiful component library
 - [Vite](https://vitejs.dev/) - Next-generation frontend tooling
-- [OpenAI](https://openai.com/) - AI-powered training insights
+- Various LLM providers (configurable)
 
 <!-- ## Stay Up-to-Date
 
@@ -372,6 +377,16 @@ VITE_API_URL="https://api.your-domain.com"
 ```
 
 For a complete list of environment variables, see the `.env.example` files in each app directory.
+
+## Support OpenAthlete
+
+> OpenAthlete is built by one developer in Grenoble, supported by the community. There are three ways to help the project thrive:
+>
+> - **Subscribe to OpenAthlete Cloud** — The simplest way to support development while getting a managed, zero-config experience. See [openathlete.org](https://openathlete.org).
+> - **Become a Patreon supporter** — Recurring support without using the cloud. [patreon.com/OpenAthlete](https://patreon.com/OpenAthlete).
+> - **Contribute code or feedback** — Star the repo, open issues, send PRs, join the [Discord](https://discord.gg/j4PP6tDwuP).
+>
+> Self-hosting is fully supported and always free. The Cloud version funds the project's long-term sustainability.
 
 <!-- ROADMAP -->
 
