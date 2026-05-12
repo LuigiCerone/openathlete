@@ -346,13 +346,25 @@ export class GarminProviderService
     });
   }
 
+  /**
+   * Safety buffer in ms applied on top of the stored `expiresAt` so we refresh
+   * BEFORE Garmin actually rejects the token with 401. Combined with the 600s
+   * subtracted in `saveProviderAccount`, this avoids the "401 -> retry" pattern
+   * that Garmin counts as a duplicate (and "unprompted") pull.
+   */
+  private readonly tokenRefreshSafetyMs = 60_000;
+
   override async getValidAccessToken(
     account: ProviderAccount,
   ): Promise<string> {
+    const refreshDeadline = account.expiresAt
+      ? account.expiresAt.getTime() - this.tokenRefreshSafetyMs
+      : 0;
+
     if (
       account.accessToken &&
       account.expiresAt &&
-      new Date() < account.expiresAt
+      Date.now() < refreshDeadline
     ) {
       return account.accessToken;
     }
@@ -366,7 +378,7 @@ export class GarminProviderService
       ? new Date(Date.now() + (tokenResponse.expires_in - 600) * 1000)
       : null;
 
-    await this.prisma.providerAccount.update({
+    const updated = await this.prisma.providerAccount.update({
       where: {
         providerAccountId: account.providerAccountId,
       },
@@ -376,6 +388,12 @@ export class GarminProviderService
         expiresAt: expiresAt,
       },
     });
+
+    // Keep the in-memory account object in sync so callers don't reuse stale
+    // values for subsequent calls in the same logical operation.
+    account.accessToken = updated.accessToken;
+    account.refreshToken = updated.refreshToken;
+    account.expiresAt = updated.expiresAt;
 
     return tokenResponse.access_token;
   }
@@ -427,7 +445,19 @@ export class GarminProviderService
     }
   }
 
-  async queueFullImport(account: ProviderAccount): Promise<FullImportResult> {
+  /**
+   * Maximum number of times we will re-trigger queueFullImport when the user
+   * registration is not yet complete. Each attempt consumes API calls (one
+   * backfill request + one chunked import scan). Without a bound, a permanently
+   * incomplete registration would loop forever, multiplying "unprompted" pulls.
+   */
+  private static readonly MAX_FULL_IMPORT_REGISTRATION_RETRIES = 5;
+  private static readonly FULL_IMPORT_REGISTRATION_RETRY_DELAY_MS = 5000;
+
+  async queueFullImport(
+    account: ProviderAccount,
+    attempt = 0,
+  ): Promise<FullImportResult> {
     const hasPermission = await this.hasActivityExportPermission(account);
     if (hasPermission === false) {
       throw new BadRequestException(
@@ -466,7 +496,11 @@ export class GarminProviderService
       throw new Error(
         `Unexpected backfill response status: ${response.status}`,
       );
-    } catch {
+    } catch (error) {
+      this.logger.warn(
+        `Garmin backfill request failed for account ${account.providerAccountId} (attempt ${attempt + 1}): ${error instanceof Error ? error.message : String(error)}; falling back to chunked import`,
+      );
+
       const activities = await this.importActivities(account, {
         startDate,
         endDate,
@@ -475,9 +509,25 @@ export class GarminProviderService
       if (activities.length === 0) {
         const isComplete = await this.isUserRegistrationComplete(account);
         if (!isComplete) {
+          if (
+            attempt + 1 >=
+            GarminProviderService.MAX_FULL_IMPORT_REGISTRATION_RETRIES
+          ) {
+            this.logger.warn(
+              `Garmin user registration still incomplete after ${
+                GarminProviderService.MAX_FULL_IMPORT_REGISTRATION_RETRIES
+              } attempts for account ${account.providerAccountId}; giving up`,
+            );
+            return { queuedActivities: 0 };
+          }
+
           setTimeout(() => {
-            this.queueFullImport(account).catch(() => {});
-          }, 5000);
+            this.queueFullImport(account, attempt + 1).catch((err) => {
+              this.logger.error(
+                `Garmin queueFullImport retry failed for account ${account.providerAccountId}: ${err instanceof Error ? err.message : String(err)}`,
+              );
+            });
+          }, GarminProviderService.FULL_IMPORT_REGISTRATION_RETRY_DELAY_MS);
           return { queuedActivities: 0 };
         }
       }
@@ -495,42 +545,52 @@ export class GarminProviderService
     account: ProviderAccount,
     requestFn: (accessToken: string) => Promise<T>,
   ): Promise<T> {
-    let accessToken = await this.getValidAccessToken(account);
+    // Always go through getValidAccessToken which now refreshes proactively
+    // using a 60s safety buffer. This makes the 401 path a true exception
+    // rather than the common case.
+    const accessToken = await this.getValidAccessToken(account);
 
     try {
       return await requestFn(accessToken);
     } catch (error) {
       if (
-        isAxiosError(error) &&
-        error.response?.status === 401 &&
-        account.refreshToken
+        !isAxiosError(error) ||
+        error.response?.status !== 401 ||
+        !account.refreshToken
       ) {
-        const tokenResponse = await this.refreshAccessToken(
-          account.refreshToken,
-        );
-        const expiresAt = tokenResponse.expires_in
-          ? new Date(Date.now() + (tokenResponse.expires_in - 600) * 1000)
-          : null;
-
-        const updatedAccount = await this.prisma.providerAccount.update({
-          where: {
-            providerAccountId: account.providerAccountId,
-          },
-          data: {
-            accessToken: tokenResponse.access_token,
-            refreshToken: tokenResponse.refresh_token ?? account.refreshToken,
-            expiresAt: expiresAt,
-          },
-        });
-
-        account.accessToken = updatedAccount.accessToken;
-        account.refreshToken = updatedAccount.refreshToken;
-        account.expiresAt = updatedAccount.expiresAt;
-
-        accessToken = tokenResponse.access_token;
-        return await requestFn(accessToken);
+        throw error;
       }
-      throw error;
+
+      // 401 despite a fresh-looking token. Force a refresh and retry exactly
+      // ONCE. Each retry is one extra GET against the Garmin endpoint, which
+      // Garmin counts as an "unprompted pull" if the original ping has already
+      // been associated with the first (failed) attempt. We log it so we can
+      // see how often this happens in production.
+      this.logger.warn(
+        `Garmin 401 on authenticated request for account ${account.providerAccountId}; refreshing token and retrying once (this consumes an extra "pull" from Garmin's quota)`,
+      );
+
+      const tokenResponse = await this.refreshAccessToken(account.refreshToken);
+      const expiresAt = tokenResponse.expires_in
+        ? new Date(Date.now() + (tokenResponse.expires_in - 600) * 1000)
+        : null;
+
+      const updatedAccount = await this.prisma.providerAccount.update({
+        where: {
+          providerAccountId: account.providerAccountId,
+        },
+        data: {
+          accessToken: tokenResponse.access_token,
+          refreshToken: tokenResponse.refresh_token ?? account.refreshToken,
+          expiresAt: expiresAt,
+        },
+      });
+
+      account.accessToken = updatedAccount.accessToken;
+      account.refreshToken = updatedAccount.refreshToken;
+      account.expiresAt = updatedAccount.expiresAt;
+
+      return await requestFn(tokenResponse.access_token);
     }
   }
 
@@ -1044,9 +1104,7 @@ export class GarminProviderService
           account,
           callbackURL,
         );
-        await persistIfEnabled(data, (d) =>
-          this.mapDailySummariesToMetrics(d),
-        );
+        await persistIfEnabled(data, (d) => this.mapDailySummariesToMetrics(d));
         break;
       }
       case 'sleeps': {
@@ -1054,9 +1112,7 @@ export class GarminProviderService
           account,
           callbackURL,
         );
-        await persistIfEnabled(data, (d) =>
-          this.mapSleepSummariesToMetrics(d),
-        );
+        await persistIfEnabled(data, (d) => this.mapSleepSummariesToMetrics(d));
         break;
       }
       case 'bodyComps': {
@@ -1116,9 +1172,7 @@ export class GarminProviderService
           account,
           callbackURL,
         );
-        await persistIfEnabled(data, (d) =>
-          this.mapHrvSummariesToMetrics(d),
-        );
+        await persistIfEnabled(data, (d) => this.mapHrvSummariesToMetrics(d));
         break;
       }
       case 'bloodPressures': {
