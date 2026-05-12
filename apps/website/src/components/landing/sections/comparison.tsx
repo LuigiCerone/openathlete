@@ -42,11 +42,11 @@ function CompareCellContent({
   }
 
   const label = (cell.text?.() ?? '').trim();
-  const Icon = cell.status === 'yes' ? Check : cell.status === 'no' ? X : AlertTriangle;
+  const Icon =
+    cell.status === 'yes' ? Check : cell.status === 'no' ? X : AlertTriangle;
   const iconClass = cn(
     'mt-0.5 h-4 w-4 shrink-0 stroke-[2.5]',
-    cell.status === 'yes' &&
-      'text-emerald-600 dark:text-emerald-500',
+    cell.status === 'yes' && 'text-emerald-600 dark:text-emerald-500',
     cell.status === 'no' && 'text-muted-foreground/60',
     cell.status === 'partial' && 'text-amber-600 dark:text-amber-500',
   );
@@ -288,16 +288,28 @@ export function Comparison() {
                           {row.feature()}
                         </th>
                         <td className="p-4 align-top text-[13px] sm:text-sm">
-                          <CompareCellContent cell={row.openathlete} emphasize />
+                          <CompareCellContent
+                            cell={row.openathlete}
+                            emphasize
+                          />
                         </td>
                         <td className="p-4 align-top text-[13px] sm:text-sm">
-                          <CompareCellContent cell={row.trainingpeaks} emphasize={false} />
+                          <CompareCellContent
+                            cell={row.trainingpeaks}
+                            emphasize={false}
+                          />
                         </td>
                         <td className="p-4 align-top text-[13px] sm:text-sm">
-                          <CompareCellContent cell={row.strava} emphasize={false} />
+                          <CompareCellContent
+                            cell={row.strava}
+                            emphasize={false}
+                          />
                         </td>
                         <td className="p-4 align-top text-[13px] sm:text-sm">
-                          <CompareCellContent cell={row.intervals} emphasize={false} />
+                          <CompareCellContent
+                            cell={row.intervals}
+                            emphasize={false}
+                          />
                         </td>
                       </tr>
                     ))}

@@ -14,7 +14,14 @@ import {
   TabletSmartphone,
 } from 'lucide-react';
 
-const icons = [CalendarDays, LineChart, RefreshCw, Sparkles, Mic, TabletSmartphone];
+const icons = [
+  CalendarDays,
+  LineChart,
+  RefreshCw,
+  Sparkles,
+  Mic,
+  TabletSmartphone,
+];
 
 export function Features() {
   const features = [
