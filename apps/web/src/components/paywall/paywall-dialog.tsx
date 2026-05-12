@@ -1,11 +1,11 @@
 import { useCreateCheckout, useCurrentSubscription } from '@/api/subscription';
 import { SparklesIcon } from '@/components/ui/sparkles-icon';
 import { m } from '@/paraglide/messages';
-import { isPaymentDisabled } from '@/utils/capacitor';
 import {
   AnalyticsEvent,
   analyticsErrorCodeFromUnknown,
 } from '@/utils/analytics-events';
+import { isPaymentDisabled } from '@/utils/capacitor';
 import { Users } from 'lucide-react';
 import { usePostHog } from 'posthog-js/react';
 import { useEffect, useState } from 'react';

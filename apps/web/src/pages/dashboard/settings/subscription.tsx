@@ -18,11 +18,11 @@ import {
 } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { m } from '@/paraglide/messages';
-import { isPaymentDisabled } from '@/utils/capacitor';
 import {
   AnalyticsEvent,
   analyticsErrorCodeFromUnknown,
 } from '@/utils/analytics-events';
+import { isPaymentDisabled } from '@/utils/capacitor';
 import { format } from 'date-fns';
 import { Download, ExternalLink, FileText } from 'lucide-react';
 import { usePostHog } from 'posthog-js/react';

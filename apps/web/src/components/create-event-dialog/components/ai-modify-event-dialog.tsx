@@ -1,6 +1,9 @@
 import { useGenerateEventMutation, useModifyEventMutation } from '@/api/agent';
 import { m } from '@/paraglide/messages';
-import { AnalyticsEvent, analyticsErrorCodeFromUnknown } from '@/utils/analytics-events';
+import {
+  AnalyticsEvent,
+  analyticsErrorCodeFromUnknown,
+} from '@/utils/analytics-events';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { usePostHog } from 'posthog-js/react';
 import { useEffect, useRef } from 'react';
