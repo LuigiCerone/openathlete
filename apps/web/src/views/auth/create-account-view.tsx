@@ -9,6 +9,7 @@ import { getPath } from '@/routes/paths';
 import { cn } from '@/utils/shadcn';
 import { OAuthButtons } from '@/views/auth/oauth-buttons';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { usePostHog } from 'posthog-js/react';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
@@ -21,6 +22,7 @@ const PLAN_TOKEN_STORAGE_KEY = 'pendingPlanToken';
 export function CreateAccountView({ className }: React.ComponentProps<'form'>) {
   const { initialize } = useAuthContext();
   const navigate = useNavigate();
+  const posthog = usePostHog();
   const [searchParams] = useSearchParams();
   const invitationToken = searchParams.get('invitation');
   const coachInvitationToken = searchParams.get('coach-invitation');
@@ -71,6 +73,7 @@ export function CreateAccountView({ className }: React.ComponentProps<'form'>) {
   });
   const createAccountMutation = useCreateAccountMutation({
     onSuccess: async (_, variables) => {
+      posthog?.capture('user_signed_up');
       loginMutation.mutate(variables);
     },
   });

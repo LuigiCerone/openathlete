@@ -362,6 +362,7 @@ export function CreateEventDialog({ open, onClose, ...rest }: P) {
           eventData={currentEventData}
           date={create ? rest.date : undefined}
           isCreateMode={isCreateMode}
+          analyticsSource="event_dialog"
           onEventGenerated={handleEventGenerated}
           onEventModified={handleEventModified}
         />
@@ -370,6 +371,7 @@ export function CreateEventDialog({ open, onClose, ...rest }: P) {
         open={paywallOpen}
         onOpenChange={setPaywallOpen}
         reason="ai-feature"
+        analyticsSource="event_dialog"
       />
     </Dialog>
   );

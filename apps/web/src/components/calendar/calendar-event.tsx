@@ -2,6 +2,7 @@ import { useDeleteEventMutation, useDuplicateEventMutation } from '@/api/event';
 import { useCreateEventTemplateMutation } from '@/api/event-template';
 import { useIsEventValidated } from '@/hooks/use-event-validation';
 import { m } from '@/paraglide/messages';
+import { AnalyticsEvent } from '@/utils/analytics-events';
 import {
   getEventTypeColor,
   getHighSaturatedRpeColor,
@@ -11,6 +12,7 @@ import {
 import { cn } from '@/utils/shadcn';
 import { useDraggable } from '@dnd-kit/core';
 import { ActivityIcon, Copy, Edit2, FileText, Trash2 } from 'lucide-react';
+import { usePostHog } from 'posthog-js/react';
 import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
@@ -90,6 +92,7 @@ function EventSecondLine({ event }: { event: Event }) {
 }
 
 export function CalendarEvent({ event, wrapped }: P) {
+  const posthog = usePostHog();
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
     id: event.eventId,
     data: {
@@ -105,10 +108,27 @@ export function CalendarEvent({ event, wrapped }: P) {
     athleteId,
   } = useCalendarContext();
   const [deleteEventDialog, setDeleteEventDialog] = useState<boolean>(false);
-  const deleteEventMutation = useDeleteEventMutation();
-  const duplicateEventMutation = useDuplicateEventMutation();
+  const deleteEventMutation = useDeleteEventMutation({
+    onSuccess: () => {
+      posthog?.capture(AnalyticsEvent.event_deleted, {
+        event_type: event.type,
+      });
+    },
+  });
+  const duplicateEventMutation = useDuplicateEventMutation({
+    onSuccess: (duplicated) => {
+      posthog?.capture(AnalyticsEvent.event_duplicated, {
+        event_type: duplicated.type,
+      });
+    },
+  });
   const createEventTemplateMutation = useCreateEventTemplateMutation({
-    onSuccess: () => toast.success(m.template_saved_successfully()),
+    onSuccess: () => {
+      posthog?.capture(AnalyticsEvent.event_template_saved, {
+        from: 'calendar_menu',
+      });
+      toast.success(m.template_saved_successfully());
+    },
   });
   const isValidated = useIsEventValidated(event, athleteId);
   const { copyEvent } = useEventClipboard();

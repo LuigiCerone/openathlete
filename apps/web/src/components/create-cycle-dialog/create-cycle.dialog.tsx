@@ -2,6 +2,7 @@ import { useCreateCycleMutation, useUpdateCycleMutation } from '@/api/cycle';
 import { m } from '@/paraglide/messages';
 import { cn } from '@/utils/shadcn';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { usePostHog } from 'posthog-js/react';
 import { useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
@@ -46,6 +47,7 @@ type P =
 
 export function CreateCycleDialog({ open, onClose, ...rest }: P) {
   const { athleteId } = useCalendarContext();
+  const posthog = usePostHog();
   const edit = 'cycle' in rest;
   const create = 'startDate' in rest && 'endDate' in rest;
 
@@ -83,6 +85,7 @@ export function CreateCycleDialog({ open, onClose, ...rest }: P) {
 
   const createCycleMutation = useCreateCycleMutation({
     onSuccess: () => {
+      posthog?.capture('cycle_created');
       onClose();
       toast.success(m.cycle_created_successfully());
     },
@@ -93,6 +96,7 @@ export function CreateCycleDialog({ open, onClose, ...rest }: P) {
 
   const updateCycleMutation = useUpdateCycleMutation({
     onSuccess: () => {
+      posthog?.capture('cycle_updated');
       onClose();
       toast.success(m.cycle_updated_successfully());
     },

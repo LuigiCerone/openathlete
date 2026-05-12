@@ -1,6 +1,8 @@
 import { useCreateEventMutation, useUpdateEventMutation } from '@/api/event';
 import { useCreateEventTemplateMutation } from '@/api/event-template';
 import { m } from '@/paraglide/messages';
+import { AnalyticsEvent } from '@/utils/analytics-events';
+import { usePostHog } from 'posthog-js/react';
 import { useCallback } from 'react';
 import { UseFormHandleSubmit } from 'react-hook-form';
 import { toast } from 'sonner';
@@ -35,9 +37,13 @@ export function useEventFormSubmission(
 ) {
   const edit = 'event' in props;
   const create = 'type' in props && 'date' in props;
+  const posthog = usePostHog();
 
   const createEventTemplateMutation = useCreateEventTemplateMutation({
     onSuccess: () => {
+      posthog?.capture(AnalyticsEvent.event_template_saved, {
+        from: 'create_dialog',
+      });
       toast.success(m.template_saved_successfully());
     },
     onError: () => {
@@ -46,7 +52,8 @@ export function useEventFormSubmission(
   });
 
   const createEventMutation = useCreateEventMutation({
-    onSuccess: () => {
+    onSuccess: (_, variables) => {
+      posthog?.capture('event_created', { event_type: variables.type });
       toast.success(m.event_created_successfully());
       onClose();
     },
@@ -56,7 +63,8 @@ export function useEventFormSubmission(
   });
 
   const updateEventMutation = useUpdateEventMutation({
-    onSuccess: () => {
+    onSuccess: (_, variables) => {
+      posthog?.capture('event_updated', { event_type: variables.body.type });
       toast.success(m.event_updated_successfully());
       onClose();
     },

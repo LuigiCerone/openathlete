@@ -4,6 +4,7 @@ import { isValidToken } from '@/utils/auth';
 import { signOutFirebase } from '@/utils/firebase-auth';
 import { ACCESS_TOKEN, clear, getItem, setItem } from '@/utils/local-storage';
 import { initializePushNotifications } from '@/utils/push-notifications';
+import posthog from 'posthog-js';
 import { useCallback, useEffect, useMemo, useReducer } from 'react';
 
 import { User } from '@openathlete/shared';
@@ -77,6 +78,10 @@ export function AuthProvider({ children }: Props) {
           }
         }
 
+        posthog.identify(user.userId.toString(), {
+          roles: user.roles,
+        });
+
         dispatch({
           type: Types.INITIAL,
           payload: {
@@ -113,6 +118,10 @@ export function AuthProvider({ children }: Props) {
               }
             }
           }
+
+          posthog.identify(user.userId.toString(), {
+            roles: user.roles,
+          });
 
           dispatch({
             type: Types.INITIAL,
@@ -154,6 +163,8 @@ export function AuthProvider({ children }: Props) {
   }, []);
 
   const logout = useCallback((navigate?: (path: string) => void) => {
+    posthog.capture('user_logged_out');
+    posthog.reset();
     clear();
     signOutFirebase().catch((error) => {
       console.error('Failed to sign out Firebase:', error);

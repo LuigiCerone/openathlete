@@ -218,6 +218,7 @@ export function AthletesTab() {
         open={paywallOpen}
         onOpenChange={setPaywallOpen}
         reason="athlete-limit"
+        analyticsSource="settings_athletes_tab"
       />
     </div>
   );

@@ -27,10 +27,15 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Switch } from '@/components/ui/switch';
 import { API_BASE_URL } from '@/config';
 import { m } from '@/paraglide/messages';
+import {
+  AnalyticsEvent,
+  setOauthConnectSourceForRedirect,
+} from '@/utils/analytics-events';
 import { connectorProviderLabelMap } from '@/utils/label-map/core/connector-provider.label-map';
 import { openOAuthUrl } from '@/utils/oauth';
 import { cn } from '@/utils/shadcn';
 import { CheckCircle2, ChevronDown, Link2, Link2Off } from 'lucide-react';
+import { usePostHog } from 'posthog-js/react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
@@ -51,6 +56,7 @@ const SUPPORTED_PROVIDERS: ConnectorProvider[] = [
 ];
 
 export function ConnectorsTab() {
+  const posthog = usePostHog();
   const [disconnectDialogOpen, setDisconnectDialogOpen] = useState(false);
   const [providerToDisconnect, setProviderToDisconnect] =
     useState<ConnectorProvider | null>(null);
@@ -67,6 +73,11 @@ export function ConnectorsTab() {
 
   const getOAuthUriMutation = useGetOAuthUriMutation({
     onSuccess: async (response, provider) => {
+      setOauthConnectSourceForRedirect('settings');
+      posthog?.capture(AnalyticsEvent.provider_connect_initiated, {
+        provider,
+        source: 'settings',
+      });
       // For PKCE providers (like Garmin), store codeVerifier in localStorage
       // Using localStorage instead of sessionStorage to persist across OAuth redirects
       if (response.codeVerifier) {
@@ -84,6 +95,7 @@ export function ConnectorsTab() {
 
   const disconnectMutation = useDisconnectProviderMutation({
     onSuccess: (_, provider) => {
+      posthog?.capture('provider_disconnected', { provider });
       toast.success(
         m.disconnected_from_provider({
           provider: connectorProviderLabelMap[provider],
@@ -130,6 +142,7 @@ export function ConnectorsTab() {
       setImportingProvider(provider);
     },
     onSuccess: (_, provider) => {
+      posthog?.capture('provider_full_import_requested', { provider });
       toast.success(
         m.full_import_started({
           provider: connectorProviderLabelMap[provider],
@@ -188,6 +201,11 @@ export function ConnectorsTab() {
     preference: keyof ProviderPreferencesDto,
     value: boolean,
   ) => {
+    posthog?.capture(AnalyticsEvent.provider_sync_preference_changed, {
+      provider,
+      preference,
+      enabled: value,
+    });
     updatePreferencesMutation.mutate({
       provider,
       payload: { [preference]: value } as ProviderPreferencesDto,

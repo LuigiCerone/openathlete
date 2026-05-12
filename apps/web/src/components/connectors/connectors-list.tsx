@@ -15,9 +15,15 @@ import {
 } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { m } from '@/paraglide/messages';
+import {
+  AnalyticsEvent,
+  type OauthConnectSource,
+  setOauthConnectSourceForRedirect,
+} from '@/utils/analytics-events';
 import { connectorProviderLabelMap } from '@/utils/label-map/core/connector-provider.label-map';
 import { openOAuthUrl } from '@/utils/oauth';
 import { CheckCircle2, Link2, Link2Off } from 'lucide-react';
+import { usePostHog } from 'posthog-js/react';
 import { toast } from 'sonner';
 
 import { ConnectorProvider } from '@openathlete/shared';
@@ -26,6 +32,8 @@ interface ConnectorsListProps {
   supportedProviders?: ConnectorProvider[];
   showSkip?: boolean;
   onSkip?: () => void;
+  /** Where OAuth was started (for PostHog funnel). */
+  oauthConnectSource?: OauthConnectSource;
 }
 
 const DEFAULT_SUPPORTED_PROVIDERS: ConnectorProvider[] = [
@@ -39,12 +47,19 @@ export function ConnectorsList({
   supportedProviders = DEFAULT_SUPPORTED_PROVIDERS,
   showSkip = false,
   onSkip,
+  oauthConnectSource = 'settings',
 }: ConnectorsListProps) {
+  const posthog = usePostHog();
   const { data: connectedProviders = [], isLoading: isLoadingConnected } =
     useGetConnectedProvidersQuery();
 
   const getOAuthUriMutation = useGetOAuthUriMutation({
     onSuccess: async (response, provider) => {
+      setOauthConnectSourceForRedirect(oauthConnectSource);
+      posthog?.capture(AnalyticsEvent.provider_connect_initiated, {
+        provider,
+        source: oauthConnectSource,
+      });
       // For PKCE providers (like Garmin), store codeVerifier in localStorage
       // Using localStorage instead of sessionStorage to persist across OAuth redirects
       if (response.codeVerifier) {
@@ -62,6 +77,10 @@ export function ConnectorsList({
 
   const disconnectMutation = useDisconnectProviderMutation({
     onSuccess: (_, provider) => {
+      posthog?.capture('provider_disconnected', {
+        provider,
+        source: oauthConnectSource,
+      });
       toast.success(
         m.disconnected_from_provider({
           provider: connectorProviderLabelMap[provider],

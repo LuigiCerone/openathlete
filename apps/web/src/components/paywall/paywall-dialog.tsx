@@ -2,7 +2,12 @@ import { useCreateCheckout, useCurrentSubscription } from '@/api/subscription';
 import { SparklesIcon } from '@/components/ui/sparkles-icon';
 import { m } from '@/paraglide/messages';
 import { isPaymentDisabled } from '@/utils/capacitor';
+import {
+  AnalyticsEvent,
+  analyticsErrorCodeFromUnknown,
+} from '@/utils/analytics-events';
 import { Users } from 'lucide-react';
+import { usePostHog } from 'posthog-js/react';
 import { useEffect, useState } from 'react';
 
 import { PLAN_CONFIGS, SubscriptionPlan } from '@openathlete/shared';
@@ -24,6 +29,8 @@ interface PaywallDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   reason?: PaywallReason;
+  /** Where the paywall was opened from (PostHog). */
+  analyticsSource?: string;
 }
 
 // Group plans by category
@@ -35,7 +42,9 @@ export function PaywallDialog({
   open,
   onOpenChange,
   reason = 'ai-feature',
+  analyticsSource = 'paywall_dialog',
 }: PaywallDialogProps) {
+  const posthog = usePostHog();
   const createCheckout = useCreateCheckout();
   const { data: currentSubscription } = useCurrentSubscription();
   const [selectedPlan, setSelectedPlan] = useState<SubscriptionPlan | null>(
@@ -45,6 +54,14 @@ export function PaywallDialog({
     'athlete',
   );
   const [showIOSPaymentBlock, setShowIOSPaymentBlock] = useState(false);
+
+  useEffect(() => {
+    if (!open) return;
+    posthog?.capture(AnalyticsEvent.ai_paywall_viewed, {
+      reason: reason === 'ai-feature' ? 'ai_feature' : 'athlete_limit',
+      source: analyticsSource,
+    });
+  }, [open, reason, analyticsSource, posthog]);
 
   const handleUpgrade = async (plan: SubscriptionPlan) => {
     // Check if payments are disabled (iOS)
@@ -67,6 +84,11 @@ export function PaywallDialog({
       window.location.href = url;
     } catch (error) {
       console.error('Failed to create checkout session:', error);
+      posthog?.capture(AnalyticsEvent.subscription_checkout_failed, {
+        plan,
+        source: analyticsSource,
+        error_code: analyticsErrorCodeFromUnknown(error),
+      });
     }
   };
 

@@ -19,8 +19,10 @@ import { m } from '@/paraglide/messages';
 import { isCapacitor } from '@/utils/capacitor';
 import { calculateUnreadCount } from '@/utils/messages';
 import { cn } from '@/utils/shadcn';
+import { AnalyticsEvent } from '@/utils/analytics-events';
 import { motion } from 'framer-motion';
 import { MessageCircle, Plus, Trash2 } from 'lucide-react';
+import { usePostHog } from 'posthog-js/react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { AgentThread, MessageThread } from '@openathlete/shared';
@@ -28,6 +30,7 @@ import { AgentThread, MessageThread } from '@openathlete/shared';
 type ThreadFilter = 'all' | 'unread';
 
 export function MessagesPage() {
+  const posthog = usePostHog();
   const [filter, setFilter] = useState<ThreadFilter>('all');
   const [newThreadDialogOpen, setNewThreadDialogOpen] = useState(false);
   const [activeMessageThreadId, setActiveMessageThreadId] = useState<
@@ -94,6 +97,10 @@ export function MessagesPage() {
         { title: 'New Thread', participantUserIds: [] },
         {
           onSuccess: (newThread) => {
+            posthog?.capture(AnalyticsEvent.messages_thread_created, {
+              trigger: 'auto_empty_state',
+              participant_count: 0,
+            });
             setActiveMessageThreadId(newThread.messageThreadId);
           },
         },
@@ -197,30 +204,46 @@ export function MessagesPage() {
         { participantUserIds },
         {
           onSuccess: (thread) => {
+            posthog?.capture(AnalyticsEvent.messages_thread_created, {
+              trigger: 'user',
+              participant_count: participantUserIds.length,
+            });
             setActiveMessageThreadId(thread.messageThreadId);
             setNewThreadDialogOpen(false);
           },
         },
       );
     },
-    [createMessageThreadMutation],
+    [createMessageThreadMutation, posthog],
   );
 
   const handleDeleteConversation = useCallback(
     (threadId: number, e: React.MouseEvent) => {
       e.stopPropagation();
       if (threads && threads.length > 1) {
-        deleteThreadMutation.mutate(threadId);
+        deleteThreadMutation.mutate(threadId, {
+          onSuccess: () => {
+            posthog?.capture(AnalyticsEvent.messages_thread_deleted);
+          },
+        });
       }
     },
-    [deleteThreadMutation, threads],
+    [deleteThreadMutation, posthog, threads],
   );
 
   const handleSendMessage = useCallback(
     (content: string) => {
+      posthog?.capture(AnalyticsEvent.messages_message_sent, {
+        char_length_bucket:
+          content.length > 2000
+            ? 'xlarge'
+            : content.length > 500
+              ? 'large'
+              : 'normal',
+      });
       sendMessageMessage(content);
     },
-    [sendMessageMessage],
+    [posthog, sendMessageMessage],
   );
 
   if (isLoading) {

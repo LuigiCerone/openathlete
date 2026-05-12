@@ -9,6 +9,7 @@ import {
   getFirebaseIdTokenForProvider,
 } from '@/utils/firebase-auth';
 import { cn } from '@/utils/shadcn';
+import { usePostHog } from 'posthog-js/react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -28,11 +29,15 @@ export function OAuthButtons({
 }: Props) {
   const nav = useNavigate();
   const { initialize } = useAuthContext();
+  const posthog = usePostHog();
   const [pendingProvider, setPendingProvider] =
     useState<OAuthProviderId | null>(null);
 
   const loginWithFirebaseMutation = useLoginWithFirebaseMutation({
-    onSuccess: async () => {
+    onSuccess: async (_, variables) => {
+      posthog?.capture('user_logged_in_with_google', {
+        has_invitation: !!variables.invitationToken,
+      });
       await initialize();
       nav(redirectTo || getPath(['dashboard']));
     },

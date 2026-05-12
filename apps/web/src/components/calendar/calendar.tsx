@@ -13,10 +13,12 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { type PageAction, useSetPageActions } from '@/hooks/use-page-actions';
 import { m } from '@/paraglide/messages';
 import { CALENDAR_COLORED_BY, getItem, setItem } from '@/utils/local-storage';
+import { AnalyticsEvent } from '@/utils/analytics-events';
 import { DragEndEvent } from '@dnd-kit/core';
 import { useQueryClient } from '@tanstack/react-query';
 import { addDays, startOfMonth } from 'date-fns';
 import { Activity, Award, Plus, Sparkles } from 'lucide-react';
+import { usePostHog } from 'posthog-js/react';
 import * as React from 'react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
@@ -63,6 +65,7 @@ export function Calendar({
   onMonthChange,
   isLoading = false,
 }: P) {
+  const posthog = usePostHog();
   const isMobile = useIsMobile();
   const calendarData = useCalendarData({ events });
   const { data: cycles } = useGetMyCyclesQuery(undefined, athleteId);
@@ -320,7 +323,13 @@ export function Calendar({
     return savedValue ? (savedValue as COLORED_BY) : null;
   });
   const updateEventMutation = useUpdateEventMutation();
-  const duplicateEventMutation = useDuplicateEventMutation();
+  const duplicateEventMutation = useDuplicateEventMutation({
+    onSuccess: (duplicated) => {
+      posthog?.capture(AnalyticsEvent.event_duplicated, {
+        event_type: duplicated.type,
+      });
+    },
+  });
   const updateCycleMutation = useUpdateCycleMutation();
   const useTemplateMutation = useUseEventTemplateMutation({
     onSuccess: () => {

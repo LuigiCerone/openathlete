@@ -19,8 +19,13 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { m } from '@/paraglide/messages';
 import { isPaymentDisabled } from '@/utils/capacitor';
+import {
+  AnalyticsEvent,
+  analyticsErrorCodeFromUnknown,
+} from '@/utils/analytics-events';
 import { format } from 'date-fns';
 import { Download, ExternalLink, FileText } from 'lucide-react';
+import { usePostHog } from 'posthog-js/react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
@@ -77,6 +82,7 @@ export function SubscriptionSettingsPage() {
   const resumeMutation = useResumeSubscription();
   const portalMutation = useCustomerPortal();
   const createCheckout = useCreateCheckout();
+  const posthog = usePostHog();
 
   const [isLoadingPortal, setIsLoadingPortal] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<SubscriptionPlan | null>(
@@ -96,6 +102,7 @@ export function SubscriptionSettingsPage() {
 
     setIsLoadingPortal(true);
     try {
+      posthog?.capture(AnalyticsEvent.subscription_manage_billing_opened);
       const returnUrl = `${window.location.origin}/dashboard/settings?tab=subscription`;
       const { url } = await portalMutation.mutateAsync(returnUrl);
       window.location.href = url;
@@ -109,6 +116,7 @@ export function SubscriptionSettingsPage() {
     if (confirm(m.subscription_cancel_confirm())) {
       try {
         await cancelMutation.mutateAsync();
+        posthog?.capture('subscription_cancelled');
         toast.success(m.subscription_cancel_success());
       } catch {
         toast.error(m.subscription_cancel_error());
@@ -119,6 +127,7 @@ export function SubscriptionSettingsPage() {
   const handleResume = async () => {
     try {
       await resumeMutation.mutateAsync();
+      posthog?.capture('subscription_resumed');
       toast.success(m.subscription_resume_success());
     } catch {
       toast.error(m.subscription_resume_error());
@@ -175,8 +184,14 @@ export function SubscriptionSettingsPage() {
         cancelUrl,
       });
 
+      posthog?.capture('subscription_upgrade_initiated', { plan: nextPlan });
       window.location.href = url;
-    } catch {
+    } catch (error) {
+      posthog?.capture(AnalyticsEvent.subscription_checkout_failed, {
+        plan: nextPlan,
+        source: 'subscription_settings',
+        error_code: analyticsErrorCodeFromUnknown(error),
+      });
       toast.error(m.subscription_checkout_error());
     }
   };

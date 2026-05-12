@@ -8,6 +8,7 @@ import { getPath } from '@/routes/paths';
 import { cn } from '@/utils/shadcn';
 import { OAuthButtons } from '@/views/auth/oauth-buttons';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { usePostHog } from 'posthog-js/react';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
@@ -22,6 +23,7 @@ export function LoginView({ className }: React.ComponentProps<'form'>) {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const planToken = searchParams.get('planToken');
+  const posthog = usePostHog();
 
   // Store planToken in sessionStorage if present
   useEffect(() => {
@@ -32,6 +34,7 @@ export function LoginView({ className }: React.ComponentProps<'form'>) {
 
   const loginMutation = useLoginMutation({
     onSuccess: async () => {
+      posthog?.capture('user_logged_in');
       await initialize();
       navigate(getPath(['dashboard']));
     },

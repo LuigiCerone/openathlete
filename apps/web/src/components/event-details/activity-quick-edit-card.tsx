@@ -194,6 +194,7 @@ export function ActivityQuickEditCard({
         open={paywallOpen}
         onOpenChange={setPaywallOpen}
         reason="ai-feature"
+        analyticsSource="activity_quick_edit"
       />
     </>
   );

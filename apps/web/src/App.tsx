@@ -1,5 +1,6 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ThemeProvider } from 'next-themes';
+import { PostHogProvider } from 'posthog-js/react';
 import { RouterProvider } from 'react-router-dom';
 
 import { StatusBarThemeSync } from './components/status-bar-theme-sync';
@@ -37,10 +38,15 @@ function AppContent() {
 
 function App() {
   return (
-    <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-      <StatusBarThemeSync />
-      <AppContent />
-    </ThemeProvider>
+    <PostHogProvider
+      apiKey={import.meta.env.VITE_PUBLIC_POSTHOG_PROJECT_TOKEN}
+      options={{ api_host: import.meta.env.VITE_PUBLIC_POSTHOG_HOST }}
+    >
+      <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+        <StatusBarThemeSync />
+        <AppContent />
+      </ThemeProvider>
+    </PostHogProvider>
   );
 }
 

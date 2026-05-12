@@ -18,11 +18,13 @@ import { Textarea } from '@/components/ui/textarea';
 import { useAuthContext } from '@/contexts/auth';
 import { m } from '@/paraglide/messages';
 import { getPath } from '@/routes/paths';
+import { AnalyticsEvent } from '@/utils/analytics-events';
 import { cn } from '@/utils/shadcn';
 import { AnimatePresence, motion } from 'framer-motion';
 import { CheckCircle2, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useTheme } from 'next-themes';
-import { useEffect, useMemo, useState } from 'react';
+import { usePostHog } from 'posthog-js/react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
@@ -112,6 +114,7 @@ export function OnboardingView() {
   const navigate = useNavigate();
   const { resolvedTheme } = useTheme();
   const { initialize, authenticated } = useAuthContext();
+  const posthog = usePostHog();
   const { data: user, isLoading: isLoadingUser } = useGetMeQuery({
     enabled: authenticated, // Only fetch if authenticated
   });
@@ -131,6 +134,12 @@ export function OnboardingView() {
   });
   const { data: coaches } = useGetMyCoachesQuery();
   const hasCoach = (coaches?.length ?? 0) > 0;
+
+  const onboardingFinishedRef = useRef(false);
+  const onboardingSnapshotRef = useRef<{
+    step: OnboardingStep;
+    roles: OnboardingData['roles'];
+  }>({ step: 'welcome', roles: [] });
 
   // Generate steps based on selected roles
   const steps = useMemo<OnboardingStep[]>(() => {
@@ -166,6 +175,11 @@ export function OnboardingView() {
 
   const currentStep = steps[currentStepIndex];
 
+  onboardingSnapshotRef.current = {
+    step: currentStep ?? 'welcome',
+    roles: data.roles,
+  };
+
   // Adjust step index when steps array changes (e.g., when roles change)
   // Only adjust if we're not on role-selection step (to allow going back)
   useEffect(() => {
@@ -191,12 +205,15 @@ export function OnboardingView() {
   // Redirect if onboarding already completed (only if user data is loaded and authenticated)
   useEffect(() => {
     if (authenticated && !isLoadingUser && user && user.onboardingCompleted) {
+      onboardingFinishedRef.current = true;
       navigate(getPath(['dashboard']));
     }
   }, [authenticated, user, isLoadingUser, navigate]);
 
   const completeOnboardingMutation = useCompleteOnboardingMutation({
-    onSuccess: async () => {
+    onSuccess: async (_, variables) => {
+      onboardingFinishedRef.current = true;
+      posthog?.capture('onboarding_completed', { roles: variables.roles });
       await initialize();
       navigate(getPath(['dashboard']));
     },
@@ -206,6 +223,15 @@ export function OnboardingView() {
   });
 
   const handleNext = () => {
+    const captureStepCompleted = (step: OnboardingStep, stepIndex: number) => {
+      posthog?.capture(AnalyticsEvent.onboarding_step_completed, {
+        step,
+        step_index: stepIndex,
+        total_steps: steps.length,
+        roles_selected: [...data.roles],
+      });
+    };
+
     // If on role-selection, regenerate steps and move to next
     if (currentStep === 'role-selection') {
       if (data.roles.length === 0) {
@@ -216,6 +242,7 @@ export function OnboardingView() {
       const roleSelectionIndex = steps.indexOf('role-selection');
       const nextIndex = roleSelectionIndex + 1;
       if (nextIndex < steps.length) {
+        captureStepCompleted('role-selection', roleSelectionIndex);
         setCurrentStepIndex(nextIndex);
         saveOnboardingStep(nextIndex);
       }
@@ -224,9 +251,13 @@ export function OnboardingView() {
 
     if (currentStepIndex < steps.length - 1) {
       const nextIndex = currentStepIndex + 1;
+      if (currentStep) {
+        captureStepCompleted(currentStep, currentStepIndex);
+      }
       setCurrentStepIndex(nextIndex);
       saveOnboardingStep(nextIndex);
     } else if (currentStep === 'complete') {
+      captureStepCompleted('complete', currentStepIndex);
       handleComplete();
     }
   };
@@ -287,6 +318,24 @@ export function OnboardingView() {
       clearOnboardingStorage();
     }
   }, [completeOnboardingMutation.isSuccess]);
+
+  useEffect(() => {
+    const emitAbandoned = () => {
+      if (onboardingFinishedRef.current) return;
+      if (!authenticated) return;
+      const snap = onboardingSnapshotRef.current;
+      posthog?.capture(AnalyticsEvent.onboarding_abandoned, {
+        last_step: snap.step,
+        roles_selected: [...snap.roles],
+      });
+    };
+    window.addEventListener('pagehide', emitAbandoned);
+    window.addEventListener('beforeunload', emitAbandoned);
+    return () => {
+      window.removeEventListener('pagehide', emitAbandoned);
+      window.removeEventListener('beforeunload', emitAbandoned);
+    };
+  }, [authenticated, posthog]);
 
   // Don't auto-advance when roles are selected - let user click "Next" button
 
@@ -533,7 +582,11 @@ export function OnboardingView() {
                 {m.onboarding_connectors_subtitle()}
               </p>
             </div>
-            <ConnectorsList showSkip onSkip={handleSkip} />
+            <ConnectorsList
+              showSkip
+              onSkip={handleSkip}
+              oauthConnectSource="onboarding"
+            />
           </div>
         );
 

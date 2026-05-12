@@ -96,6 +96,7 @@ export function ActivityFeedbackDisplayCard({ event }: P) {
         open={paywallOpen}
         onOpenChange={setPaywallOpen}
         reason="ai-feature"
+        analyticsSource="activity_feedback_display"
       />
     </>
   );

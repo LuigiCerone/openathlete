@@ -309,6 +309,7 @@ export function CalendarDay({ day, events, cycleSegments = [] }: P) {
         open={paywallOpen}
         onOpenChange={setPaywallOpen}
         reason="ai-feature"
+        analyticsSource="calendar_day"
       />
     </div>
   );

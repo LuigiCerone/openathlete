@@ -1,7 +1,12 @@
 import { useGenerateEventMutation } from '@/api/agent';
 import { m } from '@/paraglide/messages';
+import {
+  AnalyticsEvent,
+  analyticsErrorCodeFromUnknown,
+} from '@/utils/analytics-events';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useEffect } from 'react';
+import { usePostHog } from 'posthog-js/react';
+import { useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
@@ -24,6 +29,8 @@ type P = {
   onClose: () => void;
   date: Date;
   onEventGenerated: (event: CreateEventDto) => void;
+  /** PostHog funnel attribution (no PII). */
+  analyticsSource?: string;
 };
 
 const promptSchema = z.object({
@@ -37,7 +44,11 @@ export function AIGenerateEventDialog({
   onClose,
   date,
   onEventGenerated,
+  analyticsSource = 'calendar',
 }: P) {
+  const posthog = usePostHog();
+  const requestStartedAtRef = useRef<number | null>(null);
+
   const methods = useForm<PromptFormValues>({
     resolver: zodResolver(promptSchema),
     defaultValues: {
@@ -51,21 +62,46 @@ export function AIGenerateEventDialog({
   useEffect(() => {
     if (open) {
       methods.reset({ prompt: '' });
+      posthog?.capture(AnalyticsEvent.ai_event_generation_opened, {
+        mode: 'create',
+        source: analyticsSource,
+      });
     }
-  }, [open, methods]);
+  }, [open, analyticsSource, posthog, methods]);
 
   const onSubmit = methods.handleSubmit(async (data) => {
+    requestStartedAtRef.current = performance.now();
     try {
       const generatedEvent = await generateEventMutation.mutateAsync({
         prompt: data.prompt,
         date,
       });
 
+      const durationMs =
+        requestStartedAtRef.current !== null
+          ? Math.round(performance.now() - requestStartedAtRef.current)
+          : undefined;
+      posthog?.capture(AnalyticsEvent.ai_event_generation_succeeded, {
+        mode: 'create',
+        source: analyticsSource,
+        ...(durationMs !== undefined ? { duration_ms: durationMs } : {}),
+      });
+
       toast.success(m.event_generated_successfully());
       onEventGenerated(generatedEvent);
       methods.reset();
       onClose();
-    } catch {
+    } catch (err) {
+      const durationMs =
+        requestStartedAtRef.current !== null
+          ? Math.round(performance.now() - requestStartedAtRef.current)
+          : undefined;
+      posthog?.capture(AnalyticsEvent.ai_event_generation_failed, {
+        mode: 'create',
+        source: analyticsSource,
+        error_code: analyticsErrorCodeFromUnknown(err),
+        ...(durationMs !== undefined ? { duration_ms: durationMs } : {}),
+      });
       toast.error(m.failed_to_generate_event());
     }
   });
