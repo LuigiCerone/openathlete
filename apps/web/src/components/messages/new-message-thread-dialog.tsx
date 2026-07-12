@@ -89,9 +89,9 @@ export function NewMessageThreadDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[500px] z-[9999]">
         <DialogHeader>
-          <DialogTitle>Nouvelle conversation</DialogTitle>
+          <DialogTitle>{m.chatbot_new_conversation()}</DialogTitle>
           <DialogDescription>
-            Sélectionnez les personnes avec qui vous souhaitez dialoguer
+            {m.messages_new_conversation_description()}
           </DialogDescription>
         </DialogHeader>
 
@@ -99,9 +99,7 @@ export function NewMessageThreadDialog({
           <div className="space-y-2 p-2">
             {availableUsers.length === 0 ? (
               <div className="flex items-center justify-center py-8 text-muted-foreground">
-                <p className="text-sm">
-                  Aucune personne disponible pour démarrer une conversation
-                </p>
+                <p className="text-sm">{m.messages_no_available_people()}</p>
               </div>
             ) : (
               availableUsers.map((user) => (
@@ -130,7 +128,7 @@ export function NewMessageThreadDialog({
 
         <DialogFooter>
           <Button variant="outline" onClick={handleCancel} disabled={isLoading}>
-            Annuler
+            {m.cancel()}
           </Button>
           <Button
             onClick={handleConfirm}
