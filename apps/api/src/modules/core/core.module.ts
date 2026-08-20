@@ -122,7 +122,6 @@ import { WeatherService } from './services/weather/weather.service';
           trainingMatch,
         ]),
       inject: [
-        PrismaService,
         GapProcessor,
         WeatherProcessor,
         NormalizationProcessor,

@@ -3,6 +3,9 @@ import { useMessagesWebSocket } from '@/api/messages/use-messages-websocket.hook
 import { useGetMeQuery } from '@/api/user';
 import { Loader } from '@/components/ui/loader';
 import { useWindowVisibility } from '@/hooks/use-window-visibility';
+import { m } from '@/paraglide/messages';
+import { getLocale } from '@/paraglide/runtime';
+import { getDateLocale } from '@/utils/locales';
 import { cn } from '@/utils/shadcn';
 import { CheckCheck } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
@@ -105,9 +108,9 @@ function MessageBubble({
             />
 
             <div className="flex gap-2 justify-end">
-              <Button onClick={onCancelEdit}>Annuler</Button>
+              <Button onClick={onCancelEdit}>{m.cancel()}</Button>
               <Button onClick={handleSave} variant="secondary">
-                Enregistrer
+                {m.save()}
               </Button>
             </div>
           </div>
@@ -124,13 +127,18 @@ function MessageBubble({
 
             <div className="flex items-center gap-2 mt-2">
               <p className="text-xs opacity-60">
-                {new Date(message.createdAt).toLocaleTimeString('fr-FR', {
-                  hour: '2-digit',
-                  minute: '2-digit',
-                })}
+                {new Date(message.createdAt).toLocaleTimeString(
+                  getDateLocale(getLocale()),
+                  {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                  },
+                )}
               </p>
               {message.editedAt && (
-                <p className="text-xs opacity-60 italic">{m.edited()}</p>
+                <p className="text-xs opacity-60 italic">
+                  {m.messages_edited()}
+                </p>
               )}
               {isUser && (
                 <>
@@ -146,7 +154,7 @@ function MessageBubble({
                   onClick={onStartEdit}
                   className="text-xs opacity-60 hover:opacity-100 ml-auto cursor-pointer"
                 >
-                  Modifier
+                  {m.edit()}
                 </button>
               )}
             </div>
@@ -225,8 +233,8 @@ export function MessageMessages({
     return (
       <div className="flex items-center justify-center min-h-[200px] text-muted-foreground p-4">
         <div className="text-center">
-          <p className="text-sm">Aucun message</p>
-          <p className="text-xs mt-2">Commencez la conversation</p>
+          <p className="text-sm">{m.chatbot_no_messages()}</p>
+          <p className="text-xs mt-2">{m.chatbot_start_conversation()}</p>
         </div>
       </div>
     );
