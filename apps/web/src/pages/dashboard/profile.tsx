@@ -44,7 +44,7 @@ export function ProfilePage() {
       <div className="space-y-2">
         <h2 className="text-2xl font-bold">{m.profile()}</h2>
         <p className="text-muted-foreground">
-          Sélectionnez une option ci-dessous
+          {m.select_an_option_below()}
         </p>
       </div>
 

@@ -27,6 +27,7 @@ import {
 } from '../create-event-from-template-dialog/dnd-types';
 import { MobileLayout } from '../mobile/mobile-layout';
 import { PlanImportHandler } from '../plan-import-handler';
+import { m } from '@/paraglide/messages';
 import { AppSidebar } from '../sidebar/app-sidebar';
 import { SportIcon } from '../sport-icon/sport-icon';
 
@@ -133,10 +134,10 @@ function LayoutContent({ children }: P) {
               <span className="font-medium text-sm truncate">{event.name}</span>
               <span className="text-xs text-muted-foreground">
                 {isTrainingOrCompetition
-                  ? 'Séance'
+                  ? m.event_type_session()
                   : isNote
                     ? 'Note'
-                    : 'Événement'}
+                    : m.event_type_event()}
               </span>
             </div>
           </div>

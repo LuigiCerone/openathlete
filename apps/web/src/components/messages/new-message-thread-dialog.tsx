@@ -89,9 +89,9 @@ export function NewMessageThreadDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[500px] z-[9999]">
         <DialogHeader>
-          <DialogTitle>Nouvelle conversation</DialogTitle>
+          <DialogTitle>{m.new_conversation()}</DialogTitle>
           <DialogDescription>
-            Sélectionnez les personnes avec qui vous souhaitez dialoguer
+            {m.select_people_to_talk_with()}
           </DialogDescription>
         </DialogHeader>
 
@@ -100,7 +100,7 @@ export function NewMessageThreadDialog({
             {availableUsers.length === 0 ? (
               <div className="flex items-center justify-center py-8 text-muted-foreground">
                 <p className="text-sm">
-                  Aucune personne disponible pour démarrer une conversation
+                  {m.no_people_available_for_conversation()}
                 </p>
               </div>
             ) : (

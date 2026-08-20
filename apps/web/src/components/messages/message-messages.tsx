@@ -7,6 +7,7 @@ import { cn } from '@/utils/shadcn';
 import { CheckCheck } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
+import { m } from '@/paraglide/messages';
 import { Message } from '@openathlete/shared';
 
 import { Button } from '../ui/button';
@@ -129,7 +130,7 @@ function MessageBubble({
                 })}
               </p>
               {message.editedAt && (
-                <p className="text-xs opacity-60 italic">édité</p>
+                <p className="text-xs opacity-60 italic">{m.edited()}</p>
               )}
               {isUser && (
                 <>
