@@ -10,8 +10,9 @@ import {
 } from '@/components/ui/chart';
 import { Loader } from '@/components/ui/loader';
 import * as m from '@/paraglide/messages.js';
+import { getLocale } from '@/paraglide/runtime';
+import { getDateFnsLocale } from '@/utils/locales';
 import { format } from 'date-fns';
-import { fr } from 'date-fns/locale';
 import { useMemo } from 'react';
 import {
   Area,
@@ -45,6 +46,7 @@ export function TrainingLoadChart({
 
   const finalStartDate = startDate || defaultStartDate;
   const finalEndDate = endDate || new Date();
+  const dateFnsLocale = getDateFnsLocale(getLocale());
 
   const { data: history, isLoading } = useTrainingLoadHistory(
     calculationType,
@@ -61,7 +63,7 @@ export function TrainingLoadChart({
       })
       .map((item) => ({
         date: item.date.getTime(),
-        dateLabel: format(item.date, 'dd MMM', { locale: fr }),
+        dateLabel: format(item.date, 'dd MMM', { locale: dateFnsLocale }),
         load: item.load,
         atl: item.atl,
         ctl: item.ctl,
@@ -141,9 +143,7 @@ export function TrainingLoadChart({
                         const timestamp =
                           typeof value === 'number' ? value : Number(value);
                         if (Number.isNaN(timestamp)) return '';
-                        return format(new Date(timestamp), 'dd MMM', {
-                          locale: fr,
-                        });
+                        return format(new Date(timestamp), 'dd MMM', { locale: dateFnsLocale });
                       } catch (error) {
                         console.error('Error formatting tick:', value, error);
                         return '';
@@ -162,9 +162,7 @@ export function TrainingLoadChart({
                             const timestamp =
                               typeof value === 'number' ? value : Number(value);
                             if (Number.isNaN(timestamp)) return String(value);
-                            return format(new Date(timestamp), 'dd MMMM yyyy', {
-                              locale: fr,
-                            });
+                            return format(new Date(timestamp), 'dd MMMM yyyy', { locale: dateFnsLocale });
                           } catch (error) {
                             console.error(
                               'Error formatting date:',

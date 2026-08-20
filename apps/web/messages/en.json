@@ -972,5 +972,12 @@
   "ios_payment_block_message": "To complete your purchase or manage your subscription, please visit our web application.",
   "ios_payment_block_go_to_web": "Go to web app",
   "feature_unavailable_ios": "Feature unavailable",
-  "feature_unavailable_ios_description": "This feature is not available on iOS. Please use the web application to access subscription features."
+  "feature_unavailable_ios_description": "This feature is not available on iOS. Please use the web application to access subscription features.",
+  "select_an_option_below": "Select an option below",
+  "event_type_session": "Session",
+  "event_type_event": "Event",
+  "new_conversation": "New conversation",
+  "select_people_to_talk_with": "Select the people you want to talk with",
+  "no_people_available_for_conversation": "No people available to start a conversation",
+  "edited": "Edited",
 }
