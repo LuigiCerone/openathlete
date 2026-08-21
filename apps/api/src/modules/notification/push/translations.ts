@@ -72,8 +72,8 @@ const pushNotificationTranslations: PushNotificationTranslationsMap = {
       title: 'Attività elaborata',
       body: {
         withQuestions:
-          "La tua attività è stata analizzata e le domande di feedback sono disponibili.",
-        withoutQuestions: "La tua attività è stata elaborata con successo.",
+          'La tua attività è stata analizzata e le domande di feedback sono disponibili.',
+        withoutQuestions: 'La tua attività è stata elaborata con successo.',
       },
     },
   },

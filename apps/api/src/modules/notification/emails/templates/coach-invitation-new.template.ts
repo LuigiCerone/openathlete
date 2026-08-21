@@ -40,7 +40,7 @@ const translations = {
     linkNote: (url: string) =>
       `Se il pulsante non funziona, copia e incolla questo link nel tuo browser: ${url}`,
     expiryNote:
-      "Questo invito è valido per 7 giorni. Se non sei interessato, puoi ignorare questa email.",
+      'Questo invito è valido per 7 giorni. Se non sei interessato, puoi ignorare questa email.',
   },
 } as const;
 

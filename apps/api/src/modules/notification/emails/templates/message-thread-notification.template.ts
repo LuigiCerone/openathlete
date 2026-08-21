@@ -78,7 +78,11 @@ export function buildMessageThreadNotificationEmail({
     .map((message) => {
       const createdAt = new Date(message.createdAtIso);
       const timeLabel = createdAt.toLocaleString(
-        language === Language.FR ? 'fr-FR' : language === Language.IT ? 'it-IT' : 'en-US',
+        language === Language.FR
+          ? 'fr-FR'
+          : language === Language.IT
+            ? 'it-IT'
+            : 'en-US',
         {
           hour: '2-digit',
           minute: '2-digit',
