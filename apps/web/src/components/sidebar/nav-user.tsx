@@ -23,6 +23,7 @@ import {
   useSidebar,
 } from '@/components/ui/sidebar';
 import { useAuthContext } from '@/contexts/auth';
+import { SUPPORTED_LOCALES } from '@/components/language-switcher';
 import { useLanguageSync } from '@/hooks/use-language-sync';
 import { m } from '@/paraglide/messages';
 import { getLocale } from '@/paraglide/runtime';
@@ -133,12 +134,12 @@ export function NavUser() {
                 <DropdownMenuSubTrigger>{m.language()}</DropdownMenuSubTrigger>
                 <DropdownMenuPortal>
                   <DropdownMenuSubContent>
-                    {['en', 'fr'].map((lang) => (
+                    {SUPPORTED_LOCALES.map((lang) => (
                       <DropdownMenuItem
                         key={lang}
                         className={getLocale() === lang ? 'font-bold' : ''}
                         onClick={() => {
-                          syncLanguage(lang as 'en' | 'fr');
+                          syncLanguage(lang);
                         }}
                       >
                         {getLocaleName(lang)}

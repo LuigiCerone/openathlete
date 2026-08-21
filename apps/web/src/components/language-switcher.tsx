@@ -16,7 +16,7 @@ import { ComponentProps } from 'react';
 type ButtonVariant = ComponentProps<typeof Button>['variant'];
 type ButtonSize = ComponentProps<typeof Button>['size'];
 
-const SUPPORTED_LOCALES = ['en', 'fr'] as const;
+export const SUPPORTED_LOCALES = ['en', 'fr', 'it'] as const;
 type SupportedLocale = (typeof SUPPORTED_LOCALES)[number];
 
 interface LanguageSwitcherProps {
