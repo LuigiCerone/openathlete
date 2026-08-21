@@ -23,12 +23,11 @@ import {
   useSidebar,
 } from '@/components/ui/sidebar';
 import { useAuthContext } from '@/contexts/auth';
-import { SUPPORTED_LOCALES } from '@/components/language-switcher';
 import { useLanguageSync } from '@/hooks/use-language-sync';
 import { m } from '@/paraglide/messages';
 import { getLocale } from '@/paraglide/runtime';
 import { getPath } from '@/routes/paths';
-import { getLocaleName } from '@/utils/locales';
+import { SUPPORTED_LOCALES, getLocaleName } from '@/utils/locales';
 import { ChevronsUpDown, CogIcon, LogOut } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { useNavigate } from 'react-router-dom';
